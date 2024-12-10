@@ -8,3 +8,13 @@ services:
       - "5000:5000"
     volumes:
       - ./backend/pointsheet:/app
+
+  frontend:
+    restart: on-failure
+    build:
+      context: frontend
+    container_name: pointsheet
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
