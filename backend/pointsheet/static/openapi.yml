@@ -6,7 +6,7 @@ info:
 servers:
   - url: 'http://localhost:5000'
 paths:
-  /:
+  /hello:
     get:
       responses:
         200:
