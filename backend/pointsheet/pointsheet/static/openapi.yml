@@ -1,0 +1,16 @@
+openapi: 3.1.0
+info:
+  title: Sim Racing Point Sheet API
+  description: Sim Racing Point Sheet API
+  version: 0.0.1
+servers:
+  - url: 'http://localhost:5000'
+paths:
+  /:
+    get:
+      responses:
+        200:
+          description: Successful hello world fetched
+          content:
+            plain/text:
+              example: Hello world
