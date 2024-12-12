@@ -9,11 +9,111 @@ servers:
   - url: 'http://api.pointsheet-app.com'
     description: For local testing when running from docker-compose.
 paths:
-  /hello:
-    get:
-      responses:
-        200:
-          description: Successful hello world fetched
-          content:
-            plain/text:
-              example: Hello world
+
+
+components:
+  schemas:
+    Series:
+      type: object
+      required:
+        - id
+        - title
+        - starts_at
+        - ends_at
+        -
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        starts_at:
+          type: datetime
+        ends_at:
+          type: datetime
+        status:
+          type: string
+          enum:
+            - started
+            - closed
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+
+    Event:
+      description: An event may optionally belong to a series or be standalone in the case of one-off events.
+      type: object
+      required:
+        - id
+        - title
+        - starts_at
+        - ends_at
+        - hosts
+        - status
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        starts_at:
+          type: datetime
+        ends_at:
+          type: datetime
+        host:
+          description: The person running the event.
+          type: integer
+        status:
+          description: Default value is open. Users can register when this is open. No new signups when in progress or closed.
+          type: string
+          enum:
+            - open
+            - closed
+            - in_progress
+          default: open
+        series:
+          type: string
+          description: UUID of series
+        rules:
+          type: string
+          description: Can contain rules like number of pit stops, tire restrictions and others for this event.
+        schedule:
+          description: The sequence of activities making up the event. Qualification, Practice or race.
+          type: array
+          items:
+            $ref: '#/components/schemas/Schedule'
+
+    Schedule:
+      type: object
+      required:
+        - id
+        - type
+        - nbr_of_laps
+        - duration
+      properties:
+        id:
+          type: int
+        type:
+          type: string
+          enum:
+            - Practice
+            - Qualification
+            - Race
+        nbr_of_laps:
+          type: integer
+        duration:
+          description: The duration of the schedule.
+          type: string
+          example: 01:45
+    PointDistribution:
+      description: Not used yet. TBD
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        points:
+          type: object
+          additionalProperties:
+            type: integer
+            example: {"1": 10, "2": 20}
