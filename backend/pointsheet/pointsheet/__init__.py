@@ -14,6 +14,8 @@ template_directory = os.path.join(root_dir, "templates")
 
 config = Config()
 
+__all__ = ["config"]
+
 
 def create_app(test_config=None):
     app = Flask(

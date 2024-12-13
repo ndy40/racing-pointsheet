@@ -13,4 +13,4 @@ COPY ./pointsheet/pyproject.toml ./pointsheet/poetry.lock /app/
 RUN pip install poetry && poetry install
 COPY ./pointsheet/ /app
 
-CMD ["python", "main.py"]
+CMD ["python", "main.py", "run-server"]
