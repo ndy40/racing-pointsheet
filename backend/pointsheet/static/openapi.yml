@@ -111,7 +111,10 @@ paths:
       tags:
         - Series
       requestBody:
-        $ref: "#/components/schemas/CreateEvent"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEvent"
       responses:
         204:
           description: Event created for series
