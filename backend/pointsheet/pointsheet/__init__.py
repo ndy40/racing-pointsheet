@@ -4,8 +4,8 @@ from pathlib import Path
 from flask import Flask, render_template
 
 from pointsheet.config import Config
+from pointsheet.db import Session
 
-# from pointsheet.db import Session
 
 root_dir = os.path.join(Path(__file__).parent.parent)
 
@@ -40,8 +40,8 @@ def create_app(test_config=None):
     def hello():
         return "Hello world"
 
-    # @app.teardown_appcontext
-    # def remove_db_session():
-    #     Session.remove()
+    @app.teardown_appcontext
+    def remove_db_session():
+        Session.remove()
 
     return app
