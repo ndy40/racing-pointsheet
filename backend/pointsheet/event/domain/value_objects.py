@@ -1,8 +1,8 @@
 import uuid
 from enum import Enum
 
-SeriesId = uuid.UUID
-EventId = uuid.UUID
+
+EntityId = uuid.UUID
 ScheduleId = int
 
 class SeriesStatus(str, Enum):

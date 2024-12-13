@@ -4,7 +4,7 @@ from typing import Optional, List
 
 from pydantic import BaseModel
 
-from pointsheet.event.domain.value_objects import SeriesId, EventId, SeriesStatus, EventStatus, ScheduleId, ScheduleType
+from event.domain.value_objects import  SeriesStatus, EventStatus, ScheduleId, ScheduleType, EntityId
 
 
 class StartEndDateMixin:
@@ -20,7 +20,7 @@ class Schedule(BaseModel):
 
 
 class Event(StartEndDateMixin, BaseModel):
-    id: Optional[EventId] = None
+    id: Optional[EntityId] = None
     title: str
     host: uuid.UUID
     status: Optional[EventStatus] = EventStatus.open
@@ -29,11 +29,7 @@ class Event(StartEndDateMixin, BaseModel):
 
 
 class Series(StartEndDateMixin, BaseModel):
-    id: Optional[SeriesId] = None
+    id: Optional[EntityId] = None
     title: str
     status: Optional[SeriesStatus] = None
     events: Optional[List[Event]] = None
-
-
-
-
