@@ -6,7 +6,7 @@ from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
 import pointsheet
 from pointsheet.models import BaseModel, BaseCustomTypes
@@ -56,15 +56,17 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
+
 def render_item(type_, obj, autogen_context):
     """Apply custom rendering for selected items."""
 
-    if type_ == 'type' and isinstance(obj, BaseCustomTypes):
+    if type_ == "type" and isinstance(obj, BaseCustomTypes):
         autogen_context.imports.add("import pointsheet")
-        return f'{obj.__module__}.%s' % obj.__class__.__name__
+        return f"{obj.__module__}.%s" % obj.__class__.__name__
 
     # default rendering for other objects
     return False
+
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode.
@@ -83,8 +85,9 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata,
-            render_item=render_item
+            connection=connection,
+            target_metadata=target_metadata,
+            render_item=render_item,
         )
 
         with context.begin_transaction():

@@ -7,16 +7,22 @@ from pointsheet.models import BaseModel, SeriesStatusType
 from pointsheet.models.custom_types import EntityIdType
 
 
-uuid_default = lambda:str(uuid.uuid4())
+def uuid_default():
+    return str(uuid.uuid4())
 
 
 class Series(BaseModel):
-    __tablename__ = 'series'
-    id: Mapped[EntityId] = mapped_column(EntityIdType, primary_key=True, default=uuid_default)
+    __tablename__ = "series"
+    id: Mapped[EntityId] = mapped_column(
+        EntityIdType, primary_key=True, default=uuid_default
+    )
     title: Mapped[str]
     status: Mapped[str] = mapped_column(SeriesStatusType)
 
+
 class Event(BaseModel):
-    __tablename__ = 'events'
-    id: Mapped[EntityId] = mapped_column(EntityIdType, primary_key=True, default=uuid_default)
+    __tablename__ = "events"
+    id: Mapped[EntityId] = mapped_column(
+        EntityIdType, primary_key=True, default=uuid_default
+    )
     title: Mapped[str]

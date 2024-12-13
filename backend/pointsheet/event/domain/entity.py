@@ -4,7 +4,13 @@ from typing import Optional, List
 
 from pydantic import BaseModel
 
-from event.domain.value_objects import  SeriesStatus, EventStatus, ScheduleId, ScheduleType, EntityId
+from event.domain.value_objects import (
+    SeriesStatus,
+    EventStatus,
+    ScheduleId,
+    ScheduleType,
+    EntityId,
+)
 
 
 class StartEndDateMixin:

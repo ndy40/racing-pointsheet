@@ -4,12 +4,11 @@ info:
   description: Sim Racing Point Sheet API
   version: 0.0.1
 servers:
-  - url: 'http://localhost:5000'
+  - url: "http://localhost:5000"
     description: For local host testing of api directly.
-  - url: 'http://api.pointsheet-app.com'
+  - url: "http://api.pointsheet-app.com"
     description: For local testing when running from docker-compose.
 paths:
-
 
 components:
   schemas:
@@ -38,7 +37,7 @@ components:
         events:
           type: array
           items:
-            $ref: '#/components/schemas/Event'
+            $ref: "#/components/schemas/Event"
 
     Event:
       description: An event may optionally belong to a series or be standalone in the case of one-off events.
@@ -80,7 +79,7 @@ components:
           description: The sequence of activities making up the event. Qualification, Practice or race.
           type: array
           items:
-            $ref: '#/components/schemas/Schedule'
+            $ref: "#/components/schemas/Schedule"
 
     Schedule:
       type: object
@@ -116,4 +115,4 @@ components:
           type: object
           additionalProperties:
             type: integer
-            example: {"1": 10, "2": 20}
+            example: { "1": 10, "2": 20 }

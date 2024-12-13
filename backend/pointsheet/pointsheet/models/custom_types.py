@@ -6,8 +6,7 @@ from sqlalchemy.sql.type_api import _T
 from event.domain.value_objects import SeriesStatus, EntityId
 
 
-class BaseCustomTypes(TypeDecorator):
-    ...
+class BaseCustomTypes(TypeDecorator): ...
 
 
 class EntityIdType(BaseCustomTypes):
@@ -19,7 +18,9 @@ class EntityIdType(BaseCustomTypes):
 
         return None
 
-    def process_result_value(self, value: Optional[Any], dialect: Dialect) -> Optional[_T]:
+    def process_result_value(
+        self, value: Optional[Any], dialect: Dialect
+    ) -> Optional[_T]:
         if value:
             return EntityId(value)
 
@@ -31,11 +32,13 @@ class SeriesStatusType(BaseCustomTypes):
 
     def process_bind_param(self, value: Optional[_T], dialect: Dialect) -> Any:
         if value not in SeriesStatus.__members__.values():
-            raise ValueError(f'Invalid value for SeriesStatus: {value}')
+            raise ValueError(f"Invalid value for SeriesStatus: {value}")
         return value
 
-    def process_result_value(self, value: Optional[Any], dialect: Dialect) -> Optional[_T]:
+    def process_result_value(
+        self, value: Optional[Any], dialect: Dialect
+    ) -> Optional[_T]:
         return SeriesStatus(value)
 
     def __repr__(self):
-        return 'SeriesStatusType()'
+        return "SeriesStatusType()"
