@@ -112,6 +112,9 @@ paths:
         - Series
       requestBody:
         $ref: "#/components/schemas/CreateEvent"
+      responses:
+        204:
+          description: Event created for series
 
   /events/{id}:
     delete:
