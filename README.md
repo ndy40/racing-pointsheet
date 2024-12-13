@@ -38,6 +38,6 @@ A simple app for managing sim racing events and keep track of points and scores.
 
 - [ ] Add simple scripts for running routine commands for project.
 - [ ] Add click/typer to make it easy to run commands in the container
-- [ ] Add linter checks
-- [ ] Add pre-commit hooks
+- [x] Add linter checks - using ruff
+- [x] Add pre-commit hooks
 - [ ] Add github workflow
