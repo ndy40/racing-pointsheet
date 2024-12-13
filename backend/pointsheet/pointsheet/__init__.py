@@ -43,7 +43,7 @@ def create_app(test_config=None):
         return "Hello world"
 
     @app.teardown_appcontext
-    def remove_db_session():
+    def remove_db_session(exception):
         Session.remove()
 
     return app
