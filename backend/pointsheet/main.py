@@ -1,4 +1,5 @@
 import os.path
+from importlib import import_module
 
 from alembic import command
 from alembic.config import Config
@@ -45,6 +46,13 @@ def make_migration(msg, autogenerate):
 def run_server(debug):
     app = create_app()
     app.run(host="0.0.0.0", port=5000, debug=debug)
+
+
+@db.command()
+def seed_data():
+    module = import_module("pointsheet.seed_factories")
+    if hasattr(module, "run"):
+        getattr(module, "run")()
 
 
 if __name__ == "__main__":

@@ -8,9 +8,14 @@ _config = Config()
 
 engine = create_engine(_config.DATABASE)
 Session = scoped_session(
-    sessionmaker(autocommit=False, autoflush=False, bind=engine),
+    sessionmaker(engine),
 )
+_session = None
 
 
 def get_session():
-    return Session()
+    global _session
+
+    if not _session:
+        _session = Session()
+    return _session
