@@ -10,6 +10,6 @@ instance_path = os.path.join(Path(__file__).parent.parent, "/instance")
 
 class Config(BaseSettings):
     APP_ENV: Optional[str] = "dev"
-    DATABASE: Optional[str] = f"sqlite://{instance_path}/point_sheets.db.sqlite"
+    DATABASE: Optional[str] = "sqlite://"
 
     model_config = SettingsConfigDict()

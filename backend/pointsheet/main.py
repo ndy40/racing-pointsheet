@@ -12,7 +12,6 @@ from pointsheet import create_app
 
 debug = False
 
-
 if os.path.exists(".env"):
     load_dotenv()
 
