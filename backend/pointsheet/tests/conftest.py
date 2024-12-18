@@ -24,5 +24,4 @@ def app_config(set_env):
 
 @pytest.fixture(scope="session")
 def initialize_db(app_config, set_env):
-    print(app_config.model_dump())
     logger.info("Session started")
