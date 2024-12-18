@@ -32,7 +32,7 @@ class SeriesStatusType(BaseCustomTypes):
 
     def process_bind_param(self, value: Optional[_T], dialect: Dialect) -> Any:
         if value not in SeriesStatus.__members__.values():
-            raise ValueError(f"Invalid value for SeriesStatus: {value}")
+            raise TypeError(f"Invalid value for SeriesStatus: {value}")
         return value
 
     def process_result_value(

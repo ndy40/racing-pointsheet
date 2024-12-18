@@ -1,20 +1,18 @@
-import logging
+import os
 
 import pytest
-from flask.cli import load_dotenv
+from alembic import command
+from alembic.config import Config
+from sqlalchemy_utils import create_database
 
 from pointsheet import config
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-load_dotenv(path=".env.test")
+from pointsheet.db import get_session
 
 
-@pytest.fixture(autouse=True)
-def set_env(monkeypatch):
+@pytest.fixture(scope="session")
+def set_env():
     # setup environment variables here instead of a .env file
-    monkeypatch.setenv("DATABASE", "sqlite:///:memory:")
+    os.environ["DATABASE"] = "sqlite:///instance/test.db.sqlite"
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -23,5 +21,27 @@ def app_config(set_env):
 
 
 @pytest.fixture(scope="session")
-def initialize_db(app_config, set_env):
-    logger.info("Session started")
+def setup_database(set_env, app_config):
+    # Database URL
+    db_url = os.environ["DATABASE"]
+    print("db_url ", db_url)
+    # Create the database
+    create_database(db_url)
+    # Configure Alembic
+    alembic_cfg = Config("alembic.ini")
+    alembic_cfg.set_main_option("sqlalchemy.url", db_url)
+    # Apply migrations
+    command.upgrade(alembic_cfg, "head")
+    # yield
+    # Drop the database
+    # drop_database(db_url)
+
+
+@pytest.fixture(scope="function")
+def db_session():
+    _session = get_session()
+    try:
+        yield _session
+    finally:
+        _session.rollback()
+        _session.close()

@@ -19,6 +19,7 @@ typer = "^0.15.1"
 alembic = "^1.14.0"
 factory-boy = "^3.3.1"
 pytest = "^8.3.4"
+sqlalchemy-utils = "^0.41.2"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
