@@ -1,22 +1,20 @@
-import os.path
+import os
 from importlib import import_module
 
+import click
 from alembic import command
 from alembic.config import Config
 from dotenv import load_dotenv
 
-import click
-
 from pointsheet import create_app
-
 
 debug = False
 
-if os.path.exists(".env"):
-    load_dotenv()
+load_dotenv()
 
 if os.environ.get("APP_ENV", "dev") != "prod":
     debug = True
+
 
 alembic_cfg_path = os.path.join(os.path.dirname(__file__), "alembic.ini")
 alembic_cfg = Config(alembic_cfg_path)

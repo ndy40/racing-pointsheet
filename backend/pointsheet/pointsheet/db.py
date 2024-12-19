@@ -1,17 +1,13 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
 from pointsheet.config import Config
-
 
 _config = Config()
 
 engine = create_engine(_config.DATABASE)
-Session = scoped_session(
-    sessionmaker(
-        engine,
-        autoflush=False,
-    ),
+Session = sessionmaker(
+    engine,
 )
 
 

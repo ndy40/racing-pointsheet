@@ -1,9 +1,9 @@
-from typing import Optional, Any
+from typing import Any, Optional
 
-from sqlalchemy import TypeDecorator, Dialect, CHAR, String
+from sqlalchemy import CHAR, Dialect, String, TypeDecorator
 from sqlalchemy.sql.type_api import _T
 
-from event.domain.value_objects import SeriesStatus, EntityId
+from event.domain.value_objects import EntityId, SeriesStatus
 
 
 class BaseCustomTypes(TypeDecorator): ...
@@ -11,6 +11,7 @@ class BaseCustomTypes(TypeDecorator): ...
 
 class EntityIdType(BaseCustomTypes):
     impl = CHAR
+    cache_ok = True
 
     def process_bind_param(self, value: Optional[_T], dialect: Dialect) -> Any:
         if value:
@@ -31,13 +32,16 @@ class SeriesStatusType(BaseCustomTypes):
     impl = String
 
     def process_bind_param(self, value: Optional[_T], dialect: Dialect) -> Any:
-        if value not in SeriesStatus.__members__.values():
+        if value and value not in SeriesStatus.__members__.values():
             raise TypeError(f"Invalid value for SeriesStatus: {value}")
         return value
 
     def process_result_value(
         self, value: Optional[Any], dialect: Dialect
     ) -> Optional[_T]:
+        if not value:
+            return value
+
         return SeriesStatus(value)
 
     def __repr__(self):
