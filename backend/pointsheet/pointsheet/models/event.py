@@ -5,7 +5,7 @@ from typing import List, Optional
 from sqlalchemy import DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
-from event.domain.value_objects import EntityId
+from modules.event.domain.value_objects import EntityId
 from pointsheet.models import BaseModel, SeriesStatusType
 from pointsheet.models.custom_types import EntityIdType
 
@@ -28,6 +28,9 @@ class Event(BaseModel):
         ),
         nullable=True,
     )
+    starts_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    ends_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    host: Mapped[str] = mapped_column(EntityIdType)
 
 
 class Series(BaseModel):

@@ -13,6 +13,7 @@ pydantic = "2.10.3"
 python-dotenv = "^1.0.1"
 pydantic-settings = "^2.6.1"
 typer = "^0.15.1"
+lato = "^0.11.1"
 
 
 [tool.poetry.group.dev.dependencies]

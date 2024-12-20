@@ -1,7 +1,6 @@
 import uuid
 from enum import Enum
 
-
 EntityId = uuid.UUID
 ScheduleId = int
 

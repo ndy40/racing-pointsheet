@@ -6,8 +6,6 @@ from alembic import command
 from alembic.config import Config
 from dotenv import load_dotenv
 
-from pointsheet import create_app
-
 debug = False
 
 load_dotenv()
@@ -41,8 +39,10 @@ def make_migration(msg, autogenerate):
 @db.command("run-server")
 @click.option("--debug", default=True)
 def run_server(debug):
+    from pointsheet import create_app
+
     app = create_app()
-    app.run(host="0.0.0.0", port=5000, debug=debug)
+    app.run(host="0.0.0.0", port=5000, debug=debug, load_dotenv=True)
 
 
 @db.command()

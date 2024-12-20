@@ -1,9 +1,9 @@
 import factory
 from factory.alchemy import SQLAlchemyModelFactory
 
-from event.domain.value_objects import SeriesStatus
+from modules.event.domain.value_objects import SeriesStatus
 from pointsheet.db import get_session
-from pointsheet.models import Series, Event
+from pointsheet.models import Event, Series
 
 
 class SeriesFactory(SQLAlchemyModelFactory):

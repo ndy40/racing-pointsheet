@@ -3,9 +3,9 @@ from pathlib import Path
 
 from flask import Flask, render_template
 
+from modules import application
+from pointsheet.api.events import event_bp
 from pointsheet.config import Config
-from pointsheet.db import Session
-
 
 root_dir = os.path.join(Path(__file__).parent.parent)
 
@@ -14,7 +14,7 @@ template_directory = os.path.join(root_dir, "templates")
 
 config = Config()
 
-__all__ = ["config"]
+__all__ = ["config", "create_app"]
 
 
 def create_app(test_config=None):
@@ -28,6 +28,7 @@ def create_app(test_config=None):
         SECRET_KEY="dev",
         DATABASE=os.path.join(app.instance_path, "point_sheets.db.sqlite"),
     )
+    app.register_blueprint(event_bp)
 
     try:
         os.makedirs(app.instance_path)
@@ -42,8 +43,6 @@ def create_app(test_config=None):
     def hello():
         return "Hello world"
 
-    @app.teardown_appcontext
-    def remove_db_session(exception):
-        Session.remove()
+    app.application = application
 
     return app

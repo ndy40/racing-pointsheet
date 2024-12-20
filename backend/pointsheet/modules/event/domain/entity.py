@@ -1,15 +1,14 @@
-import uuid
 from datetime import datetime
-from typing import Optional, List
+from typing import List, Optional
 
 from pydantic import BaseModel
 
-from event.domain.value_objects import (
-    SeriesStatus,
+from modules.event.domain.value_objects import (
+    EntityId,
     EventStatus,
     ScheduleId,
     ScheduleType,
-    EntityId,
+    SeriesStatus,
 )
 
 
@@ -28,10 +27,12 @@ class Schedule(BaseModel):
 class Event(StartEndDateMixin, BaseModel):
     id: Optional[EntityId] = None
     title: str
-    host: uuid.UUID
+    host: EntityId
     status: Optional[EventStatus] = EventStatus.open
     rules: Optional[str] = None
     schedule: Optional[List[Schedule]] = None
+    starts_at: Optional[datetime] = None
+    ends_at: Optional[datetime] = None
 
 
 class Series(StartEndDateMixin, BaseModel):

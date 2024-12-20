@@ -1,6 +1,6 @@
 services:
   backend:
-    restart: unless-stopped
+    restart: on-failure
     build:
       context: backend
     container_name: pointsheet-api

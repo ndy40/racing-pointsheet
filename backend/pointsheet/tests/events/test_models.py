@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from event.domain.value_objects import SeriesStatus
+from modules.event.domain.value_objects import EntityId, SeriesStatus
 from pointsheet.models import Event, Series
 
 
@@ -20,7 +20,7 @@ def test_create_series_without_associated_event(db_session):
 
 
 def test_one_off_event_without_series_association(db_session):
-    event = Event(title="Event 1")
+    event = Event(title="Event 1", host=EntityId(int=1))
     db_session.add(event)
     db_session.commit()
     assert event.id is not None
@@ -28,7 +28,7 @@ def test_one_off_event_without_series_association(db_session):
 
 def test_create_event_associated_with_series(db_session):
     series = Series(title="New series", status=SeriesStatus.started)
-    event = Event(title="event 1")
+    event = Event(title="event 1", host=EntityId(int=1))
     series.events.append(event)
     db_session.add(series)
     db_session.commit()
