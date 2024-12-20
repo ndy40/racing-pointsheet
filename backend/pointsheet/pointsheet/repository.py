@@ -2,7 +2,6 @@ import abc
 from abc import abstractmethod
 from typing import Any, Generic, TypeVar
 
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from pointsheet.models import BaseModel
@@ -20,7 +19,7 @@ class DataMapper(Generic[DbModel, T], abc.ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def from_model(self, instance: T) -> DbModel:
+    def to_model(self, instance: T) -> DbModel:
         raise NotImplementedError
 
 
@@ -35,14 +34,8 @@ class AbstractRepository(Generic[DbModel, T], abc.ABC):
         entity = self._map_to_entity(model)
         self._session.add(entity)
 
-    def find_by_id(self, id: Any) -> T | None:
-        stmt = select(DbModel).where(DbModel.id == id)
-        result = self._session.execute(stmt).scalar_one_or_none()
-
-        if result:
-            return self._map_from_entity(result)
-
-        return None
+    @abstractmethod
+    def find_by_id(self, id: Any) -> T | None: ...
 
     @property
     def mapper(self):
@@ -50,8 +43,8 @@ class AbstractRepository(Generic[DbModel, T], abc.ABC):
 
     def _map_to_entity(self, model: T) -> DbModel:
         assert self.mapper
-        return self.mapper.from_model(model)
+        return self.mapper.to_model(model)
 
-    def _map_from_entity(self, instance: DbModel) -> T:
+    def _map_to_model(self, instance: DbModel) -> T:
         assert self.mapper
-        return self.mapper.from_model(instance)
+        return self.mapper.to_model(instance)

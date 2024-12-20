@@ -1,3 +1,5 @@
+import uuid
+
 import factory
 from factory.alchemy import SQLAlchemyModelFactory
 
@@ -21,3 +23,4 @@ class EventFactory(SQLAlchemyModelFactory):
         sqlalchemy_session_factory = get_session
 
     title = factory.Sequence(lambda n: "Event %d" % n)
+    host = uuid.uuid4()

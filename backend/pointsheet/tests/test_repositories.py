@@ -1,6 +1,8 @@
 from modules.event.domain.entity import Event
 from modules.event.domain.value_objects import EntityId, EventStatus
 from modules.event.repository import EventRepository
+from pointsheet.factories.event import EventFactory
+from pointsheet.models.event import Event as EventModel
 
 
 def test_saving_of_event_using_repository(db_session):
@@ -8,3 +10,16 @@ def test_saving_of_event_using_repository(db_session):
     event_repo = EventRepository(db_session)
     event_repo.add(event)
     db_session.commit()
+
+
+def test_fetching_of_model_using_repository(db_session):
+    EventFactory._meta.sqlalchemy_session_factory = lambda: db_session
+
+    user_factory: EventModel = EventFactory()
+    db_session.commit()
+
+    id = user_factory.id
+
+    inserted_model = EventRepository(db_session).find_by_id(id)
+
+    assert id == inserted_model.id
