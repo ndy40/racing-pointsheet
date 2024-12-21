@@ -14,6 +14,7 @@ python-dotenv = "^1.0.1"
 pydantic-settings = "^2.6.1"
 typer = "^0.15.1"
 lato = "^0.11.1"
+lagom = "^2.7.5"
 
 
 [tool.poetry.group.dev.dependencies]

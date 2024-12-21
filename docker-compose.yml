@@ -3,7 +3,6 @@ services:
     restart: on-failure
     build:
       context: backend
-    container_name: pointsheet-api
     ports:
       - "5000"
     volumes:
