@@ -3,8 +3,8 @@ from pathlib import Path
 
 from flask import Flask, render_template
 
+from api.events import event_bp
 from modules import application
-from pointsheet.api.events import event_bp
 from pointsheet.config import Config
 
 root_dir = os.path.join(Path(__file__).parent.parent)

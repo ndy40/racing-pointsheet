@@ -7,6 +7,8 @@ services:
       - "5000"
     volumes:
       - ./backend/pointsheet:/app
+    env_file:
+      - backend/pointsheet/.env
 
   frontend:
     restart: on-failure

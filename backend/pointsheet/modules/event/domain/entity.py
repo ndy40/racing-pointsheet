@@ -35,8 +35,10 @@ class Event(StartEndDateMixin, BaseModel):
     ends_at: Optional[datetime] = None
 
 
-class Series(StartEndDateMixin, BaseModel):
+class Series(BaseModel):
     id: Optional[EntityId] = None
     title: str
     status: Optional[SeriesStatus] = None
     events: Optional[List[Event]] = None
+    starts_at: Optional[datetime] = None
+    ends_at: Optional[datetime] = None

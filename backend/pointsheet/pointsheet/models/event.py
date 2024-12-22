@@ -52,6 +52,7 @@ class Series(BaseModel):
 
     @validates("starts_at")
     def validate_starts_at(self, key, value):
-        if value and value > datetime.now():
-            return value
-        raise ValueError("start date much be in the future. ")
+        if value:
+            if value > datetime.now():
+                return value
+            raise ValueError("start date much be in the future. ")

@@ -5,9 +5,9 @@ info:
   version: 0.0.1
 servers:
   - url: "http://localhost:5000"
-    description: For local host testing of api directly.
+    description: localhost
   - url: "http://api.pointsheet-app.com"
-    description: For local testing when running from docker-compose.
+    description: local domain
 paths:
   /series:
     get:
@@ -45,12 +45,8 @@ paths:
             schema:
               $ref: "#/components/schemas/CreateSeriesRequest"
       responses:
-        200:
+        204:
           description: Created Series
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Series"
         400:
           description: Bad request
 
@@ -118,6 +114,23 @@ paths:
       responses:
         204:
           description: Event created for series
+
+  /events:
+    get:
+      operationId: getAllEvents
+      description: Fetch all events not closed.
+      tags:
+        - Events
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+        401:
+          description: Forbidden
 
   /events/{id}:
     delete:
@@ -191,13 +204,27 @@ components:
       type: object
       required:
         - title
+        - status
       properties:
         title:
           type: string
+        description:
+          type: string
+        status:
+          $ref: "#/components/schemas/SeriesStatus"
+          example: started
         starts_at:
           type: datetime
+          example: 2025-01-01
         ends_at:
           type: datetime
+          example: 2025-01-01
+
+    SeriesStatus:
+      type: string
+      enum:
+        - started
+        - closed
 
     Event:
       description: An event may optionally belong to a series or be standalone in the case of one-off events.

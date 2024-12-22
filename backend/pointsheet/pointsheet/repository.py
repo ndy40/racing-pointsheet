@@ -32,8 +32,8 @@ class AbstractRepository(Generic[DbModel, T], abc.ABC):
 
     def add(self, model: T) -> None:
         entity: DbModel = self._map_to_entity(model)
-        print("entity ", entity.title)
         self._session.add(entity)
+        self._session.commit()
 
     @abstractmethod
     def all(self) -> List[T]: ...
