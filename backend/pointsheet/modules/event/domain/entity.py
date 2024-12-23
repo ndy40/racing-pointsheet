@@ -42,3 +42,17 @@ class Series(BaseModel):
     events: Optional[List[Event]] = None
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
+
+    def add_event(self, event: Event):
+        if not self.events:
+            self.events = []
+        # check if event is already added.
+        try:
+            item: Event = next(filter(lambda x: x.id == event.id, self.events))
+            updated_item = item.model_copy(update=event.model_dump(exclude_none=True))
+            self.events.remove(item)
+            event = updated_item
+        except StopIteration:
+            ...
+        finally:
+            self.events.append(event)

@@ -15,4 +15,4 @@ class GetSeriesById(Query):
 def get_series_by_id(cmd: GetSeriesById):
     series_repo: SeriesRepository = container[SeriesRepository]
     series = series_repo.find_by_id(id=cmd.id)
-    return series
+    return series or None

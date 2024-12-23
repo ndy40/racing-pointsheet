@@ -8,6 +8,7 @@ ScheduleId = int
 class SeriesStatus(str, Enum):
     started = "started"
     closed = "closed"
+    not_started = "not_started"
 
 
 class EventStatus(str, Enum):

@@ -1,56 +1,19 @@
 from typing import Any, List
 
+from lato import Query
 from sqlalchemy import select
 
 from pointsheet.models import Event, Series
-from pointsheet.repository import AbstractRepository, DataMapper
+from pointsheet.repository import AbstractRepository
 
+from .data_mappers import EventModelMapper, SeriesModelMapper
 from .domain.entity import Event as EventModel
 from .domain.entity import Series as SeriesModel
-
-
-class _EventModelMapper(DataMapper[Event, EventModel]):
-    def to_db_entity(self, instance: EventModel) -> Event:
-        return Event(
-            id=instance.id,
-            title=instance.title,
-            starts_at=instance.starts_at,
-            ends_at=instance.ends_at,
-            host=instance.host,
-        )
-
-    def to_domain_model(self, instance: Event) -> EventModel:
-        return EventModel(
-            title=instance.title,
-            id=instance.id,
-            host=instance.host,
-            starts_at=instance.starts_at,
-            ends_at=instance.ends_at,
-        )
-
-
-class _SeriesModelMapper(DataMapper[Series, SeriesModel]):
-    def to_db_entity(self, instance: SeriesModel) -> Series:
-        return Series(
-            id=instance.id,
-            title=instance.title,
-            starts_at=instance.starts_at,
-            ends_at=instance.ends_at,
-            status=instance.status,
-        )
-
-    def to_domain_model(self, instance: Series) -> SeriesModel:
-        return SeriesModel(
-            id=instance.id,
-            title=instance.title,
-            ends_at=instance.ends_at,
-            starts_at=instance.starts_at,
-            status=instance.status,
-        )
+from .domain.value_objects import EntityId
 
 
 class EventRepository(AbstractRepository[Event, EventModel]):
-    mapper_class = _EventModelMapper
+    mapper_class = EventModelMapper
     model_class = EventModel
 
     def find_by_id(self, id: Any) -> EventModel | None:
@@ -65,19 +28,45 @@ class EventRepository(AbstractRepository[Event, EventModel]):
         result = self._session.execute(stmt).scalars()
         return [self._map_to_model(item) for item in result]
 
+    def delete(self, id: EntityId) -> None:
+        entity_to_delete = self._session.get(Event.id, id)
+        self._session.delete(entity_to_delete)
+        self._session.commit()
+
 
 class SeriesRepository(AbstractRepository[Series, SeriesModel]):
-    mapper_class = _SeriesModelMapper
+    mapper_class = SeriesModelMapper
     model_class = SeriesModel
 
-    def all(self) -> List[SeriesModel]:
+    def all(self, criteria: Query) -> List[SeriesModel]:
+        """
+
+        :param criteria: Query -
+            Supported filtering parameters
+            fields:
+            status: Open, Closed, None, using == check. None filters everything.
+        :return: List[SeriesModel]
+        """
         stmt = select(Series).order_by(Series.id)
+
+        if value := getattr(criteria, "status"):
+            stmt = stmt.where(Series.status == value.value)
+
         result = self._session.execute(stmt).scalars()
         return [self._map_to_model(item) for item in result]
 
     def find_by_id(self, id: Any) -> SeriesModel | None:
-        stmt = select(Series).where(Series.id == id)
-        result = self._session.execute(stmt).scalar()
+        result = self._session.get(Series, id)
 
         if result:
             return self._map_to_model(result)
+
+    def delete(self, id: EntityId) -> None:
+        entity_to_delete = self._session.get(Series, id)
+        self._session.delete(entity_to_delete)
+        self._session.commit()
+
+    def update(self, entity: SeriesModel) -> None:
+        _entity = self._map_to_entity(entity)
+        self._session.merge(_entity)
+        self._session.commit()

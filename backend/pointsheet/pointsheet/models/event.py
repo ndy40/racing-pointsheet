@@ -5,9 +5,9 @@ from typing import List, Optional
 from sqlalchemy import DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
-from modules.event.domain.value_objects import EntityId
+from modules.event.domain.value_objects import EntityId, SeriesStatus
 from pointsheet.models import BaseModel, SeriesStatusType
-from pointsheet.models.custom_types import EntityIdType
+from pointsheet.models.custom_types import EntityIdType, EventStatusType
 
 
 def uuid_default():
@@ -31,6 +31,7 @@ class Event(BaseModel):
     starts_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     ends_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     host: Mapped[str] = mapped_column(EntityIdType)
+    status: Mapped[Optional[str]] = mapped_column(EventStatusType)
 
 
 class Series(BaseModel):
@@ -39,7 +40,9 @@ class Series(BaseModel):
         EntityIdType, primary_key=True, default=uuid_default
     )
     title: Mapped[str]
-    status: Mapped[Optional[str]] = mapped_column(SeriesStatusType, nullable=True)
+    status: Mapped[Optional[str]] = mapped_column(
+        SeriesStatusType, nullable=True, default=SeriesStatus.not_started
+    )
     events: Mapped[List[Event]] = relationship(cascade="all, delete")
     starts_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     ends_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)

@@ -4,6 +4,7 @@ from typing import Any, Generic, List, TypeVar
 
 from sqlalchemy.orm import Session
 
+from modules.event.domain.value_objects import EntityId
 from pointsheet.models import BaseModel
 
 DbModel = TypeVar("S", bound=BaseModel)
@@ -34,6 +35,9 @@ class AbstractRepository(Generic[DbModel, T], abc.ABC):
         entity: DbModel = self._map_to_entity(model)
         self._session.add(entity)
         self._session.commit()
+
+    @abstractmethod
+    def delete(self, id: Any or EntityId) -> None: ...
 
     @abstractmethod
     def all(self) -> List[T]: ...

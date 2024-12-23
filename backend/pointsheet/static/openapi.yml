@@ -23,6 +23,7 @@ paths:
             enum:
               - started
               - closed
+              - not_started
       responses:
         200:
           description: List of series
@@ -50,10 +51,15 @@ paths:
         400:
           description: Bad request
 
-  /series/{id}:
+  /series/{series_id}:
     get:
       description: Get series
       operationId: fetchSeriesById
+      parameters:
+        - in: path
+          name: series_id
+          required: true
+          type: uuid
       tags:
         - Series
       responses:
@@ -70,13 +76,18 @@ paths:
     delete:
       description: Delete series
       operationId: deleteSeries
+      parameters:
+        - in: path
+          name: series_id
+          type: uuid
+          required: true
       tags:
         - Series
       responses:
         204:
           description: Delete series
 
-  /series/{id}/events:
+  /series/{series_id}/events:
     get:
       description: Fetch events for series.
       operationId: fetchEventsForSeries
@@ -84,7 +95,7 @@ paths:
         - Series
       parameters:
         - in: path
-          name: id
+          name: series_id
           schema:
             type: string
           required: true
@@ -104,16 +115,44 @@ paths:
     post:
       description: Create event for series
       operationId: createEventForSeries
+      parameters:
+        - in: path
+          name: series_id
+          required: true
+          type: uuid
       tags:
         - Series
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateEvent"
+              type: object
+              properties:
+                event:
+                  $ref: "#/components/schemas/CreateEvent"
       responses:
         204:
           description: Event created for series
+    put:
+      operationId: updateSeriesEvent
+      tags:
+        - Series
+      parameters:
+        - in: path
+          name: series_id
+          required: false
+          schema:
+            type: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEvent"
+      responses:
+        204:
+          description: Event updated
+        404:
+          description: Not found
 
   /events:
     get:
@@ -123,6 +162,7 @@ paths:
         - Events
       responses:
         200:
+          description: Event
           content:
             application/json:
               schema:
@@ -276,6 +316,34 @@ components:
         - host
         - status
       properties:
+        title:
+          type: string
+        starts_at:
+          type: datetime
+        ends_at:
+          type: datetime
+        host:
+          type: string
+        status:
+          type: string
+          enum:
+            - open
+            - closed
+            - in_progress
+        series:
+          type: string
+        rules:
+          type: string
+    UpdateEvent:
+      type: object
+      required:
+        - id
+        - title
+        - status
+        - host
+      properties:
+        id:
+          type: uuid
         title:
           type: string
         starts_at:

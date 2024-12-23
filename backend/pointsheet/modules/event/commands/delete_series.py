@@ -1,0 +1,28 @@
+from lato import Command, TransactionContext
+
+from modules import event_module
+from modules.event.dependencies import container
+from modules.event.domain.value_objects import EntityId
+from modules.event.events import SeriesDeleted
+from modules.event.exceptions import SeriesNotFoundException
+from modules.event.repository import SeriesRepository
+
+
+class DeleteSeries(Command):
+    id: EntityId
+
+
+@event_module.handler(DeleteSeries)
+def delete_series(cmd: DeleteSeries, ctx: TransactionContext):
+    # Add business logic rules check
+    repo = container[SeriesRepository]
+    series = repo.find_by_id(id=cmd.id)
+
+    if not series:
+        raise SeriesNotFoundException()
+
+    # do some business rules checks here
+    repo.delete(series.id)
+
+    # publish event here
+    ctx.publish(SeriesDeleted(id=cmd.id))
