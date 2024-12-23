@@ -6,6 +6,7 @@ from flask import Blueprint, Response, current_app, request
 from modules.event.commands.create_series import CreateSeries
 from modules.event.commands.create_series_event import CreateSeriesEvent
 from modules.event.commands.delete_series import DeleteSeries
+from modules.event.commands.delete_series_event import DeleteSeriesEvent
 from modules.event.commands.update_series_event import (
     UpdateEventModel,
     UpdateSeriesEvent,
@@ -52,16 +53,24 @@ def fetch_series_by_id(series_id):
 
     return Response(status=HTTPStatus.NOT_FOUND)
 
-
-@event_bp.route("/series/<uuid:series_id>/events", methods=["POST"])
-def create_event_for_series(series_id: EntityId):
-    cmd = CreateSeriesEvent(series_id=series_id, event=Event(**request.json["event"]))
-    current_app.application.execute(cmd)
-    return Response(status=HTTPStatus.NO_CONTENT)
+    @event_bp.route("/series/<uuid:series_id>/events", methods=["POST"])
+    def create_event_for_series(series_id: EntityId):
+        cmd = CreateSeriesEvent(
+            series_id=series_id, event=Event(**request.json["event"])
+        )
+        current_app.application.execute(cmd)
+        return Response(status=HTTPStatus.NO_CONTENT)
 
 
 @event_bp.route("/series/<uuid:series_id>/events", methods=["PUT"])
 def update_event_for_series(series_id: EntityId):
     cmd = UpdateSeriesEvent(series_id=series_id, event=UpdateEventModel(**request.json))
+    current_app.application.execute(cmd)
+    return Response(status=HTTPStatus.NO_CONTENT)
+
+
+@event_bp.route("/series/<uuid:series_id>/events/<uuid:event_id>/")
+def delete_series_event(series_id, event_id):
+    cmd = DeleteSeriesEvent(series_id=series_id, event_id=event_id)
     current_app.application.execute(cmd)
     return Response(status=HTTPStatus.NO_CONTENT)

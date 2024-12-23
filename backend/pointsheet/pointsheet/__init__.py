@@ -1,11 +1,13 @@
+import json
 import os
 from pathlib import Path
 
-from flask import Flask, render_template
+from flask import Flask, render_template, Response
 
 from api.events import event_bp
 from modules import application
 from pointsheet.config import Config
+from pointsheet.exceptions import PointSheetException
 
 root_dir = os.path.join(Path(__file__).parent.parent)
 
@@ -39,9 +41,18 @@ def create_app(test_config=None):
     def index():
         return render_template("index.html")
 
-    @app.route("/hello")
-    def hello():
-        return "Hello world"
+    @app.errorhandler(PointSheetException)
+    def error_handler(e):
+        resp = {
+            "code": e.code if hasattr(e, "code") else 400,
+            "message": e.message if hasattr(e, "message") else str(e),
+        }
+
+        return Response(
+            content_type="application/json",
+            status=resp["code"],
+            response=json.dumps(resp),
+        )
 
     app.application = application
 

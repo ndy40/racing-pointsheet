@@ -56,3 +56,10 @@ class Series(BaseModel):
             ...
         finally:
             self.events.append(event)
+
+    def remove_event(self, event_id: EntityId):
+        try:
+            event: Event = next(filter(lambda x: x.id == event_id, self.events))
+            self.events.remove(event)
+        except StopIteration:
+            ...

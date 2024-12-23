@@ -46,8 +46,12 @@ paths:
             schema:
               $ref: "#/components/schemas/CreateSeriesRequest"
       responses:
-        204:
+        200:
           description: Created Series
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Series"
         400:
           description: Bad request
 
@@ -88,30 +92,6 @@ paths:
           description: Delete series
 
   /series/{series_id}/events:
-    get:
-      description: Fetch events for series.
-      operationId: fetchEventsForSeries
-      tags:
-        - Series
-      parameters:
-        - in: path
-          name: series_id
-          schema:
-            type: string
-          required: true
-      responses:
-        200:
-          description: List of events for series
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Event"
-        401:
-          description: Forbidden
-        404:
-          description: Not found
     post:
       description: Create event for series
       operationId: createEventForSeries
@@ -153,7 +133,26 @@ paths:
           description: Event updated
         404:
           description: Not found
-
+  /series/{series_id}/events/{event_id}:
+    delete:
+      description: Remove event from series
+      operationId: removeEventFromSeries
+      parameters:
+        - in: path
+          name: series_id
+          schema:
+            type: uuid
+          required: true
+        - in: path
+          name: event_id
+          schema:
+            type: uuid
+          required: true
+      responses:
+        204:
+          description: Event removed
+        404:
+          description: Event not found
   /events:
     get:
       operationId: getAllEvents
@@ -330,8 +329,6 @@ components:
             - open
             - closed
             - in_progress
-        series:
-          type: string
         rules:
           type: string
     UpdateEvent:

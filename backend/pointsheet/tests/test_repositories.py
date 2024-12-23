@@ -1,16 +1,7 @@
-import pytest
-
 from modules.event.domain.entity import Event
 from modules.event.domain.value_objects import EntityId, EventStatus
 from modules.event.repository import EventRepository
-from pointsheet.factories.event import EventFactory
 from pointsheet.models.event import Event as EventModel
-
-
-@pytest.fixture
-def event_factory(db_session) -> EventFactory:
-    EventFactory._meta.sqlalchemy_session_factory = lambda: db_session
-    return EventFactory
 
 
 def test_saving_of_event_using_repository(db_session):

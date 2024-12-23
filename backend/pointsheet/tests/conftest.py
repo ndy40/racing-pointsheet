@@ -2,7 +2,9 @@ import pytest
 import sqlalchemy.event
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+from pointsheet import create_app
 from pointsheet.db import engine
+from pointsheet.factories.event import EventFactory, SeriesFactory
 from pointsheet.models import BaseModel
 
 
@@ -36,3 +38,27 @@ def db_session(setup_database):
         session.close()
         transaction.rollback()
         connection.close()
+
+
+@pytest.fixture()
+def app(db_session):
+    app = create_app()
+
+    yield app
+
+
+@pytest.fixture()
+def client(app):
+    return app.test_client()
+
+
+@pytest.fixture
+def event_factory(db_session) -> EventFactory:
+    EventFactory._meta.sqlalchemy_session_factory = lambda: db_session
+    return EventFactory
+
+
+@pytest.fixture
+def series_factory(db_session) -> SeriesFactory:
+    SeriesFactory._meta.sqlalchemy_session_factory = lambda: db_session
+    return SeriesFactory
