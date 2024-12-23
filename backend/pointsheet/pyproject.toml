@@ -23,6 +23,7 @@ factory-boy = "^3.3.1"
 pytest = "^8.3.4"
 sqlalchemy-utils = "^0.41.2"
 pytest-env = "^1.1.5"
+jsonschema = "^4.23.0"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
