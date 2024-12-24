@@ -4,7 +4,7 @@ from http import HTTPStatus
 from flask import Blueprint, Response, current_app, request
 
 from modules.event.commands.create_series import CreateSeries
-from modules.event.commands.create_series_event import CreateSeriesEvent
+from modules.event.commands.create_series_event import CreateEventForSeries
 from modules.event.commands.delete_series import DeleteSeries
 from modules.event.commands.delete_series_event import DeleteSeriesEvent
 from modules.event.commands.update_series_event import (
@@ -17,7 +17,7 @@ from modules.event.queries.get_all_series import GetAllSeries
 from modules.event.queries.get_series_by_id import GetSeriesById
 
 logging.basicConfig()
-logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+# logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
 event_bp = Blueprint("event", __name__)
 
@@ -32,6 +32,7 @@ def fetch_all_series():
 @event_bp.route("/series", methods=["POST"])
 def create_series():
     cmd = CreateSeries(**request.json)
+    print(cmd)
     current_app.application.execute(cmd)
     series: Series = current_app.application.execute(GetSeriesById(id=cmd.id))
     return series.model_dump()
@@ -55,11 +56,18 @@ def fetch_series_by_id(series_id):
 
     @event_bp.route("/series/<uuid:series_id>/events", methods=["POST"])
     def create_event_for_series(series_id: EntityId):
-        cmd = CreateSeriesEvent(
+        cmd = CreateEventForSeries(
             series_id=series_id, event=Event(**request.json["event"])
         )
         current_app.application.execute(cmd)
         return Response(status=HTTPStatus.NO_CONTENT)
+
+
+@event_bp.route("/series/<uuid:series_id>/events", methods=["POST"])
+def create_event_for_series(series_id):
+    cmd = CreateEventForSeries(series_id=series_id, event=Event(**request.json))
+    current_app.application.execute(cmd)
+    return Response(status=HTTPStatus.NO_CONTENT)
 
 
 @event_bp.route("/series/<uuid:series_id>/events", methods=["PUT"])
@@ -69,7 +77,7 @@ def update_event_for_series(series_id: EntityId):
     return Response(status=HTTPStatus.NO_CONTENT)
 
 
-@event_bp.route("/series/<uuid:series_id>/events/<uuid:event_id>/")
+@event_bp.route("/series/<uuid:series_id>/events/<uuid:event_id>/", methods=["DELETE"])
 def delete_series_event(series_id, event_id):
     cmd = DeleteSeriesEvent(series_id=series_id, event_id=event_id)
     current_app.application.execute(cmd)

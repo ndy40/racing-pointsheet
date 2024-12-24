@@ -5,6 +5,8 @@ from pathlib import Path
 from flask import Flask, render_template, Response
 
 from api.events import event_bp
+from pydantic import ValidationError
+
 from modules import application
 from pointsheet.config import Config
 from pointsheet.exceptions import PointSheetException
@@ -42,12 +44,26 @@ def create_app(test_config=None):
         return render_template("index.html")
 
     @app.errorhandler(PointSheetException)
-    def error_handler(e):
+    def app_error_handler(e):
         resp = {
             "code": e.code if hasattr(e, "code") else 400,
             "message": e.message if hasattr(e, "message") else str(e),
         }
 
+        return Response(
+            content_type="application/json",
+            status=resp["code"],
+            response=json.dumps(resp),
+        )
+
+    @app.errorhandler(ValidationError)
+    def app_validation_error(e: ValidationError):
+        resp = {
+            "code": 400,
+            "message": e.errors(
+                include_input=False, include_url=False, include_context=False
+            ),
+        }
         return Response(
             content_type="application/json",
             status=resp["code"],
