@@ -63,9 +63,8 @@ paths:
         - in: path
           name: series_id
           required: true
-          type: uuid
-          content:
-
+          schema:
+            type: string
       tags:
         - Series
       responses:
@@ -85,7 +84,8 @@ paths:
       parameters:
         - in: path
           name: series_id
-          type: uuid
+          schema:
+            type: string
           required: true
       tags:
         - Series
@@ -97,6 +97,8 @@ paths:
     put:
       operationId: updateSeriesStatus
       description: Update the status of Series.
+      tags:
+        - Series
       parameters:
         - in: path
           name: series_id
@@ -111,10 +113,10 @@ paths:
               properties:
                 status:
                   type: string
-                  description: Series status to change to.
                   enum:
                     - started
                     - closed
+                required: true
       responses:
         204:
           description: Status updated
@@ -153,9 +155,9 @@ paths:
       parameters:
         - in: path
           name: series_id
-          required: false
           schema:
-            type: uuid
+            type: string
+          required: true
       requestBody:
         content:
           application/json:
@@ -170,6 +172,8 @@ paths:
     delete:
       description: Remove event from series
       operationId: removeEventFromSeries
+      tags:
+        - Series
       parameters:
         - in: path
           name: series_id
@@ -204,10 +208,16 @@ paths:
         401:
           description: Forbidden
 
-  /events/{id}:
+  /events/{id}/:
     delete:
       description: Delete event
       operationId: deleteEventById
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
       tags:
         - Events
       responses:
@@ -216,6 +226,12 @@ paths:
     get:
       description: Get event
       operationId: getEventById
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
       tags:
         - Events
       responses:
