@@ -1,5 +1,6 @@
 from modules.event.domain.entity import Event
-from modules.event.domain.value_objects import EntityId, EventStatus
+from modules.event.domain.value_objects import EventStatus
+from pointsheet.domain import EntityId
 from modules.event.repository import EventRepository
 from pointsheet.models.event import Event as EventModel
 

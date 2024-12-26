@@ -3,7 +3,7 @@ import logging
 from lato import Event
 
 from modules import event_module
-from modules.event.domain.value_objects import EntityId
+from pointsheet.domain import EntityId
 
 _logger = logging.getLogger(__package__)
 

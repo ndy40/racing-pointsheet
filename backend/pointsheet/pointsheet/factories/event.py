@@ -1,6 +1,8 @@
 import uuid
+from datetime import datetime, timedelta
 
 import factory
+from factory import LazyFunction
 from factory.alchemy import SQLAlchemyModelFactory
 
 from modules.event.domain.value_objects import SeriesStatus
@@ -16,6 +18,8 @@ class EventFactory(SQLAlchemyModelFactory):
     title = factory.Sequence(lambda n: "Event %d" % n)
     host = uuid.uuid4()
     status = None
+    starts_at = None
+    ends_at = None
 
 
 class SeriesFactory(SQLAlchemyModelFactory):
@@ -25,4 +29,6 @@ class SeriesFactory(SQLAlchemyModelFactory):
 
     title = factory.Sequence(lambda n: "Series %d" % n)
     status = SeriesStatus.started.value
+    starts_at = LazyFunction(lambda: datetime.now() + timedelta(days=1))
+    ends_at = LazyFunction(lambda: datetime.now() + timedelta(days=7))
     events = []

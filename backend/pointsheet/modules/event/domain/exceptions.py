@@ -1,4 +1,4 @@
-from pointsheet.exceptions import PointSheetException
+from pointsheet.domain.exceptions import PointSheetException
 
 
 class SeriesNotFoundException(PointSheetException):
@@ -8,3 +8,7 @@ class SeriesNotFoundException(PointSheetException):
 
 class EventAlreadyExists(PointSheetException):
     message = "Event already exists"
+
+
+class InvalidEventDateForSeries(PointSheetException):
+    message = "Event date not within series start and end date range"

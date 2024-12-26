@@ -2,9 +2,9 @@ from lato import Command, TransactionContext
 
 from modules import event_module
 from modules.event.dependencies import container
-from modules.event.domain.value_objects import EntityId
+from pointsheet.domain import EntityId
 from modules.event.events import SeriesUpdated
-from modules.event.exceptions import SeriesNotFoundException
+from modules.event.domain.exceptions import SeriesNotFoundException
 from modules.event.repository import SeriesRepository
 
 

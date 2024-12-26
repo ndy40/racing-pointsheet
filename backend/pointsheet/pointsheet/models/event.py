@@ -5,7 +5,8 @@ from typing import List, Optional
 from sqlalchemy import DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
-from modules.event.domain.value_objects import EntityId, SeriesStatus
+from modules.event.domain.value_objects import SeriesStatus
+from pointsheet.domain.entity import EntityId
 from pointsheet.models import BaseModel, SeriesStatusType
 from pointsheet.models.custom_types import EntityIdType, EventStatusType
 

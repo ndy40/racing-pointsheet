@@ -9,7 +9,7 @@ from pointsheet.repository import AbstractRepository
 from .data_mappers import EventModelMapper, SeriesModelMapper
 from .domain.entity import Event as EventModel
 from .domain.entity import Series as SeriesModel
-from .domain.value_objects import EntityId
+from pointsheet.domain import EntityId
 
 
 class EventRepository(AbstractRepository[Event, EventModel]):

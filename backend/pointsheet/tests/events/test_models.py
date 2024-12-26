@@ -2,7 +2,8 @@ import datetime
 
 import pytest
 
-from modules.event.domain.value_objects import EntityId, SeriesStatus
+from modules.event.domain.value_objects import SeriesStatus
+from pointsheet.domain import EntityId
 from pointsheet.models import Event, Series
 
 

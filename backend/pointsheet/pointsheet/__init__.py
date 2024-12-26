@@ -4,12 +4,12 @@ from pathlib import Path
 
 from flask import Flask, render_template, Response
 
-from api.events import event_bp
 from pydantic import ValidationError
 
+from api.events import event_bp
 from modules import application
 from pointsheet.config import Config
-from pointsheet.exceptions import PointSheetException
+from pointsheet.domain.exceptions import PointSheetException
 
 root_dir = os.path.join(Path(__file__).parent.parent)
 

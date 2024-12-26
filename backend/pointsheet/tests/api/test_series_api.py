@@ -71,7 +71,7 @@ def test_update_event_in_series(client, series_factory, db_session, event_factor
     resp = client.put(f"/series/{series.id}/events", json=payload)
     series: Series = repo.find_by_id(series.id)
 
-    assert resp.status_code == HTTPStatus.NO_CONTENT
+    assert resp.status_code == HTTPStatus.NO_CONTENT, resp.json
     assert series.events[0].status == EventStatus.closed
 
 
