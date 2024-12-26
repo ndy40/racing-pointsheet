@@ -64,6 +64,8 @@ paths:
           name: series_id
           required: true
           type: uuid
+          content:
+
       tags:
         - Series
       responses:
@@ -106,11 +108,10 @@ paths:
           application/json:
             schema:
               type: object
-              required:
-                - status
               properties:
                 status:
                   type: string
+                  description: Series status to change to.
                   enum:
                     - started
                     - closed
