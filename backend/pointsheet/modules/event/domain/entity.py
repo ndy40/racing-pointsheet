@@ -3,7 +3,10 @@ from typing import List, Optional, Self
 
 from pydantic import BaseModel, model_validator
 
-from modules.event.domain.exceptions import InvalidEventDateForSeries
+from modules.event.domain.exceptions import (
+    InvalidEventDateForSeries,
+    SeriesAlreadyClosed,
+)
 from modules.event.domain.value_objects import (
     EventStatus,
     ScheduleId,
@@ -51,7 +54,7 @@ class Event(AggregateRoot):
 
 class Series(AggregateRoot):
     title: str
-    status: Optional[SeriesStatus] = None
+    status: Optional[SeriesStatus] = SeriesStatus.not_started
     events: Optional[List[Event]] = None
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
@@ -78,6 +81,15 @@ class Series(AggregateRoot):
             self.events.remove(event)
         except StopIteration:
             ...
+
+    def start_series(self):
+        if self.status == SeriesStatus.closed:
+            raise SeriesAlreadyClosed()
+
+        self.status = SeriesStatus.started
+
+    def close_series(self):
+        self.status = SeriesStatus.closed
 
     def _check_event_is_within_date(self, event: Event) -> None:
         is_valid = True

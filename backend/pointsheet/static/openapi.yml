@@ -91,6 +91,37 @@ paths:
         204:
           description: Delete series
 
+  /series/{series_id}/status:
+    put:
+      operationId: updateSeriesStatus
+      description: Update the status of Series.
+      parameters:
+        - in: path
+          name: series_id
+          schema:
+            type: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - started
+                    - closed
+      responses:
+        204:
+          description: Status updated
+        404:
+          description: Not found
+        401:
+          description: Forbidden
+
   /series/{series_id}/events:
     post:
       description: Create event for series
@@ -99,7 +130,8 @@ paths:
         - in: path
           name: series_id
           required: true
-          type: uuid
+          schema:
+            type: uuid
       tags:
         - Series
       requestBody:

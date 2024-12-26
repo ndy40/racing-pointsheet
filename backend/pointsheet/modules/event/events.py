@@ -2,7 +2,7 @@ import logging
 
 from lato import Event
 
-from modules import event_module
+from modules.event.domain.value_objects import SeriesStatus
 from pointsheet.domain import EntityId
 
 _logger = logging.getLogger(__package__)
@@ -19,6 +19,14 @@ class SeriesUpdated(Event):
     series_id: EntityId
 
 
-@event_module.handler(SeriesDeleted)
-def series_deleted_listener(event: SeriesDeleted):
-    _logger.info(f"Series ({event.id}) - deleted")
+class SeriesStatusUpdated(Event):
+    series_id: EntityId
+    status: SeriesStatus
+
+
+class SeriesStarted(Event):
+    series_id: EntityId
+
+
+class SeriesClosed(Event):
+    series_id: EntityId

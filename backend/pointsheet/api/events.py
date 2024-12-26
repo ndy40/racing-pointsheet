@@ -11,6 +11,7 @@ from modules.event.commands.update_series_event import (
     UpdateEventModel,
     UpdateSeriesEvent,
 )
+from modules.event.commands.update_series_status import UpdateSeriesStatus
 from modules.event.domain.entity import Event, Series
 from pointsheet.domain import EntityId
 from modules.event.queries.get_all_series import GetAllSeries
@@ -32,10 +33,16 @@ def fetch_all_series():
 @event_bp.route("/series", methods=["POST"])
 def create_series():
     cmd = CreateSeries(**request.json)
-    print(cmd)
     current_app.application.execute(cmd)
     series: Series = current_app.application.execute(GetSeriesById(id=cmd.id))
     return series.model_dump()
+
+
+@event_bp.route("/series/<uuid:series_id>/status", methods=["PUT"])
+def update_series_status(series_id):
+    cmd = UpdateSeriesStatus(series_id=series_id, status=request.json.get("status"))
+    current_app.application.execute(cmd)
+    return Response(status=HTTPStatus.NO_CONTENT)
 
 
 @event_bp.route("/series/<uuid:series_id>", methods=["DELETE"])
@@ -53,14 +60,6 @@ def fetch_series_by_id(series_id):
         return series.model_dump()
 
     return Response(status=HTTPStatus.NOT_FOUND)
-
-    @event_bp.route("/series/<uuid:series_id>/events", methods=["POST"])
-    def create_event_for_series(series_id: EntityId):
-        cmd = CreateEventForSeries(
-            series_id=series_id, event=Event(**request.json["event"])
-        )
-        current_app.application.execute(cmd)
-        return Response(status=HTTPStatus.NO_CONTENT)
 
 
 @event_bp.route("/series/<uuid:series_id>/events", methods=["POST"])

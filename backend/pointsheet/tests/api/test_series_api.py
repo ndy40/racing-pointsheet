@@ -82,3 +82,15 @@ def test_delete_event_from_series(client, series_factory, db_session, event_fact
 
     resp = client.delete(f"/series/{series.id}/events/{event.id}/")
     assert resp.status_code == HTTPStatus.NO_CONTENT, (event.id, series.id)
+
+
+def test_series_startus_cannot_be_started_after_close(
+    client, db_session, series_factory
+):
+    series = series_factory(status=SeriesStatus.closed)
+    db_session.commit()
+
+    resp = client.put(
+        f"/series/{series.id}/status", json={"status": SeriesStatus.started.value}
+    )
+    assert resp.status_code == HTTPStatus.BAD_REQUEST
