@@ -1,4 +1,4 @@
-import RaceCard from "@/components/race_card";
+import {RaceCard} from "@/components/race_card";
 
 
 function SeriesSignUpCard() {
