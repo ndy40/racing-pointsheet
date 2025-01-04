@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import {Navigation} from "@/components/navigation";
+import 'material-icons/iconfont/material-icons.css';
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Create Next App",

@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import List, Optional
 
-from sqlalchemy import DateTime, ForeignKey
+from sqlalchemy import DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from modules.event.domain.value_objects import SeriesStatus
@@ -29,6 +29,7 @@ class Event(BaseModel):
         ),
         nullable=True,
     )
+    track: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     starts_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     ends_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     host: Mapped[str] = mapped_column(EntityIdType)

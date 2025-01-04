@@ -20,6 +20,7 @@ class EventFactory(SQLAlchemyModelFactory):
     status = None
     starts_at = None
     ends_at = None
+    track = None
 
 
 class SeriesFactory(SQLAlchemyModelFactory):

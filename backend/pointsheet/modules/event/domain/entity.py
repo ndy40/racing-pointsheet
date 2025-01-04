@@ -33,6 +33,7 @@ class Event(AggregateRoot):
     id: Optional[EntityId] = None
     title: str
     host: EntityId
+    track: Optional[str] = "TBD"
     status: Optional[EventStatus] = EventStatus.open
     rules: Optional[str] = None
     schedule: Optional[List[Schedule]] = None

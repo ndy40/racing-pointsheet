@@ -11,7 +11,7 @@ export function RaceCard({children}: {children: ReactElement}) {
 
 
 export function LargeRaceCard({children}: {children: ReactElement}) {
-    return <div className="w-auto shadow px-4 py-2 basis-1/2">
+    return <div className="w-auto shadow rounded-lg px-4 py-4 basis-1/2">
         { children }
     </div>
 }

@@ -336,6 +336,9 @@ components:
         host:
           description: The person running the event.
           type: integer
+        track:
+          type: string
+          default: TBD
         status:
           description: Default value is open. Users can register when this is open. No new signups when in progress or closed.
           type: string

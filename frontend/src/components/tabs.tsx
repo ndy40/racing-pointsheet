@@ -19,7 +19,7 @@ export function Tabs({children}: {children: ReactElement<TabItemProps>[] }) {
     
     return <>
         <div className="w-auto bg-white rounded-lg p-4 shadow-lg">
-            <div id="tab-heading" className="flex border-b border-gray-200">
+            <div id="tab-heading" className="flex border-b border-gray-100 ">
                 { children.map(
                     (child, idx) => 
                         <button key={idx} id={child.props.label} className={"p-4 py-2 gray-600 border-b-2 border-transparent focus:outline-none focus:border-gray-400 " + (activeTab == child.props.label  ? 'border-gray-400': '')}

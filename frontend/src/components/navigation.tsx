@@ -2,7 +2,7 @@
 
 export function Navigation() {
     return <nav className="flex justify-between border-b-2 h-10">
-        <div id="logo">
+        <div id="logo" className="hidden md:flex">
             <h1 className="text-xl">Team name & Logo</h1>
         </div>
         <div className="flex items-center">
