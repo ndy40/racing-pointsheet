@@ -3,6 +3,7 @@ from typing import Any, Optional
 from sqlalchemy import CHAR, Dialect, String, TypeDecorator
 from sqlalchemy.sql.type_api import _T
 
+from modules.account.domain.entity import UserRole
 from modules.event.domain.value_objects import EventStatus, SeriesStatus
 from pointsheet.domain.entity import EntityId
 
@@ -65,6 +66,26 @@ class EventStatusType(BaseCustomTypes):
             return value
 
         return EventStatus(value)
+
+    def __repr__(self):
+        return "EventStatusType()"
+
+
+class UserRoleType(BaseCustomTypes):
+    impl = String
+
+    def process_bind_param(self, value: Optional[_T], dialect: Dialect) -> Any:
+        if value and value not in UserRole.__members__.values():
+            raise TypeError("Invalid user role")
+        return value
+
+    def process_result_value(
+        self, value: Optional[Any], dialect: Dialect
+    ) -> Optional[_T]:
+        if not value:
+            return value
+
+        return UserRole(value)
 
     def __repr__(self):
         return "EventStatusType()"

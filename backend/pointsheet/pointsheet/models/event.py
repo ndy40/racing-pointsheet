@@ -1,4 +1,3 @@
-import uuid
 from datetime import datetime
 from typing import List, Optional
 
@@ -8,11 +7,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from modules.event.domain.value_objects import SeriesStatus
 from pointsheet.domain.entity import EntityId
 from pointsheet.models import BaseModel, SeriesStatusType
+from pointsheet.models.base import uuid_default
 from pointsheet.models.custom_types import EntityIdType, EventStatusType
-
-
-def uuid_default():
-    return str(uuid.uuid4())
 
 
 class Event(BaseModel):
