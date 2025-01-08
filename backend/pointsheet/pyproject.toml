@@ -32,7 +32,9 @@ testpaths = [
     "tests"
 ]
 env = [
-    "DATABASE=sqlite://"
+    "DATABASE=sqlite://",
+    "SECRET_KEY=testsecret",
+    "AUTH_TOKEN_MAX_AGE=1"
 ]
 
 [tool.isort]

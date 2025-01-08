@@ -12,24 +12,26 @@ from .schemas.series import (
 )
 
 
-def test_create_series(client):
+def test_create_series(client, start_end_date_future):
+    start_date, end_date = start_end_date_future
+
     payload = {
         "title": "Series 1",
         "status": "started",
-        "starts_at": "2025-01-01T01:00:00",
-        "ends_at": "2026-01-01T01:00:00",
+        "starts_at": start_date.isoformat(),
+        "ends_at": end_date.isoformat(),
     }
-    # with nullcontext():
     resp = client.post("/series", json=payload)
     validate(create_series_no_events_schema, resp.json)
     assert resp.status_code == HTTPStatus.OK
 
 
-def test_create_series_defaults_to_not_started_status(client):
+def test_create_series_defaults_to_not_started_status(client, start_end_date_future):
+    start_date, end_date = start_end_date_future
     payload = {
         "title": "Series 1",
-        "starts_at": "2025-01-01T01:00:00",
-        "ends_at": "2026-01-01T01:00:00",
+        "starts_at": start_date.isoformat(),
+        "ends_at": end_date.isoformat(),
     }
     with nullcontext():
         resp = client.post("/series", json=payload)

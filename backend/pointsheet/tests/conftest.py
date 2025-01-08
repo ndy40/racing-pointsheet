@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 import pytest
 import sqlalchemy.event
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -62,3 +64,10 @@ def event_factory(db_session) -> EventFactory:
 def series_factory(db_session) -> SeriesFactory:
     SeriesFactory._meta.sqlalchemy_session_factory = lambda: db_session
     return SeriesFactory
+
+
+@pytest.fixture
+def start_end_date_future() -> tuple[datetime, datetime]:
+    start_date = datetime.now() + timedelta(days=1)
+    end_date = start_date + timedelta(days=20)
+    return start_date, end_date
