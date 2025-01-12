@@ -65,8 +65,3 @@ class SeriesRepository(AbstractRepository[Series, SeriesModel]):
         entity_to_delete = self._session.get(Series, id)
         self._session.delete(entity_to_delete)
         self._session.commit()
-
-    def update(self, entity: SeriesModel) -> None:
-        _entity = self._map_to_entity(entity)
-        self._session.merge(_entity)
-        self._session.commit()

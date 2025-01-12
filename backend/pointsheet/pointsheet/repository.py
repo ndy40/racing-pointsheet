@@ -36,6 +36,11 @@ class AbstractRepository(Generic[DbModel, T], abc.ABC):
         self._session.add(entity)
         self._session.commit()
 
+    def update(self, model: T) -> None:
+        entity: DbModel = self._map_to_entity(model)
+        self._session.merge(entity)
+        self._session.commit()
+
     @abstractmethod
     def delete(self, id: Any or EntityId) -> None: ...
 

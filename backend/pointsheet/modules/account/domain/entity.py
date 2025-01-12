@@ -15,8 +15,6 @@ class UserRole(str, Enum):
 class User(AggregateRoot):
     username: str
     password: str = Field(exclude=True)
-    auth_token: str
-    auth_expires_in: Optional[datetime] = None
     last_login: Optional[datetime] = None
     role: Optional[UserRole] = UserRole.driver
     is_active: Optional[bool] = True

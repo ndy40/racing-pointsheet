@@ -1,4 +1,4 @@
-from pointsheet.domain.exceptions import PointSheetException
+from pointsheet.domain.exceptions.base import PointSheetException
 
 
 class SeriesNotFoundException(PointSheetException):

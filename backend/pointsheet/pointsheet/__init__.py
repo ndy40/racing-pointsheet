@@ -7,18 +7,15 @@ from flask import Flask, render_template, Response
 from pydantic import ValidationError
 
 from api.events import event_bp
+
+from api.auth import auth_bp
 from modules import application
-from pointsheet.config import Config
-from pointsheet.domain.exceptions import PointSheetException
+
 
 root_dir = os.path.join(Path(__file__).parent.parent)
 
 static_directory = os.path.join(root_dir, "static")
 template_directory = os.path.join(root_dir, "templates")
-
-config = Config()
-
-__all__ = ["config", "create_app"]
 
 
 def create_app(test_config=None):
@@ -32,7 +29,6 @@ def create_app(test_config=None):
         SECRET_KEY="dev",
         DATABASE=os.path.join(app.instance_path, "point_sheets.db.sqlite"),
     )
-    app.register_blueprint(event_bp)
 
     try:
         os.makedirs(app.instance_path)
@@ -42,6 +38,8 @@ def create_app(test_config=None):
     @app.route("/")
     def index():
         return render_template("index.html")
+
+    from pointsheet.domain.exceptions.base import PointSheetException
 
     @app.errorhandler(PointSheetException)
     def app_error_handler(e):
@@ -71,5 +69,8 @@ def create_app(test_config=None):
         )
 
     app.application = application
+
+    app.register_blueprint(event_bp)
+    app.register_blueprint(auth_bp)
 
     return app

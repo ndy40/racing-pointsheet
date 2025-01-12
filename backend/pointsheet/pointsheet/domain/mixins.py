@@ -1,4 +1,4 @@
-from pointsheet.domain.exceptions import BusinessRuleValidationException
+from pointsheet.domain.exceptions.base import BusinessRuleValidationException
 from pointsheet.domain.rules import BusinessRule
 
 
