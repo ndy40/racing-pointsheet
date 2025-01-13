@@ -1,5 +1,6 @@
 from typing import Optional
 
+from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from pointsheet.domain import EntityId
@@ -13,4 +14,4 @@ class Driver(BaseModel):
     id: Mapped[EntityId] = mapped_column(
         EntityIdType, primary_key=True, default=uuid_default
     )
-    name: Mapped[Optional[str]] = None
+    name: Mapped[Optional[str]] = mapped_column(String, nullable=True)

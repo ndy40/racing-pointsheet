@@ -17,7 +17,7 @@ from pointsheet.domain import EntityId
 from modules.event.queries.get_all_series import GetAllSeries
 from modules.event.queries.get_series_by_id import GetSeriesById
 
-from ._utils import auth
+from .utils import auth
 
 logging.basicConfig()
 # logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)

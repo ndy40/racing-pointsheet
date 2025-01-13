@@ -29,6 +29,11 @@ class Schedule(BaseModel):
     duration: str
 
 
+class Driver(BaseModel):
+    driver_id: EntityId
+    name: str
+
+
 class Event(AggregateRoot):
     id: Optional[EntityId] = None
     title: str
@@ -39,6 +44,7 @@ class Event(AggregateRoot):
     schedule: Optional[List[Schedule]] = None
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
+    drivers: Optional[List[Driver]] = None
 
     @model_validator(mode="after")
     def check_start_and_end_date(self) -> Self:
@@ -51,6 +57,21 @@ class Event(AggregateRoot):
             raise ValueError("Event should have an end date")
 
         return self
+
+    def add_driver(self, driver: Driver) -> None:
+        if not self.drivers:
+            self.drivers = []
+        if not any(
+            existing_driver.driver_id == driver.driver_id
+            for existing_driver in self.drivers
+        ):
+            self.drivers.append(driver)
+
+    def remove_driver(self, driver_id: EntityId) -> None:
+        if self.drivers:
+            self.drivers = [
+                driver for driver in self.drivers if driver.driver_id != driver_id
+            ]
 
 
 class Series(AggregateRoot):
