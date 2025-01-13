@@ -23,10 +23,10 @@ class StartEndDateMixin:
 
 
 class Schedule(BaseModel):
-    id: Optional[ScheduleId] = None
+    id: Optional[ScheduleId]
     type: ScheduleType
-    nbr_of_laps: int
-    duration: str
+    nbr_of_laps: Optional[int] = None
+    duration: Optional[str] = None
 
 
 class Driver(BaseModel):
@@ -72,6 +72,17 @@ class Event(AggregateRoot):
             self.drivers = [
                 driver for driver in self.drivers if driver.driver_id != driver_id
             ]
+
+    def add_schedule(self, schedule: Schedule) -> None:
+        if not self.schedule:
+            self.schedule = []
+
+        self.schedule.append(schedule)
+        self.schedule.sort(
+            key=lambda s: {"practice": 0, "qualification": 1, "race": 2}.get(
+                s.type.value, 3
+            )
+        )
 
 
 class Series(AggregateRoot):
