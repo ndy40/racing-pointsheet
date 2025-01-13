@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from enum import Enum
 from typing import Optional
 
 from pydantic import field_validator, Field
@@ -8,6 +9,11 @@ from modules.auth.auth import TimedSerializer
 from pointsheet.config import config
 from .exceptions import InvalidPassword
 from pointsheet.domain.entity import AggregateRoot
+
+
+class UserRole(str, Enum):
+    driver = "driver"
+    admin = "admin"
 
 
 class ActiveUser(AggregateRoot):
@@ -40,6 +46,7 @@ class ActiveUser(AggregateRoot):
 class RegisteredUser(AggregateRoot):
     username: str
     password: str = Field(repr=False)
+    role: Optional[UserRole] = UserRole.driver
 
     @field_validator("password", mode="before")
     @classmethod

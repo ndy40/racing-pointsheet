@@ -3,7 +3,7 @@ from typing import Any, Optional
 from sqlalchemy import CHAR, Dialect, String, TypeDecorator
 from sqlalchemy.sql.type_api import _T
 
-from modules.account.domain.entity import UserRole
+from modules.auth.domain import UserRole
 from modules.event.domain.value_objects import EventStatus, SeriesStatus
 from pointsheet.domain.entity import EntityId
 

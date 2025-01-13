@@ -55,6 +55,7 @@ paths:
       description: Register a new user
       tags:
         - Authentication
+      security: []
       requestBody:
         content:
           application/json:

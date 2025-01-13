@@ -26,7 +26,10 @@ class ActiveUserMapper(DataMapper[User, ActiveUser]):
 class RegisterUserMapper(DataMapper[User, RegisteredUser]):
     def to_db_entity(self, instance: RegisteredUser) -> User:
         return User(
-            id=instance.id, username=instance.username, password=instance.password
+            id=instance.id,
+            username=instance.username,
+            password=instance.password,
+            role=instance.role,
         )
 
     def to_domain_model(self, instance: User) -> RegisteredUser:

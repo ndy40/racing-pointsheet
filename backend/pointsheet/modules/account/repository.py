@@ -1,15 +1,15 @@
 from typing import Any, List
 
-from modules.account.data_mappers import UserMapper
-from modules.account.domain.entity import User
+from modules.account.data_mappers import DriverMapper
+from modules.account.domain.entity import Driver
 from pointsheet.domain import EntityId
-from pointsheet.models.account import User as UserEntity
+from pointsheet.models.account import Driver as DriverEntity
 from pointsheet.repository import AbstractRepository, T
 
 
-class UserRepository(AbstractRepository[UserEntity, User]):
-    mapper_class = UserMapper
-    model_class = User
+class DriverRepository(AbstractRepository[DriverEntity, Driver]):
+    mapper_class = DriverMapper
+    model_class = Driver
 
     def delete(self, id: Any or EntityId) -> None:
         pass

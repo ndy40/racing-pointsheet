@@ -6,9 +6,9 @@ from flask import Flask, render_template, Response
 
 from pydantic import ValidationError
 
+from api.auth import auth_bp
 from api.events import event_bp
 
-from api.auth import auth_bp
 from modules import application
 
 

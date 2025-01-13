@@ -1,10 +1,13 @@
+from typing import Optional
+
 from lato import Command, TransactionContext
 from pydantic import Field, field_validator
 from werkzeug.security import generate_password_hash
 
-from modules import event_module
+from modules import auth_module
 from modules.auth.dependencies import container
-from modules.auth.events import UserRegistered
+from modules.auth.domain import UserRole
+from modules.auth.events.user_registered import UserRegistered
 from modules.auth.exceptions import UserAlreadyExists
 from modules.auth.repository import RegisterUserRepository, ActiveUserRepository
 
@@ -15,6 +18,7 @@ class RegisterUser(Command):
         min_length=4,
         max_length=25,
     )
+    role: Optional[UserRole] = Field(default=UserRole.driver)
 
     @field_validator("password", mode="after")
     @classmethod
@@ -28,7 +32,7 @@ class RegisterUser(Command):
         raise ValueError("Invalid password provided")
 
 
-@event_module.handler(RegisterUser)
+@auth_module.handler(RegisterUser)
 def handle_register_user(cmd: RegisterUser, ctx: TransactionContext):
     repo = container[RegisterUserRepository]
     active_repo = container[ActiveUserRepository]

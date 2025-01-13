@@ -11,8 +11,7 @@ auth_bp = Blueprint("auth", __name__)
 
 @auth_bp.route("/auth/register", methods=["POST"])
 def register():
-    cmd = RegisterUser(**request.json)
-    current_app.application.execute(cmd)
+    current_app.application.execute(RegisterUser(**request.json))
     return Response(status=HTTPStatus.NO_CONTENT)
 
 
@@ -21,4 +20,5 @@ def authenticate():
     cmd = AuthUser(**request.json)
     current_app.application.execute(cmd)
     active_user = current_app.application.execute(GetActiveUser(username=cmd.username))
+
     return {"token": active_user.auth_token}

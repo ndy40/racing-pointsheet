@@ -75,7 +75,7 @@ def run_migrations_online() -> None:
 
     """
     config_dict = config.get_section(config.config_ini_section)
-    config_dict.update({"sqlalchemy.url": pointsheet.config.DATABASE})
+    config_dict.update({"sqlalchemy.url": pointsheet.config.config.DATABASE})
     connectable = engine_from_config(
         config_dict,
         prefix="sqlalchemy.",
