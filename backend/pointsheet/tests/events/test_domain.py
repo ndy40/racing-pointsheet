@@ -108,9 +108,9 @@ def test_adding_schedules_to_event_maintains_order():
         ends_at=datetime.now() + timedelta(days=3),
     )
 
-    qualification = Schedule(id=uuid.uuid4().int, type=ScheduleType.qualification)
-    practice = Schedule(id=uuid.uuid4().int, type=ScheduleType.practice)
-    race = Schedule(id=uuid.uuid4().int, type=ScheduleType.race)
+    qualification = Schedule(type=ScheduleType.qualification)
+    practice = Schedule(type=ScheduleType.practice)
+    race = Schedule(type=ScheduleType.race)
 
     event.add_schedule(qualification)
     event.add_schedule(race)
@@ -118,3 +118,21 @@ def test_adding_schedules_to_event_maintains_order():
 
     schedule_types = [schedule.type.value for schedule in event.schedule]
     assert schedule_types == ["practice", "qualification", "race"]
+
+
+def test_adding_two_race_schedules_maintains_order():
+    event = Event(
+        title="Winter Grand Prix",
+        host=uuid.uuid4(),
+        starts_at=datetime.now() + timedelta(days=1),
+        ends_at=datetime.now() + timedelta(days=3),
+    )
+    race1 = Schedule(type=ScheduleType.qualification, nbr_of_laps=3)
+    race2 = Schedule(type=ScheduleType.race, nbr_of_laps=5)
+    race3 = Schedule(type=ScheduleType.race, nbr_of_laps=10)
+
+    event.add_schedule(race1)
+    event.add_schedule(race2)
+    event.add_schedule(race3)
+
+    assert event.schedule == [race1, race2, race3]

@@ -23,7 +23,7 @@ class StartEndDateMixin:
 
 
 class Schedule(BaseModel):
-    id: Optional[ScheduleId]
+    id: Optional[ScheduleId] = None
     type: ScheduleType
     nbr_of_laps: Optional[int] = None
     duration: Optional[str] = None

@@ -4,7 +4,7 @@ from sqlalchemy import CHAR, Dialect, String, TypeDecorator
 from sqlalchemy.sql.type_api import _T
 
 from modules.auth.domain import UserRole
-from modules.event.domain.value_objects import EventStatus, SeriesStatus
+from modules.event.domain.value_objects import EventStatus, SeriesStatus, ScheduleType
 from pointsheet.domain.entity import EntityId
 
 
@@ -89,3 +89,23 @@ class UserRoleType(BaseCustomTypes):
 
     def __repr__(self):
         return "EventStatusType()"
+
+
+class ScheduleTypeType(BaseCustomTypes):
+    impl = String
+
+    def process_bind_param(self, value: Optional[_T], dialect: Dialect) -> Any:
+        if value and value not in ScheduleType.__members__.values():
+            raise TypeError(f"Invalid value for ScheduleType: {value}")
+        return value
+
+    def process_result_value(
+        self, value: Optional[Any], dialect: Dialect
+    ) -> Optional[_T]:
+        if not value:
+            return value
+
+        return ScheduleType(value)
+
+    def __repr__(self):
+        return "ScheduleTypeType()"

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from sqlalchemy import DateTime, ForeignKey, String
+from sqlalchemy import DateTime, ForeignKey, String, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from modules.event.domain.value_objects import SeriesStatus
@@ -9,6 +9,19 @@ from pointsheet.domain.entity import EntityId
 from pointsheet.models import BaseModel, SeriesStatusType
 from pointsheet.models.base import uuid_default
 from pointsheet.models.custom_types import EntityIdType, EventStatusType
+
+
+class EventSchedule(BaseModel):
+    __tablename__ = "event_schedule"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    type: Mapped[str] = mapped_column(String(255))
+    nbr_of_laps: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    duration: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    event_id: Mapped[EntityId] = mapped_column(
+        EntityIdType,
+        ForeignKey("events.id", ondelete="CASCADE", name="event_schedule_event"),
+        nullable=False,
+    )
 
 
 class Event(BaseModel):
@@ -30,6 +43,9 @@ class Event(BaseModel):
     ends_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     host: Mapped[str] = mapped_column(EntityIdType)
     status: Mapped[Optional[str]] = mapped_column(EventStatusType)
+    schedule: Mapped[Optional[List[EventSchedule]]] = relationship(
+        cascade="all, delete"
+    )
 
 
 class Series(BaseModel):

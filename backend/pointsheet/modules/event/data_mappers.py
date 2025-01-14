@@ -1,6 +1,6 @@
-from modules.event.domain.entity import Event as EventModel
+from modules.event.domain.entity import Event as EventModel, Schedule
 from modules.event.domain.entity import Series as SeriesModel
-from pointsheet.models import Event, Series
+from pointsheet.models import Event, Series, EventSchedule
 from pointsheet.repository import DataMapper
 
 
@@ -13,6 +13,15 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             ends_at=instance.ends_at,
             host=instance.host,
             status=instance.status,
+            schedules=[
+                EventSchedule(
+                    type=schedule.type,
+                    nbr_of_laps=schedule.nbr_of_laps,
+                    duration=schedule.duration,
+                    id=schedule.id,
+                )
+                for schedule in instance.schedules
+            ],
         )
 
     def to_domain_model(self, instance: Event) -> EventModel:
@@ -23,6 +32,15 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             starts_at=instance.starts_at,
             ends_at=instance.ends_at,
             status=instance.status,
+            schedule=[
+                Schedule(
+                    type=schedule.type,
+                    nbr_of_laps=schedule.nbr_of_laps,
+                    duration=schedule.duration,
+                    id=schedule.id,
+                )
+                for schedule in instance.schedule
+            ],
         )
 
 
