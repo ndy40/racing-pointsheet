@@ -103,12 +103,12 @@ paths:
             schema:
               $ref: "#/components/schemas/CreateSeriesRequest"
       responses:
-        200:
+        201:
           description: Created Series
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Series"
+                $ref: "#/components/responses/ResourceCreated"
         400:
           description: Bad request
 
@@ -298,6 +298,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Event"
+
+  /events/{id}/schedule:
+    post:
+      description: Create schedule for event
+      operationId: addSchedule
+      tags:
+        - Events
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSchedule"
+      responses:
+        400:
+          description: Bad request
+        204:
+          description: Schedule created
+
 components:
   securitySchemes:
     BearerAuth:
@@ -537,3 +562,27 @@ components:
           additionalProperties:
             type: integer
             example: { "1": 10, "2": 20 }
+
+    CreateSchedule:
+      type: object
+      require:
+        - type
+      properties:
+        type:
+          type: string
+          enum:
+            - practice
+            - qualification
+            - race
+        nbr_of_laps:
+          type: integer
+        duration:
+          type: string
+          example: 1h 30m
+  responses:
+    ResourceCreated:
+      type: object
+      properties:
+        resource:
+          type: string
+          example: uuid or id

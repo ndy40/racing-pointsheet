@@ -7,7 +7,7 @@ from flask import Flask, render_template, Response
 from pydantic import ValidationError
 
 from api.auth import auth_bp
-from api.events import event_bp
+from api.series import series_bp
 
 from modules import application
 
@@ -70,7 +70,7 @@ def create_app(test_config=None):
 
     app.application = application
 
-    app.register_blueprint(event_bp)
+    app.register_blueprint(series_bp)
     app.register_blueprint(auth_bp)
 
     return app

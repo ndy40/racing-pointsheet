@@ -84,6 +84,12 @@ class Event(AggregateRoot):
             )
         )
 
+    def remove_schedule(self, schedule_id: int) -> None:
+        if self.schedule:
+            self.schedule = [
+                schedule for schedule in self.schedule if schedule.id != schedule_id
+            ]
+
 
 class Series(AggregateRoot):
     title: str

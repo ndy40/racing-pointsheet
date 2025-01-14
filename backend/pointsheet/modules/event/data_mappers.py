@@ -13,35 +13,41 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             ends_at=instance.ends_at,
             host=instance.host,
             status=instance.status,
-            schedules=[
+            schedule=[
                 EventSchedule(
                     type=schedule.type,
                     nbr_of_laps=schedule.nbr_of_laps,
                     duration=schedule.duration,
                     id=schedule.id,
                 )
-                for schedule in instance.schedules
-            ],
+                for schedule in instance.schedule
+            ]
+            if instance.schedule
+            else [],
         )
 
     def to_domain_model(self, instance: Event) -> EventModel:
-        return EventModel(
+        event = EventModel(
             title=instance.title,
             id=instance.id,
             host=instance.host,
             starts_at=instance.starts_at,
             ends_at=instance.ends_at,
             status=instance.status,
-            schedule=[
-                Schedule(
-                    type=schedule.type,
-                    nbr_of_laps=schedule.nbr_of_laps,
-                    duration=schedule.duration,
-                    id=schedule.id,
-                )
-                for schedule in instance.schedule
-            ],
         )
+
+        if instance.schedule:
+            for schedule in instance.schedule:
+                event.add_schedule(
+                    Schedule(
+                        type=schedule.type,
+                        nbr_of_laps=schedule.nbr_of_laps,
+                        duration=schedule.duration,
+                        id=schedule.id,
+                    )
+                )
+
+        return event
 
 
 class SeriesModelMapper(DataMapper[Series, SeriesModel]):
