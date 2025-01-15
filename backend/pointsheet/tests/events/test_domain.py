@@ -136,3 +136,13 @@ def test_adding_two_race_schedules_maintains_order():
     event.add_schedule(race3)
 
     assert event.schedule == [race1, race2, race3]
+
+
+def test_creating_event_with_invalid_dates_fails():
+    with pytest.raises(ValidationError):
+        Event(
+            title="Winter Grand Prix",
+            host=uuid.uuid4(),
+            starts_at=datetime.now(),
+            ends_at=datetime.now() + timedelta(days=-2),
+        )

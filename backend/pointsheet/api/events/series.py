@@ -18,7 +18,7 @@ from modules.event.queries.get_all_series import GetAllSeries
 from modules.event.queries.get_series_by_id import GetSeriesById
 from pointsheet.domain.responses import ResourceCreated
 
-from .utils import auth
+from api.utils import auth
 
 logging.basicConfig()
 # logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
@@ -40,7 +40,7 @@ def create_series():
     cmd = CreateSeries(**request.json)
     current_app.application.execute(cmd)
     series: Series = current_app.application.execute(GetSeriesById(id=cmd.id))
-    return ResourceCreated(resource=series.id).model_dump()
+    return ResourceCreated(resource=series.id).model_dump(), 201
 
 
 @series_bp.route("/series/<uuid:series_id>/status", methods=["PUT"])

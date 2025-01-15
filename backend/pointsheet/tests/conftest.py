@@ -51,6 +51,7 @@ def app(db_session):
 
 @pytest.fixture()
 def client(app):
+    app.testing = True
     return app.test_client()
 
 

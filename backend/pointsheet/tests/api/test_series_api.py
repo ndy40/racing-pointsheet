@@ -7,9 +7,9 @@ from fastjsonschema import validate
 from modules.event.domain.entity import Series
 from modules.event.domain.value_objects import EventStatus, SeriesStatus
 from modules.event.repository import SeriesRepository
+from .schemas.common import resource_created
 from .schemas.series import (
     create_series_no_events_schema,
-    create_series_defaults_to_not_started_status_schema,
 )
 
 
@@ -24,8 +24,8 @@ def test_create_series(_, client, start_end_date_future):
         "ends_at": end_date.isoformat(),
     }
     resp = client.post("/series", json=payload, headers={"Authorization": "Bearer abc"})
-    validate(create_series_no_events_schema, resp.json)
-    assert resp.status_code == HTTPStatus.OK
+    validate(resource_created, resp.json)
+    assert resp.status_code == HTTPStatus.CREATED
 
 
 @patch("api.utils.TimedSerializer.deserializer", return_value=("abc", 0))
@@ -40,8 +40,8 @@ def test_create_series_defaults_to_not_started_status(_, client, start_end_date_
         resp = client.post(
             "/series", json=payload, headers={"Authorization": "Bearer abc"}
         )
-        validate(create_series_defaults_to_not_started_status_schema, resp.json)
-        assert resp.status_code == HTTPStatus.OK
+        validate(resource_created, resp.json)
+        assert resp.status_code == HTTPStatus.CREATED
 
 
 @patch("api.utils.TimedSerializer.deserializer", return_value=("abc", 0))
