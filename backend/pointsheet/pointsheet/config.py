@@ -10,8 +10,8 @@ SEVEN_DAYS_IN_SECONDS: int = 60 * 24 * 7
 
 
 class Config(BaseSettings):
+    SECRET_KEY: str
     APP_ENV: Optional[str] = "dev"
-    SECRET_KEY: Optional[str] = str(os.urandom(30))
     DATABASE: Optional[str]
     AUTH_TOKEN_MAX_AGE: Optional[int] = SEVEN_DAYS_IN_SECONDS
 
