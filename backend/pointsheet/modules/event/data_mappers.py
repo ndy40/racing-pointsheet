@@ -54,19 +54,16 @@ class SeriesModelMapper(DataMapper[Series, SeriesModel]):
     event_mapper = EventModelMapper()
 
     def to_db_entity(self, instance: SeriesModel) -> Series:
-        series = Series(
+        return Series(
             id=instance.id,
             title=instance.title,
             starts_at=instance.starts_at,
             ends_at=instance.ends_at,
             status=instance.status,
+            events=[self.event_mapper.to_db_entity(event) for event in instance.events]
+            if instance.events
+            else [],
         )
-        if instance.events:
-            series.events = [
-                self.event_mapper.to_db_entity(event) for event in instance.events
-            ]
-
-        return series
 
     def to_domain_model(self, instance: Series) -> SeriesModel:
         return SeriesModel(
@@ -77,5 +74,7 @@ class SeriesModelMapper(DataMapper[Series, SeriesModel]):
             status=instance.status,
             events=[
                 self.event_mapper.to_domain_model(event) for event in instance.events
-            ],
+            ]
+            if instance.events
+            else [],
         )

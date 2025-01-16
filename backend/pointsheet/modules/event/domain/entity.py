@@ -100,9 +100,9 @@ class Series(AggregateRoot):
     def add_event(self, event: Event):
         self._check_event_is_within_date(event)
 
-        if not self.events:
+        if self.events is None:
             self.events = []
-        # check if event is already added.
+
         try:
             item: Event = next(filter(lambda x: x.id == event.id, self.events))
             updated_item = item.model_copy(update=event.model_dump(exclude_none=True))
@@ -110,8 +110,9 @@ class Series(AggregateRoot):
             event = updated_item
         except StopIteration:
             ...
-        finally:
-            self.events.append(event)
+
+        self.events.append(event)
+        self.events.sort(key=lambda e: e.starts_at or datetime.max)
 
     def remove_event(self, event_id: EntityId):
         try:
@@ -131,6 +132,9 @@ class Series(AggregateRoot):
 
     def _check_event_is_within_date(self, event: Event) -> None:
         is_valid = True
+
+        if not event:
+            raise ValueError("Event cannot be None")
 
         if self.starts_at and self.ends_at:
             if event.starts_at and not (

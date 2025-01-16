@@ -195,10 +195,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                event:
-                  $ref: "#/components/schemas/CreateEvent"
+              $ref: "#/components/schemas/CreateEvent"
       responses:
         204:
           description: Event created for series
@@ -392,6 +389,7 @@ components:
         status:
           type: string
           enum:
+            - open
             - started
             - closed
         events:
@@ -422,7 +420,6 @@ components:
       type: object
       required:
         - title
-        - status
       properties:
         title:
           type: string

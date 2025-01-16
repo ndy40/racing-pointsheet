@@ -17,11 +17,8 @@ class EventRepository(AbstractRepository[Event, EventModel]):
     model_class = EventModel
 
     def find_by_id(self, id: Any) -> EventModel | None:
-        print("Id here ", id)
         stmt = select(Event).where(Event.id == id)
         result = self._session.execute(stmt).scalar()
-
-        print("GEtEvent result ", result)
 
         if result:
             return self._map_to_model(result)
@@ -42,14 +39,6 @@ class SeriesRepository(AbstractRepository[Series, SeriesModel]):
     model_class = SeriesModel
 
     def all(self, criteria: Query) -> List[SeriesModel]:
-        """
-
-        :param criteria: Query -
-            Supported filtering parameters
-            fields:
-            status: Open, Closed, None, using == check. None filters everything.
-        :return: List[SeriesModel]
-        """
         stmt = select(Series).order_by(Series.id)
 
         if value := getattr(criteria, "status"):

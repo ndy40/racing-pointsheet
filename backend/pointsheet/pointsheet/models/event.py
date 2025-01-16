@@ -61,7 +61,7 @@ class Series(BaseModel):
     status: Mapped[Optional[str]] = mapped_column(
         SeriesStatusType, nullable=True, default=SeriesStatus.not_started
     )
-    events: Mapped[List[Event]] = relationship(cascade="all, delete")
+    events: Mapped[Optional[List[Event]]] = relationship(cascade="all, delete")
     starts_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     ends_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
