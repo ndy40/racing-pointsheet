@@ -35,7 +35,6 @@ class Driver(BaseModel):
 
 
 class Event(AggregateRoot):
-    id: Optional[EntityId] = None
     title: str
     host: EntityId
     track: Optional[str] = "TBD"

@@ -38,10 +38,13 @@ class CreateEvent(Command):
                 raise ValueError(
                     "The end date cannot be more than 31 days away from the start date."
                 )
+        return self
 
 
 @event_module.handler(CreateEvent)
 def create_event(cmd: CreateEvent):
     repo = container[EventRepository]
     event = Event(**cmd.model_dump())
+    print(event)
+    print("CMD ", cmd.model_dump())
     repo.add(event)

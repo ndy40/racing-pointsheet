@@ -15,6 +15,7 @@ class _AuthenticationException(PointSheetException):
 def verify_token(token):
     try:
         result = TimedSerializer().deserializer(token)
+        print(result)
         return result[0]
     except BadSignature as e:
         print(e)

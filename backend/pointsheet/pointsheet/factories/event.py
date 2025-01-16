@@ -5,7 +5,7 @@ import factory
 from factory import LazyFunction
 from factory.alchemy import SQLAlchemyModelFactory
 
-from modules.event.domain.value_objects import SeriesStatus
+from modules.event.domain.value_objects import SeriesStatus, EventStatus
 from pointsheet.db import get_session
 from pointsheet.models import Event, Series
 
@@ -17,7 +17,7 @@ class EventFactory(SQLAlchemyModelFactory):
 
     title = factory.Sequence(lambda n: "Event %d" % n)
     host = uuid.uuid4()
-    status = None
+    status = EventStatus.open
     starts_at = None
     ends_at = None
     track = None

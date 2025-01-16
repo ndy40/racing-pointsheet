@@ -14,5 +14,4 @@ class GetEvent(Query):
 def get_event(cmd: GetEvent):
     repository = container[EventRepository]
     result = repository.find_by_id(cmd.event_id)
-    print(result)
     return result

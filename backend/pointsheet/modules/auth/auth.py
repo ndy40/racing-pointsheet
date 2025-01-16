@@ -29,10 +29,10 @@ class TimedSerializer(BaseSerializer):
         self._max_age = max_age or config.AUTH_TOKEN_MAX_AGE
 
     def serialize(self, data: Any) -> str:
-        return self.serializer.dumps(data)
+        return self.serializer.dumps(data).encode("utf-8")
 
     def deserializer(self, data: str) -> tuple[Any, int]:
-        return self.serializer.loads(data, max_age=self._max_age, return_timestamp=True)
+        return self.serializer.loads(data.encode("utf-8"), return_timestamp=True)
 
     def get_timestamp(self, data) -> int:
-        return self.serializer.loads(data, self._max_age, return_timestamp=True)[1]
+        return self.serializer.loads(data, return_timestamp=True)[1]

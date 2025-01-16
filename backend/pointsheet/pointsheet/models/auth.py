@@ -7,7 +7,6 @@ from sqlalchemy.orm import Mapped, mapped_column, validates
 from modules.account.domain.entity import UserRole
 from pointsheet.domain import EntityId
 from pointsheet.models import BaseModel, EntityIdType
-from pointsheet.models.base import uuid_default
 from pointsheet.models.custom_types import UserRoleType
 
 
@@ -15,7 +14,8 @@ class User(BaseModel):
     __tablename__ = "user_account"
 
     id: Mapped[EntityId] = mapped_column(
-        EntityIdType, primary_key=True, default=uuid_default
+        EntityIdType,
+        primary_key=True,
     )
     username: Mapped[str] = mapped_column(String(255))
     password: Mapped[str] = mapped_column(String(255))

@@ -7,7 +7,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from modules.event.domain.value_objects import SeriesStatus, ScheduleType
 from pointsheet.domain.entity import EntityId
 from pointsheet.models import BaseModel, SeriesStatusType
-from pointsheet.models.base import uuid_default
 from pointsheet.models.custom_types import (
     EntityIdType,
     EventStatusType,
@@ -32,9 +31,7 @@ class EventSchedule(BaseModel):
 
 class Event(BaseModel):
     __tablename__ = "events"
-    id: Mapped[EntityId] = mapped_column(
-        EntityIdType, primary_key=True, default=uuid_default
-    )
+    id: Mapped[EntityId] = mapped_column(EntityIdType, primary_key=True)
     title: Mapped[str]
     series: Mapped[Optional[str]] = mapped_column(
         ForeignKey(
@@ -57,7 +54,8 @@ class Event(BaseModel):
 class Series(BaseModel):
     __tablename__ = "series"
     id: Mapped[EntityId] = mapped_column(
-        EntityIdType, primary_key=True, default=uuid_default
+        EntityIdType,
+        primary_key=True,
     )
     title: Mapped[str]
     status: Mapped[Optional[str]] = mapped_column(

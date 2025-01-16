@@ -111,7 +111,6 @@ paths:
                 $ref: "#/components/responses/ResourceCreated"
         400:
           description: Bad request
-
   /series/{series_id}:
     get:
       description: Get series
@@ -149,7 +148,6 @@ paths:
       responses:
         204:
           description: Delete series
-
   /series/{series_id}/status:
     put:
       operationId: updateSeriesStatus
@@ -181,7 +179,6 @@ paths:
           description: Not found
         401:
           description: Forbidden
-
   /series/{series_id}/events:
     post:
       description: Create event for series
@@ -264,6 +261,25 @@ paths:
                   $ref: "#/components/schemas/Event"
         401:
           description: Forbidden
+    post:
+      description: Create a new event
+      operationId: createEvent
+      tags:
+        - Events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEvent"
+      responses:
+        201:
+          description: Event successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        400:
+          description: Bad request
 
   /events/{id}/:
     delete:
@@ -476,10 +492,10 @@ components:
       type: object
       required:
         - title
-        - starts_at
-        - ends_at
         - host
         - status
+        - starts_at
+        - ends_at
       properties:
         title:
           type: string
