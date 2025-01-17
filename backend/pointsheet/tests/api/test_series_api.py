@@ -4,12 +4,11 @@ from unittest.mock import patch
 
 from fastjsonschema import validate
 
-from modules.event.domain.entity import Series
 from modules.event.domain.value_objects import EventStatus, SeriesStatus
-from modules.event.repository import SeriesRepository
 from .schemas.common import resource_created
 from .schemas.series import (
     create_series_no_events_schema,
+    event_is_closed_after_update_under_series,
 )
 
 
@@ -78,17 +77,16 @@ def test_add_event_to_series(_, client, series_factory, db_session):
 @patch("api.utils.TimedSerializer.deserializer", return_value=("abc", 0))
 def test_update_event_in_series(_, client, series_factory, db_session, event_factory):
     event = event_factory(status=EventStatus.open)
-    series = series_factory(status=SeriesStatus.started, events=[event])
+    series = series_factory(status=SeriesStatus.started)
+    series.events.append(event)
     db_session.commit()
 
     payload = {"id": str(event.id), "status": EventStatus.closed}
+    client.put(f"/series/{series.id}/events", json=payload)
+    resp = client.get(f"/series/{series.id}", json=payload)
 
-    repo = SeriesRepository(db_session)
-    resp = client.put(f"/series/{series.id}/events", json=payload)
-    series: Series = repo.find_by_id(series.id)
-
-    assert resp.status_code == HTTPStatus.NO_CONTENT, resp.json
-    assert series.events[0].status == EventStatus.closed
+    validate(event_is_closed_after_update_under_series, resp.json)
+    assert resp.status_code == HTTPStatus.OK, resp.json
 
 
 @patch("api.utils.TimedSerializer.deserializer", return_value=("abc", 0))

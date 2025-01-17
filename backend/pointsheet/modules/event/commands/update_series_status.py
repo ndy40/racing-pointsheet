@@ -1,14 +1,12 @@
 from enum import Enum
-from http import HTTPStatus
 
-from flask import Response
 from lato import Command, TransactionContext
 
 from modules import event_module
 from modules.event.commands.update_series_event import UpdateSeriesEvent
 from modules.event.dependencies import container
 from modules.event.domain.exceptions import SeriesNotFoundException
-from modules.event.events import SeriesStatusUpdated, SeriesStarted, SeriesClosed
+from modules.event.events import SeriesStarted, SeriesClosed, SeriesStatusNotStarted
 from modules.event.repository import SeriesRepository
 from pointsheet.domain import EntityId
 
@@ -16,6 +14,7 @@ from pointsheet.domain import EntityId
 class _SeriesStatus(str, Enum):
     closed = "closed"
     started = "started"
+    not_started = "not_started"
 
 
 class UpdateSeriesStatus(Command):
@@ -38,6 +37,8 @@ def update_series_status(cmd: UpdateSeriesEvent, ctx: TransactionContext):
         case _SeriesStatus.closed:
             series.close_series()
             ctx.publish(SeriesClosed(series_id=cmd.series_id))
-
-    ctx.publish(SeriesStatusUpdated(series_id=cmd.series_id, status=cmd.status))
-    return Response(status=HTTPStatus.NO_CONTENT)
+        case _SeriesStatus.not_started:
+            series.not_started()
+            ctx.publish(SeriesStatusNotStarted(series_id=cmd.series_id))
+        case _:
+            raise ValueError("Invalid status")

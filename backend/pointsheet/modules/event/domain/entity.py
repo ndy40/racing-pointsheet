@@ -1,11 +1,12 @@
 from datetime import datetime
-from typing import List, Optional, Self
+from typing import List, Optional, Self, Dict
 
 from pydantic import BaseModel, model_validator
 
 from modules.event.domain.exceptions import (
     InvalidEventDateForSeries,
     SeriesAlreadyClosed,
+    DriverAlreadySingedUp,
 )
 from modules.event.domain.value_objects import (
     EventStatus,
@@ -60,11 +61,15 @@ class Event(AggregateRoot):
     def add_driver(self, driver: Driver) -> None:
         if not self.drivers:
             self.drivers = []
+
         if not any(
             existing_driver.driver_id == driver.driver_id
             for existing_driver in self.drivers
         ):
             self.drivers.append(driver)
+            return
+
+        raise DriverAlreadySingedUp()
 
     def remove_driver(self, driver_id: EntityId) -> None:
         if self.drivers:
@@ -112,6 +117,17 @@ class Series(AggregateRoot):
             ...
 
         self.events.append(event)
+        self.events.sort(key=lambda e: e.starts_at or datetime.max)
+
+    def update_event(self, id: EntityId, event: Dict):
+        try:
+            old_event = next(filter(lambda x: x.id == id, self.events))
+            updated_event = old_event.model_copy(update=event)
+            self.events.remove(old_event)
+            self.events.append(updated_event)
+        except StopIteration:
+            ...
+
         self.events.sort(key=lambda e: e.starts_at or datetime.max)
 
     def remove_event(self, event_id: EntityId):

@@ -5,8 +5,11 @@ import pytest
 from pydantic import ValidationError
 from modules.event.domain.entity import Schedule
 
-from modules.event.domain.entity import Series, Event
-from modules.event.domain.exceptions import InvalidEventDateForSeries
+from modules.event.domain.entity import Series, Event, Driver
+from modules.event.domain.exceptions import (
+    InvalidEventDateForSeries,
+    DriverAlreadySingedUp,
+)
 from modules.event.domain.value_objects import SeriesStatus, ScheduleType
 
 
@@ -65,8 +68,6 @@ def test_event_creation_fails_when_start_but_no_end_date():
 
 
 def test_adding_driver_to_event_does_not_accept_duplicate():
-    from modules.event.domain.entity import Driver  # Ensure Driver is imported
-
     event = Event(
         title="Summer 1",
         host=uuid.uuid4(),
@@ -75,16 +76,42 @@ def test_adding_driver_to_event_does_not_accept_duplicate():
     )
 
     driver = Driver(driver_id=uuid.uuid4(), name="John Doe")  # Instantiate a Driver
-    event.add_driver(driver)  # Adding a driver for the first time
 
-    initial_driver_count = len(event.drivers)
-    event.add_driver(driver)  # Attempting to add the same driver again
-    assert len(event.drivers) == initial_driver_count  # Ensure length remains unchanged
+    with pytest.raises(DriverAlreadySingedUp):
+        event.add_driver(driver)  # Adding a driver for the first time
+        event.add_driver(driver)  # Attempting to add the same driver again
+
+
+def test_adding_driver_to_event_raises_error_for_duplicate():
+    event = Event(
+        title="Autumn Endurance 1",
+        host=uuid.uuid4(),
+        starts_at=datetime.now() + timedelta(days=3),
+        ends_at=datetime.now() + timedelta(days=4),
+    )
+
+    with pytest.raises(DriverAlreadySingedUp):  # Verify exception is raised
+        driver = Driver(driver_id=uuid.uuid4(), name="Jane Roe")  # Instantiate a Driver
+        event.add_driver(driver)  # Adding a driver for the first time
+        event.add_driver(driver)  # Try to add the driver again
+
+
+def test_signing_driver_to_event_successful():
+    event = Event(
+        title="Fall Race",
+        host=uuid.uuid4(),
+        starts_at=datetime.now() + timedelta(days=3),
+        ends_at=datetime.now() + timedelta(days=5),
+    )
+
+    driver = Driver(driver_id=uuid.uuid4(), name="Alex Doe")  # Instantiate a Driver
+    event.add_driver(driver)  # Signing a driver up for the event
+
+    assert driver in event.drivers  # Check if the driver was successfully added
+    assert len(event.drivers) == 1  # Ensure the event now contains the driver
 
 
 def test_removing_driver_from_event():
-    from modules.event.domain.entity import Driver  # Ensure Driver is imported
-
     event = Event(
         title="Summer 1",
         host=uuid.uuid4(),

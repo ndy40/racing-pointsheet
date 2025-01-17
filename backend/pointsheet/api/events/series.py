@@ -1,4 +1,3 @@
-import logging
 from http import HTTPStatus
 
 from flask import Blueprint, Response, current_app, request
@@ -20,8 +19,6 @@ from pointsheet.domain.responses import ResourceCreated
 
 from api.utils import auth
 
-logging.basicConfig()
-# logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
 series_bp = Blueprint("event", __name__)
 

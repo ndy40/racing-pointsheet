@@ -15,6 +15,7 @@ class EventFactory(SQLAlchemyModelFactory):
         model = Event
         sqlalchemy_session_factory = get_session
 
+    id = factory.LazyFunction(uuid.uuid4)
     title = factory.Sequence(lambda n: "Event %d" % n)
     host = uuid.uuid4()
     status = EventStatus.open
@@ -28,6 +29,7 @@ class SeriesFactory(SQLAlchemyModelFactory):
         model = Series
         sqlalchemy_session_factory = get_session
 
+    id = factory.LazyFunction(uuid.uuid4)
     title = factory.Sequence(lambda n: "Series %d" % n)
     status = SeriesStatus.started.value
     starts_at = LazyFunction(lambda: datetime.now() + timedelta(days=1))

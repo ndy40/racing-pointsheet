@@ -18,3 +18,8 @@ class SeriesAlreadyClosed(PointSheetException):
 class InvalidEventDateForSeries(PointSheetException):
     message = "Event date not within series start and end date range"
     code = 400
+
+
+class DriverAlreadySingedUp(PointSheetException):
+    message = "Driver already signed up to event"
+    code = 400

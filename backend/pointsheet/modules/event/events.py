@@ -30,3 +30,7 @@ class SeriesStarted(Event):
 
 class SeriesClosed(Event):
     series_id: EntityId
+
+
+class SeriesStatusNotStarted(Event):
+    series_id: EntityId
