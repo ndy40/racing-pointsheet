@@ -1,19 +1,14 @@
 from datetime import datetime, timedelta
-from enum import Enum
 from typing import Optional
 
 from pydantic import field_validator, Field
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from modules.auth.auth import TimedSerializer
+from pointsheet.auth import TimedSerializer
 from pointsheet.config import config
 from .exceptions import InvalidPassword
 from pointsheet.domain.entity import AggregateRoot
-
-
-class UserRole(str, Enum):
-    driver = "driver"
-    admin = "admin"
+from .value_objects import UserRole
 
 
 class ActiveUser(AggregateRoot):
@@ -32,7 +27,7 @@ class ActiveUser(AggregateRoot):
 
     def login(self):
         payload = {
-            "username": self.username,
+            "id": str(self.id),
         }
         serializer = TimedSerializer()
         self.auth_token = serializer.serialize(payload)
@@ -50,11 +45,11 @@ class RegisteredUser(AggregateRoot):
 
     @field_validator("password", mode="before")
     @classmethod
-    def hash_password(cls, password: str):
+    def hash_password(cls, password: str | bytes):
         """
         Hash the user's password and store it securely.
         """
-        if isinstance(password, str):
-            return generate_password_hash(password)
+        if isinstance(password, bytes):
+            password = password.decode("utf-8")
 
-        raise ValueError("Invalid password provided")
+        return generate_password_hash(password)

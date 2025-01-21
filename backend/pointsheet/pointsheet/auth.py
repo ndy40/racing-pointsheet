@@ -3,9 +3,31 @@ import os
 from abc import abstractmethod
 from typing import Any
 
-from itsdangerous import Serializer, URLSafeTimedSerializer
+from flask_httpauth import HTTPTokenAuth
+from itsdangerous import BadSignature, Serializer, URLSafeTimedSerializer
 
 from pointsheet.config import config
+from pointsheet.domain.exceptions.base import PointSheetException
+
+auth = HTTPTokenAuth(scheme="Bearer")
+
+
+class _AuthenticationException(PointSheetException):
+    message = "Authentication failed"
+
+
+@auth.verify_token
+def verify_token(token):
+    try:
+        result = TimedSerializer().deserializer(token)
+        return result[0]
+    except BadSignature:
+        raise _AuthenticationException()
+
+
+def get_user_id():
+    if user := auth.current_user():
+        return user["id"]
 
 
 def generate_salt():

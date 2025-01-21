@@ -2,7 +2,7 @@ from uuid import UUID
 
 from lato import Query
 
-from modules import event_module
+from modules.event import event_module
 from modules.event.dependencies import container
 from modules.event.repository import SeriesRepository
 

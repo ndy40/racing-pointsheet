@@ -1,9 +1,11 @@
 import datetime
+from uuid import uuid4
 
 import pytest
 
 from modules.event.domain.value_objects import SeriesStatus
 from pointsheet.domain import EntityId
+from pointsheet.factories.event import SeriesFactory
 from pointsheet.models import Event, Series
 
 
@@ -28,10 +30,10 @@ def test_one_off_event_without_series_association(db_session):
 
 
 def test_create_event_associated_with_series(db_session):
-    series = Series(title="New series", status=SeriesStatus.started)
-    event = Event(title="event 1", host=EntityId(int=1))
+    series = SeriesFactory(title="New series", status=SeriesStatus.started)
+    event = Event(id=uuid4(), title="event 1", host=uuid4())
     series.events.append(event)
-    db_session.add(series)
+    db_session.merge(series)
     db_session.commit()
 
     assert event.id is not None

@@ -2,7 +2,7 @@ from enum import Enum
 
 from lato import Command, TransactionContext
 
-from modules import event_module
+from modules.event import event_module
 from modules.event.commands.update_series_event import UpdateSeriesEvent
 from modules.event.dependencies import container
 from modules.event.domain.exceptions import SeriesNotFoundException

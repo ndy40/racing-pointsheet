@@ -1,6 +1,6 @@
 from lato import Command, TransactionContext
 
-from modules import auth_module
+from modules.auth import auth_module
 from modules.auth.dependencies import container
 from modules.auth.exceptions import InvalidUserException
 from modules.auth.repository import ActiveUserRepository

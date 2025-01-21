@@ -9,8 +9,6 @@ from pydantic import ValidationError
 from api.auth import auth_bp
 from api.events import series_bp, event_bp
 
-from modules import application
-
 
 root_dir = os.path.join(Path(__file__).parent.parent)
 
@@ -79,6 +77,7 @@ def create_app(test_config=None):
     #         status=resp["code"],
     #         response=json.dumps(resp),
     #     )
+    from modules import application
 
     app.application = application
 

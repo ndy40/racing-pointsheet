@@ -3,7 +3,7 @@ from time import sleep
 import pytest
 from itsdangerous import SignatureExpired
 
-from modules.auth.auth import TimedSerializer
+from pointsheet.auth import TimedSerializer
 from pointsheet.config import config
 
 

@@ -3,7 +3,7 @@ from typing import Optional
 
 from lato import Command
 
-from modules import event_module
+from modules.event import event_module
 from modules.event.dependencies import container
 from modules.event.domain.entity import Series
 from modules.event.repository import SeriesRepository

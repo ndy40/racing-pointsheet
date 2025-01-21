@@ -4,7 +4,7 @@ from lato import Command, TransactionContext
 from pydantic import Field, field_validator
 from werkzeug.security import generate_password_hash
 
-from modules import auth_module
+from modules.auth import auth_module
 from modules.auth.dependencies import container
 from modules.auth.domain import UserRole
 from modules.auth.events.user_registered import UserRegistered
@@ -13,14 +13,11 @@ from modules.auth.repository import RegisterUserRepository, ActiveUserRepository
 
 
 class RegisterUser(Command):
+    password: str
     username: str = Field(max_length=50)
-    password: str = Field(
-        min_length=4,
-        max_length=25,
-    )
     role: Optional[UserRole] = Field(default=UserRole.driver)
 
-    @field_validator("password", mode="after")
+    @field_validator("password", mode="before")
     @classmethod
     def hash_password(cls, password: str):
         """

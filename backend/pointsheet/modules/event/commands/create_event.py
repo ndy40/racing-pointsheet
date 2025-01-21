@@ -4,7 +4,7 @@ from typing import Optional, Self
 from lato import Command
 from pydantic import ValidationError, model_validator, field_validator
 
-from modules import event_module
+from modules.event import event_module
 from modules.event.dependencies import container
 from modules.event.domain.entity import Event
 from modules.event.domain.value_objects import EventStatus

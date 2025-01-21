@@ -1,5 +1,4 @@
 from datetime import datetime
-from enum import Enum
 from typing import Optional, List
 
 from pydantic import BaseModel
@@ -7,11 +6,6 @@ from pydantic import BaseModel
 from modules.account.domain.exceptions import AlreadySignedUpException
 from pointsheet.domain import EntityId
 from pointsheet.domain.entity import AggregateRoot
-
-
-class UserRole(str, Enum):
-    driver = "driver"
-    admin = "admin"
 
 
 class RaceEvent(BaseModel):

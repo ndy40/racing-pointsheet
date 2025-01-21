@@ -1,10 +1,10 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import String, Boolean, DateTime
+from sqlalchemy import String, Boolean, DateTime, Text
 from sqlalchemy.orm import Mapped, mapped_column, validates
 
-from modules.account.domain.entity import UserRole
+from modules.auth.value_objects import UserRole
 from pointsheet.domain import EntityId
 from pointsheet.models import BaseModel, EntityIdType
 from pointsheet.models.custom_types import UserRoleType
@@ -18,7 +18,7 @@ class User(BaseModel):
         primary_key=True,
     )
     username: Mapped[str] = mapped_column(String(255))
-    password: Mapped[str] = mapped_column(String(255))
+    password: Mapped[str] = mapped_column(Text)
     role: Mapped[Optional[str]] = mapped_column(UserRoleType, default=UserRole.driver)
     is_active = mapped_column(Boolean, default=False)
     last_login = mapped_column(DateTime, nullable=True)

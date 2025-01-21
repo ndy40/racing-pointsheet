@@ -1,6 +1,6 @@
 from lato import Query
 
-from modules import auth_module
+from modules.auth import auth_module
 from modules.auth.dependencies import container
 from modules.auth.domain import ActiveUser
 from modules.auth.exceptions import InvalidUserException

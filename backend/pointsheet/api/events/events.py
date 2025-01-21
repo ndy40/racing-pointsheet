@@ -1,9 +1,9 @@
 from flask import Blueprint, request, current_app, Response
 
-from api.utils import auth
 from modules.event.commands.create_event import CreateEvent
 from modules.event.queries.get_event import GetEvent
 from modules.event.queries.get_events import GetEvents
+from pointsheet.auth import auth
 from pointsheet.domain.responses import ResourceCreated
 
 event_bp = Blueprint("events", __name__)

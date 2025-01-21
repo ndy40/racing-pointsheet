@@ -2,7 +2,7 @@ from modules.event.domain.entity import Event
 from modules.event.domain.value_objects import EventStatus
 from pointsheet.domain import EntityId
 from modules.event.repository import EventRepository
-from pointsheet.models.event import Event as EventModel
+from pointsheet.factories.event import EventFactory
 
 
 def test_saving_of_event_using_repository(db_session):
@@ -12,20 +12,18 @@ def test_saving_of_event_using_repository(db_session):
     db_session.commit()
 
 
-def test_fetching_of_model_using_repository(db_session, event_factory):
-    user_factory: EventModel = event_factory()
-    db_session.commit()
+def test_fetching_of_model_using_repository(db_session):
+    event = EventFactory()
 
-    id = user_factory.id
+    event_id = event.id
+    inserted_model = EventRepository(db_session).find_by_id(event.id)
 
-    inserted_model = EventRepository(db_session).find_by_id(id)
-
-    assert id == inserted_model.id
+    assert event_id == inserted_model.id
 
 
-def test_fetching_all_event_using_repository(db_session, event_factory):
-    event_factory()
-    event_factory()
+def test_fetching_all_event_using_repository(db_session):
+    EventFactory()
+    EventFactory()
     db_session.commit()
 
     result = EventRepository(db_session).all()

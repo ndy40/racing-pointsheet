@@ -1,6 +1,6 @@
 from lato import Command, TransactionContext
 
-from modules import event_module
+from modules.event import event_module
 from modules.event.dependencies import container
 from modules.event.domain.entity import Event
 from pointsheet.domain import EntityId

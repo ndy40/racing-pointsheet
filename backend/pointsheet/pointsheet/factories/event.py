@@ -14,6 +14,7 @@ class EventFactory(SQLAlchemyModelFactory):
     class Meta:
         model = Event
         sqlalchemy_session_factory = get_session
+        sqlalchemy_session_persistence = "commit"
 
     id = factory.LazyFunction(uuid.uuid4)
     title = factory.Sequence(lambda n: "Event %d" % n)
@@ -28,6 +29,7 @@ class SeriesFactory(SQLAlchemyModelFactory):
     class Meta:
         model = Series
         sqlalchemy_session_factory = get_session
+        sqlalchemy_session_persistence = "commit"
 
     id = factory.LazyFunction(uuid.uuid4)
     title = factory.Sequence(lambda n: "Series %d" % n)
