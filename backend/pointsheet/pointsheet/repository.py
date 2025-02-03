@@ -2,6 +2,7 @@ import abc
 from abc import abstractmethod
 from typing import Any, Generic, List, TypeVar
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from pointsheet.domain import EntityId
@@ -44,11 +45,10 @@ class AbstractRepository(Generic[DbModel, T], abc.ABC):
     @abstractmethod
     def delete(self, id: Any or EntityId) -> None: ...
 
-    @abstractmethod
-    def all(self) -> List[T]: ...
-
-    @abstractmethod
-    def find_by_id(self, id: Any) -> T | None: ...
+    def all(self) -> List[T]:
+        stmt = select(DbModel).order_by(DbModel.id)
+        result = self._session.execute(stmt).scalars()
+        return [self._map_to_model(item) for item in result]
 
     @property
     def mapper(self):

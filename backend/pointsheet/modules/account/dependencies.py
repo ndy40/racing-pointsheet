@@ -1,6 +1,6 @@
 from lagom import Container
 
-from modules.account.repository import DriverRepository
+from .repository import DriverRepository
 from pointsheet.db import get_session
 
 container = Container()

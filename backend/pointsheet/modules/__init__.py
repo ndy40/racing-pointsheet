@@ -1,9 +1,9 @@
 # Register application modules
 from lato import Application, TransactionContext
 
-from modules.account import account_module
-from modules.auth import auth_module
-from modules.event import event_module
+from .account import account_module
+from .auth import auth_module
+from .event import event_module
 from pointsheet.auth import get_user_id
 
 

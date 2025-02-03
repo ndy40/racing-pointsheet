@@ -23,3 +23,8 @@ class InvalidEventDateForSeries(PointSheetException):
 class DriverAlreadySingedUp(PointSheetException):
     message = "Driver already signed up to event"
     code = 400
+
+
+class DriverNotFound(PointSheetException):
+    message = "Driver not found"
+    code = 404

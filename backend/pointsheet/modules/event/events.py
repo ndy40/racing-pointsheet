@@ -1,11 +1,7 @@
-import logging
-
 from lato import Event
 
 from modules.event.domain.value_objects import SeriesStatus
 from pointsheet.domain import EntityId
-
-_logger = logging.getLogger(__package__)
 
 
 class SeriesCreated(Event): ...
@@ -34,3 +30,8 @@ class SeriesClosed(Event):
 
 class SeriesStatusNotStarted(Event):
     series_id: EntityId
+
+
+class DriverJoinedEvent(Event):
+    event_id: EntityId
+    driver_id: EntityId

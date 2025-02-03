@@ -8,7 +8,7 @@ from pointsheet.models import BaseModel, EntityIdType
 
 
 class Driver(BaseModel):
-    __tablename__ = "driver"
+    __tablename__ = "drivers"
 
     id: Mapped[EntityId] = mapped_column(
         EntityIdType,

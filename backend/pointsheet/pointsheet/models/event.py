@@ -31,7 +31,7 @@ class EventSchedule(BaseModel):
 
 
 class Driver(BaseModel):
-    __tablename__ = "drivers"
+    __tablename__ = "event_drivers"
     id: Mapped[EntityId] = mapped_column(
         EntityIdType, primary_key=True, default=uuid_default()
     )

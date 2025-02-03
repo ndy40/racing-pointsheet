@@ -1,5 +1,5 @@
-import logging
 from datetime import datetime, timedelta
+from unittest.mock import patch
 
 import pytest
 import sqlalchemy.event
@@ -9,10 +9,6 @@ from modules.auth.repository import RegisterUserRepository
 from pointsheet import create_app
 from pointsheet.db import engine
 from pointsheet.models import BaseModel
-
-
-logging.basicConfig()
-logging.getLogger("sqlalchemy.engine").setLevel(logging.DEBUG)
 
 
 @pytest.fixture
@@ -53,7 +49,10 @@ def app():
     yield app
 
 
-@pytest.fixture
+@pytest.fixture(
+    scope="module",
+    autouse=True,
+)
 def client(app):
     app.testing = True
     with app.test_client() as client:
@@ -78,7 +77,7 @@ def default_user(db_session):
     return new_user
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="function", autouse=True)
 def login(client):
     response = client.post(
         "/auth",
@@ -90,3 +89,10 @@ def login(client):
 @pytest.fixture(scope="function")
 def auth_token(login):
     return {"Authorization": f"Bearer {login['token']}"}
+
+
+@pytest.fixture(scope="function", autouse=True)
+def current_user(default_user):
+    with patch("modules.get_user_id") as mock_get_current_user:
+        mock_get_current_user.return_value = default_user.id
+        yield default_user

@@ -41,8 +41,8 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             ends_at=instance.ends_at,
             status=instance.status,
             drivers=[
-                DriverModel(id=instance.id, name=instance.name)
-                for instance.drivers in instance.drivers
+                DriverModel(id=driver.id, name=driver.name)
+                for driver in instance.drivers
             ],
         )
 

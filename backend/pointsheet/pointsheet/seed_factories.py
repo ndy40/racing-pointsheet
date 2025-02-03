@@ -1,10 +1,5 @@
-import logging
-
 from pointsheet.db import get_session
 from pointsheet.factories.event import SeriesFactory, EventFactory
-
-logging.basicConfig()
-logging.getLogger("sqlalchemy.engine").setLevel(logging.DEBUG)
 
 
 def run():

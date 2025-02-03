@@ -20,5 +20,4 @@ def authenticate():
     cmd = AuthUser(**request.json)
     current_app.application.execute(cmd)
     active_user = current_app.application.execute(GetActiveUser(username=cmd.username))
-    print("Active user:", active_user.auth_token)
     return {"token": active_user.auth_token}

@@ -1,9 +1,10 @@
 from flask import Blueprint, request, current_app, Response
 
 from modules.event.commands.create_event import CreateEvent
+from modules.event.commands.join_event import JoinEvent
 from modules.event.queries.get_event import GetEvent
 from modules.event.queries.get_events import GetEvents
-from pointsheet.auth import auth
+from pointsheet.auth import auth, get_user_id
 from pointsheet.domain.responses import ResourceCreated
 
 event_bp = Blueprint("events", __name__)
@@ -32,3 +33,11 @@ def get_event(event_id):
     query = GetEvent(event_id=event_id)
     event = current_app.application.execute(query)
     return (event.model_dump(), 200) if event else Response(status=404)
+
+
+@event_bp.route("/events/<uuid:event_id>/join", methods=["PUT"])
+@auth.login_required
+def join_event(event_id):
+    cmd = JoinEvent(event_id=event_id, driver_id=get_user_id())
+    current_app.application.execute(cmd)
+    return Response(status=204)

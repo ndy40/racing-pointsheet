@@ -3,6 +3,7 @@ import uuid
 
 from fastjsonschema import validate
 
+from pointsheet.factories.account import DriverFactory
 from pointsheet.factories.event import EventFactory
 from .schemas.common import resource_created
 from modules.event.domain.value_objects import EventStatus
@@ -76,4 +77,23 @@ def test_create_event_with_ends_at_exceeds_one_month_of_starts_at(client, auth_t
     }
 
     response = client.post("/events/", json=payload, headers=auth_token)
+    assert response.status_code == 400
+
+
+def test_driver_joining_event(client, db_session, auth_token, default_user):
+    event = EventFactory()
+    DriverFactory(id=default_user.id)
+
+    response = client.put(f"/events/{event.id}/join", headers=auth_token)
+
+    assert response.status_code == 204
+
+
+def test_driver_joining_event_twice_fails(client, db_session, auth_token, default_user):
+    event = EventFactory()
+    DriverFactory(id=default_user.id)
+
+    client.put(f"/events/{event.id}/join", headers=auth_token)
+    response = client.put(f"/events/{event.id}/join", headers=auth_token)
+
     assert response.status_code == 400
