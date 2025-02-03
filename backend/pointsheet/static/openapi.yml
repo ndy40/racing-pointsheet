@@ -335,7 +335,22 @@ paths:
           description: Bad request
         204:
           description: Schedule created
-
+  /events/{id}/join:
+    put:
+      operationId: joinEvent
+      tags:
+        - Events
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        204:
+          description: User joined event
+        400:
+          description: Bad request
 components:
   securitySchemes:
     BearerAuth:
