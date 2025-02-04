@@ -35,3 +35,8 @@ class SeriesStatusNotStarted(Event):
 class DriverJoinedEvent(Event):
     event_id: EntityId
     driver_id: EntityId
+
+
+class DriverLeftEvent(Event):
+    event_id: EntityId
+    driver_id: EntityId

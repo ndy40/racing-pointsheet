@@ -2,6 +2,7 @@ from flask import Blueprint, request, current_app, Response
 
 from modules.event.commands.create_event import CreateEvent
 from modules.event.commands.join_event import JoinEvent
+from modules.event.commands.leave_event import LeaveEvent
 from modules.event.queries.get_event import GetEvent
 from modules.event.queries.get_events import GetEvents
 from pointsheet.auth import auth, get_user_id
@@ -39,5 +40,13 @@ def get_event(event_id):
 @auth.login_required
 def join_event(event_id):
     cmd = JoinEvent(event_id=event_id, driver_id=get_user_id())
+    current_app.application.execute(cmd)
+    return Response(status=204)
+
+
+@event_bp.route("/events/<uuid:event_id>/leave", methods=["PUT"])
+@auth.login_required
+def leave_event(event_id):
+    cmd = LeaveEvent(event_id=event_id, driver_id=get_user_id())
     current_app.application.execute(cmd)
     return Response(status=204)

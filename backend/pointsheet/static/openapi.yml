@@ -351,6 +351,18 @@ paths:
           description: User joined event
         400:
           description: Bad request
+  /events/{id}/leave:
+    put:
+      operationId: leaveEvent
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        204:
+          description: Removed from event
 components:
   securitySchemes:
     BearerAuth:

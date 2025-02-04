@@ -11,3 +11,7 @@ class InvalidPassword(PointSheetException):
 
 class UserAlreadyExists(PointSheetException):
     message = "user already exists"
+
+
+class EventNotFoundException(PointSheetException):
+    message = "event not found"

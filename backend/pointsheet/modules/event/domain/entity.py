@@ -31,7 +31,7 @@ class Schedule(BaseModel):
 
 
 class Driver(BaseModel):
-    driver_id: EntityId
+    id: EntityId
     name: str
 
 
@@ -62,10 +62,7 @@ class Event(AggregateRoot):
         if not self.drivers:
             self.drivers = []
 
-        if not any(
-            existing_driver.driver_id == driver.driver_id
-            for existing_driver in self.drivers
-        ):
+        if not any(existing_driver.id == driver.id for existing_driver in self.drivers):
             self.drivers.append(driver)
             return
 
@@ -73,9 +70,7 @@ class Event(AggregateRoot):
 
     def remove_driver(self, driver_id: EntityId) -> None:
         if self.drivers:
-            self.drivers = [
-                driver for driver in self.drivers if driver.driver_id != driver_id
-            ]
+            self.drivers = [driver for driver in self.drivers if driver.id != driver_id]
 
     def add_schedule(self, schedule: Schedule) -> None:
         if not self.schedule:

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from sqlalchemy import DateTime, ForeignKey, String, Integer
+from sqlalchemy import DateTime, ForeignKey, String, Integer, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from modules.event.domain.value_objects import SeriesStatus, ScheduleType
@@ -42,6 +42,8 @@ class Driver(BaseModel):
         nullable=False,
     )
 
+    __table_args__ = (UniqueConstraint("id", "event_id", name="unique_driver_event"),)
+
 
 class Event(BaseModel):
     __tablename__ = "events"
@@ -65,7 +67,9 @@ class Event(BaseModel):
     schedule: Mapped[Optional[List[EventSchedule]]] = relationship(
         cascade="all, delete"
     )
-    drivers: Mapped[Optional[List[Driver]]] = relationship(cascade="all, delete")
+    drivers: Mapped[Optional[List[Driver]]] = relationship(
+        Driver, cascade="delete-orphan, all"
+    )
 
 
 class Series(BaseModel):

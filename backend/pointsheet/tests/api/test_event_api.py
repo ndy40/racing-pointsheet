@@ -4,7 +4,7 @@ import uuid
 from fastjsonschema import validate
 
 from pointsheet.factories.account import DriverFactory
-from pointsheet.factories.event import EventFactory
+from pointsheet.factories.event import EventFactory, EventDriverFactory
 from .schemas.common import resource_created
 from modules.event.domain.value_objects import EventStatus
 
@@ -96,4 +96,12 @@ def test_driver_joining_event_twice_fails(client, db_session, auth_token, defaul
     client.put(f"/events/{event.id}/join", headers=auth_token)
     response = client.put(f"/events/{event.id}/join", headers=auth_token)
 
-    assert response.status_code == 400
+    assert response.status_code == 400, response.json
+
+
+def test_driver_leaving_event_succeeds(client, db_session, auth_token, default_user):
+    event = EventFactory()
+    EventDriverFactory(id=default_user.id, event_id=event.id)
+
+    response = client.put(f"/events/{event.id}/leave", headers=auth_token)
+    assert response.status_code == 204, response.json

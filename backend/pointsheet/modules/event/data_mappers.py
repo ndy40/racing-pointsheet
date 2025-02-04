@@ -26,7 +26,8 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             if instance.schedule
             else [],
             drivers=[
-                Driver(id=driver.id, name=driver.name) for driver in instance.drivers
+                Driver(id=driver.id, name=driver.name, event_id=instance.id)
+                for driver in instance.drivers
             ]
             if instance.drivers
             else [],
@@ -43,7 +44,9 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             drivers=[
                 DriverModel(id=driver.id, name=driver.name)
                 for driver in instance.drivers
-            ],
+            ]
+            if instance.drivers
+            else None,
         )
 
         if instance.schedule:

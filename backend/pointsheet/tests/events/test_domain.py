@@ -75,7 +75,7 @@ def test_adding_driver_to_event_does_not_accept_duplicate():
         ends_at=datetime.now() + timedelta(days=2),
     )
 
-    driver = Driver(driver_id=uuid.uuid4(), name="John Doe")  # Instantiate a Driver
+    driver = Driver(id=uuid.uuid4(), name="John Doe")  # Instantiate a Driver
 
     with pytest.raises(DriverAlreadySingedUp):
         event.add_driver(driver)  # Adding a driver for the first time
@@ -91,7 +91,7 @@ def test_adding_driver_to_event_raises_error_for_duplicate():
     )
 
     with pytest.raises(DriverAlreadySingedUp):  # Verify exception is raised
-        driver = Driver(driver_id=uuid.uuid4(), name="Jane Roe")  # Instantiate a Driver
+        driver = Driver(id=uuid.uuid4(), name="Jane Roe")  # Instantiate a Driver
         event.add_driver(driver)  # Adding a driver for the first time
         event.add_driver(driver)  # Try to add the driver again
 
@@ -104,7 +104,7 @@ def test_signing_driver_to_event_successful():
         ends_at=datetime.now() + timedelta(days=5),
     )
 
-    driver = Driver(driver_id=uuid.uuid4(), name="Alex Doe")  # Instantiate a Driver
+    driver = Driver(id=uuid.uuid4(), name="Alex Doe")  # Instantiate a Driver
     event.add_driver(driver)  # Signing a driver up for the event
 
     assert driver in event.drivers  # Check if the driver was successfully added
@@ -119,11 +119,11 @@ def test_removing_driver_from_event():
         ends_at=datetime.now() + timedelta(days=2),
     )
 
-    driver = Driver(driver_id=uuid.uuid4(), name="Jane Doe")  # Instantiate a Driver
+    driver = Driver(id=uuid.uuid4(), name="Jane Doe")  # Instantiate a Driver
     event.add_driver(driver)  # Add the driver
     assert driver in event.drivers  # Ensure the driver is added
 
-    event.remove_driver(driver.driver_id)  # Remove the driver
+    event.remove_driver(driver.id)  # Remove the driver
     assert driver not in event.drivers  # Ensure the driver is removed
 
 
