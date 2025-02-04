@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional, Self, Dict
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, model_validator, PositiveInt
 
 from modules.event.domain.exceptions import (
     InvalidEventDateForSeries,
@@ -35,6 +35,25 @@ class Driver(BaseModel):
     name: str
 
 
+class DriverResult(BaseModel):
+    driver_id: EntityId
+    driver: str
+    position: PositiveInt
+    best_lap: str
+    total: str
+    penalties: Optional[int] = 0
+    fl_points: Optional[int] = 0
+    points: Optional[int] = 0
+    total_points: Optional[PositiveInt] = 0
+
+
+class RaceResult(BaseModel):
+    schedule_id: ScheduleId
+    result: List[DriverResult]
+    mark_down: Optional[str] = None
+    upload_file: Optional[str] = None
+
+
 class Event(AggregateRoot):
     title: str
     host: EntityId
@@ -45,6 +64,7 @@ class Event(AggregateRoot):
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
     drivers: Optional[List[Driver]] = None
+    results: Optional[List[RaceResult]] = []
 
     @model_validator(mode="after")
     def check_start_and_end_date(self) -> Self:
@@ -57,6 +77,44 @@ class Event(AggregateRoot):
             raise ValueError("Event should have an end date")
 
         return self
+
+    def add_result(self, race_result: RaceResult) -> None:
+        if not self.schedule:
+            raise ValueError("Cannot add result as no schedules exist.")
+
+        # Ensure the scheduleId matches a 'race' schedule
+        race_schedules = [
+            schedule for schedule in self.schedule if schedule.type == ScheduleType.race
+        ]
+
+        if not any(
+            schedule.id == race_result.schedule_id for schedule in race_schedules
+        ):
+            raise ValueError(
+                f"Schedule ID {race_result.schedule_id} is not associated with a 'race' schedule."
+            )
+
+        self.results = [
+            result
+            for result in self.results
+            if result.schedule_id != race_result.schedule_id
+        ]
+
+        # Ensure we don't exceed the number of race schedules
+        if self.results:
+            current_race_results = [
+                result
+                for result in self.results
+                if any(schedule.id == result.schedule_id for schedule in race_schedules)
+            ]
+            if len(current_race_results) >= len(race_schedules):
+                raise ValueError(
+                    "Cannot add more race results than the number of 'race' schedules."
+                )
+
+        # remove RaceResult if this is an update
+        self.results.append(race_result)
+        self.results.sort(key=lambda r: r.schedule_id)
 
     def add_driver(self, driver: Driver) -> None:
         if not self.drivers:
@@ -88,6 +146,15 @@ class Event(AggregateRoot):
             self.schedule = [
                 schedule for schedule in self.schedule if schedule.id != schedule_id
             ]
+
+    def remove_result(self, schedule_id: ScheduleId) -> None:
+        if not self.results:
+            raise ValueError("No results exist to remove.")
+
+        self.results = [
+            result for result in self.results if result.schedule_id != schedule_id
+        ]
+        self.results.sort(key=lambda r: r.schedule_id)
 
 
 class Series(AggregateRoot):
