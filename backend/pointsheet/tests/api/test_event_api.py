@@ -105,3 +105,14 @@ def test_driver_leaving_event_succeeds(client, db_session, auth_token, default_u
 
     response = client.put(f"/events/{event.id}/leave", headers=auth_token)
     assert response.status_code == 204, response.json
+
+
+def test_driver_leaving_event_twice_returns_204(
+    client, db_session, auth_token, default_user
+):
+    event = EventFactory()
+    EventDriverFactory(id=default_user.id, event_id=event.id)
+
+    client.put(f"/events/{event.id}/leave", headers=auth_token)
+    response = client.put(f"/events/{event.id}/leave", headers=auth_token)
+    assert response.status_code == 204, response.json
