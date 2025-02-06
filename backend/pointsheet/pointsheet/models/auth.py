@@ -6,8 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column, validates
 
 from modules.auth.value_objects import UserRole
 from pointsheet.domain import EntityId
-from pointsheet.models import BaseModel, EntityIdType
-from pointsheet.models.custom_types import UserRoleType
+from .base import BaseModel
+from pointsheet.models.custom_types import UserRoleType, EntityIdType
 
 
 class User(BaseModel):

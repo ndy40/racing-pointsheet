@@ -7,20 +7,19 @@ from sqlalchemy import (
     String,
     Integer,
     UniqueConstraint,
-    JSON,
     Text,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
-from modules.event.domain.entity import DriverResult
-from modules.event.domain.value_objects import SeriesStatus, ScheduleType
+from modules.event.domain.value_objects import SeriesStatus, ScheduleType, DriverResult
 from pointsheet.domain.entity import EntityId
-from pointsheet.models import BaseModel, SeriesStatusType
+from pointsheet.models import BaseModel, SeriesStatusType, DriverResultType
 from pointsheet.models.base import uuid_default
 from pointsheet.models.custom_types import (
     EntityIdType,
     EventStatusType,
     ScheduleTypeType,
+    PydanticJsonType,
 )
 
 
@@ -36,13 +35,12 @@ class RaceResult(BaseModel):
             "event_schedule.id", ondelete="CASCADE", name="race_results_schedule_id"
         ),
     )
-    result: Mapped[List[DriverResult]] = mapped_column(JSON[List[DriverResult]])
+    result: Mapped[List[DriverResult]] = mapped_column(
+        PydanticJsonType[List[DriverResultType]]
+    )
     mark_down: Mapped[str] = mapped_column(Text, nullable=True)
     upload_file: Mapped[str] = mapped_column(Text, nullable=True)
-    event_id: Mapped[EntityId] = mapped_column(
-        EntityIdType,
-        ForeignKey("events.id", ondelete="CASCADE", name="race_results_event_id"),
-    )
+    schedule: Mapped["EventSchedule"] = relationship(back_populates="result")
 
 
 class EventSchedule(BaseModel):
@@ -57,6 +55,9 @@ class EventSchedule(BaseModel):
         EntityIdType,
         ForeignKey("events.id", ondelete="CASCADE", name="event_schedule_event"),
         nullable=False,
+    )
+    result: Mapped[Optional[RaceResult]] = relationship(
+        back_populates="schedule", cascade="all, delete-orphan"
     )
 
 

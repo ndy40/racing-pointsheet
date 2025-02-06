@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional, Self, Dict
 
-from pydantic import BaseModel, model_validator, PositiveInt
+from pydantic import BaseModel, model_validator
 
 from modules.event.domain.exceptions import (
     InvalidEventDateForSeries,
@@ -13,6 +13,7 @@ from modules.event.domain.value_objects import (
     ScheduleId,
     ScheduleType,
     SeriesStatus,
+    DriverResult,
 )
 from pointsheet.domain import EntityId
 from pointsheet.domain.entity import AggregateRoot
@@ -33,18 +34,6 @@ class Schedule(BaseModel):
 class Driver(BaseModel):
     id: EntityId
     name: str
-
-
-class DriverResult(BaseModel):
-    driver_id: EntityId
-    driver: str
-    position: PositiveInt
-    best_lap: str
-    total: str
-    penalties: Optional[int] = 0
-    fl_points: Optional[int] = 0
-    points: Optional[int] = 0
-    total_points: Optional[PositiveInt] = 0
 
 
 class RaceResult(BaseModel):

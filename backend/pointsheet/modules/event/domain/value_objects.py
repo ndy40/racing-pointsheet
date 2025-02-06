@@ -1,4 +1,9 @@
 from enum import Enum
+from typing import Optional
+
+from pydantic import BaseModel, PositiveInt, field_serializer
+
+from pointsheet.domain import EntityId
 
 ScheduleId = int
 
@@ -19,3 +24,19 @@ class ScheduleType(str, Enum):
     practice = "practice"
     qualification = "qualification"
     race = "race"
+
+
+class DriverResult(BaseModel):
+    driver_id: EntityId
+    driver: str
+    position: PositiveInt
+    best_lap: str
+    total: str
+    penalties: Optional[int] = 0
+    fl_points: Optional[int] = 0
+    points: Optional[int] = 0
+    total_points: Optional[PositiveInt] = 0
+
+    @field_serializer("driver_id")
+    def serialize_driver_id(self, driver_id: EntityId):
+        return str(driver_id)

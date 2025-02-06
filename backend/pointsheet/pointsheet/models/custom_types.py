@@ -1,11 +1,17 @@
 from typing import Any, Optional, TypeVar
+from uuid import UUID
 
 from pydantic import BaseModel
 from sqlalchemy import CHAR, Dialect, String, TypeDecorator, JSON
 from sqlalchemy.sql.type_api import _T
 
 from modules.auth.value_objects import UserRole
-from modules.event.domain.value_objects import EventStatus, SeriesStatus, ScheduleType
+from modules.event.domain.value_objects import (
+    EventStatus,
+    SeriesStatus,
+    ScheduleType,
+    DriverResult,
+)
 from pointsheet.domain.entity import EntityId
 
 
@@ -112,32 +118,35 @@ class ScheduleTypeType(BaseCustomTypes):
         return "ScheduleTypeType()"
 
 
-# class DriverResultType(BaseCustomTypes):
-#     impl = JSON
-#
-#     def process_bind_param(self, value: Optional[BaseModel], dialect: Dialect) -> Any:
-#         if value:
-#             return value.model_dump()
-#         return value
-#
-#     def process_result_value(self, value: Optional[Any], dialect: Dialect) -> Optional[Any]:
-#         if value:
-#             return DriverResult(**value)
-#         return None
+class DriverResultType(BaseCustomTypes):
+    impl = JSON
+
+    def process_bind_param(self, value: Optional[BaseModel], dialect: Dialect) -> Any:
+        if value:
+            return value.model_dump_json()
+        return value
+
+    def process_result_value(
+        self, value: Optional[Any], dialect: Dialect
+    ) -> Optional[Any]:
+        if value:
+            return DriverResult(**value)
+
+        return None
+
 
 T = TypeVar("T", bound=BaseModel)
 
 
 class PydanticJsonType[T](BaseCustomTypes):
     impl = JSON
-    cache_ok = True
 
     def process_bind_param(self, value: Optional[list[T] | T], dialect: Dialect) -> Any:
         if not value:
             return value
 
         if isinstance(value, list):
-            return [item.model_dump() for item in value]
+            return [item.model_dump_json() for item in value]
 
         return value.model_dump()
 
@@ -151,3 +160,22 @@ class PydanticJsonType[T](BaseCustomTypes):
             return [T(**item) for item in value]
 
         return T(**value)
+
+
+class GUID(TypeDecorator):
+    impl = CHAR
+    cache_ok = True
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return value
+        elif dialect.name == "postgresql":
+            return str(value)
+        else:
+            return value.hex
+
+    def process_result_value(self, value, dialect):
+        if value is None:
+            return value
+        else:
+            return UUID(value) if not isinstance(value, UUID) else value

@@ -3,10 +3,12 @@ from uuid import uuid4
 
 import pytest
 
-from modules.event.domain.value_objects import SeriesStatus
+from modules.event.domain.value_objects import SeriesStatus, DriverResult
 from pointsheet.domain import EntityId
-from pointsheet.factories.event import SeriesFactory
+from pointsheet.factories.account import DriverFactory
+from pointsheet.factories.event import SeriesFactory, EventFactory
 from pointsheet.models import Event, Series
+from pointsheet.models.event import RaceResult, EventSchedule
 
 
 def test_we_can_create_a_series_without_status_set(db_session):
@@ -60,3 +62,27 @@ def test_series_ends_at_cannot_be_in_past_if_starts_at_is_set(db_session):
         )
         db_session.add(series)
         db_session.commit()
+
+
+def test_save_race_result_to_event(db_session):
+    event = EventFactory()
+    schedule = EventSchedule(nbr_of_laps=10, duration="1 hour", type="race")
+
+    driver = DriverFactory()
+
+    driver_result = DriverResult(
+        driver_id=str(driver.id),
+        driver=driver.name,
+        position=1,
+        best_lap="00:34:00",
+        total="01:43:00",
+        points=10,
+        total_points=10,
+    )
+
+    race_result = RaceResult(result=[driver_result])
+    schedule.result = race_result
+    event.schedule.append(schedule)
+
+    db_session.merge(event)
+    db_session.commit()

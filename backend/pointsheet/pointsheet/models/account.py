@@ -4,7 +4,8 @@ from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from pointsheet.domain import EntityId
-from pointsheet.models import BaseModel, EntityIdType
+from .base import BaseModel
+from .custom_types import EntityIdType
 
 
 class Driver(BaseModel):

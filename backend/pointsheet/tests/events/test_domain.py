@@ -3,14 +3,14 @@ import uuid
 
 import pytest
 from pydantic import ValidationError
-from modules.event.domain.entity import Schedule, DriverResult, RaceResult
+from modules.event.domain.entity import Schedule, RaceResult
 
 from modules.event.domain.entity import Series, Event, Driver
 from modules.event.domain.exceptions import (
     InvalidEventDateForSeries,
     DriverAlreadySingedUp,
 )
-from modules.event.domain.value_objects import SeriesStatus, ScheduleType
+from modules.event.domain.value_objects import SeriesStatus, ScheduleType, DriverResult
 
 
 def test_add_event_to_series_fails_when_event_in_past():
