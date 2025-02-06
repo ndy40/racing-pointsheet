@@ -154,7 +154,7 @@ class Event(AggregateRoot):
             ]
             self.schedule.sort(
                 key=lambda s: {"practice": 0, "qualification": 1, "race": 2}.get(
-                    s.type.value, 3
+                    s.type.value, 999
                 )
             )
 

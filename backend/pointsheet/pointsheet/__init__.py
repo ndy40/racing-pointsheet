@@ -56,7 +56,9 @@ def create_app(test_config=None):
             "message": dict(
                 list(
                     map(
-                        lambda err: (err["loc"][0], err["msg"]),
+                        lambda err: (err["loc"][0], err["msg"])
+                        if err["loc"]
+                        else ("message", err["msg"]),
                         e.errors(
                             include_input=False,
                             include_url=False,

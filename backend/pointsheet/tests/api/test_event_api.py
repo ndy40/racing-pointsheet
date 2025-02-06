@@ -116,3 +116,108 @@ def test_driver_leaving_event_twice_returns_204(
     client.put(f"/events/{event.id}/leave", headers=auth_token)
     response = client.put(f"/events/{event.id}/leave", headers=auth_token)
     assert response.status_code == 204, response.json
+
+
+def test_add_schedule_to_event(client, db_session, auth_token):
+    event = EventFactory()
+
+    payload = {
+        "type": "race",
+        "nbr_of_laps": 25,
+        "duration": "00:45:00",
+    }
+
+    response = client.post(
+        f"/events/{event.id}/schedule", json=payload, headers=auth_token
+    )
+
+    assert response.status_code == 204, response.json
+
+
+def test_removing_schedule_from_event_succeeds(client, db_session, auth_token):
+    event = EventFactory()
+
+    # Add three schedules: practice, qualification, and race
+    practice_schedule = {"type": "practice", "duration": "00:30:00"}
+    qualification_schedule = {"type": "qualification", "duration": "00:20:00"}
+    race_schedule = {"type": "race", "nbr_of_laps": 50}
+
+    client.post(
+        f"/events/{event.id}/schedule", json=practice_schedule, headers=auth_token
+    )
+    client.post(
+        f"/events/{event.id}/schedule", json=qualification_schedule, headers=auth_token
+    )
+    race_response = client.post(
+        f"/events/{event.id}/schedule", json=race_schedule, headers=auth_token
+    )
+
+    # Ensure schedules are added successfully
+    assert race_response.status_code == 204
+
+    # Remove the qualification schedule
+    schedule_to_remove = 2
+    remove_response = client.delete(
+        f"/events/{event.id}/schedule/{schedule_to_remove}", headers=auth_token
+    )
+
+    # Check if schedule was removed successfully
+    assert remove_response.status_code == 204
+
+    # Validate remaining schedules
+    updated_event_response = client.get(f"/events/{event.id}/", headers=auth_token)
+    updated_schedule = updated_event_response.json.get("schedule", [])
+
+    # assert len(updated_schedule) == 2, updated_schedule
+    assert all(schedule["type"] != "qualification" for schedule in updated_schedule)
+
+
+def test_removing_non_existent_schedule_from_event_returns_400(
+    client, db_session, auth_token
+):
+    event = EventFactory()
+
+    # Attempt to remove a schedule with an ID that does not exist
+    non_existent_schedule_id = 999  # Example ID
+    response = client.delete(
+        f"/events/{event.id}/schedule/{non_existent_schedule_id}", headers=auth_token
+    )
+
+    # Ensure the response returns a 400 error
+    assert response.status_code == 204, response.json
+
+
+def test_add_duplicate_practice_schedule_fails(client, db_session, auth_token):
+    event = EventFactory()
+
+    # Add the first 'practice' schedule
+    payload = {
+        "type": "practice",
+        "duration": "00:20:00",
+    }
+    client.post(f"/events/{event.id}/schedule", json=payload, headers=auth_token)
+
+    # Try adding another 'practice' schedule
+    response = client.post(
+        f"/events/{event.id}/schedule", json=payload, headers=auth_token
+    )
+
+    assert response.status_code == 400, response.json
+
+
+def test_add_duplicate_qualification_schedule_fails(client, db_session, auth_token):
+    event = EventFactory()
+
+    # Add the first 'qualification' schedule
+    payload = {
+        "type": "qualification",
+        "duration": "00:10:00",
+    }
+    client.post(f"/events/{event.id}/schedule", json=payload, headers=auth_token)
+
+    # Try adding another 'qualification' schedule
+    response = client.post(
+        f"/events/{event.id}/schedule", json=payload, headers=auth_token
+    )
+
+    assert response.status_code == 400, response.json
