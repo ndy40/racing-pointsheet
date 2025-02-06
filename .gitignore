@@ -162,3 +162,4 @@ cython_debug/
 .idea/
 !/backend/pointsheet/.env.local
 .DS_Store
+uploads/*
