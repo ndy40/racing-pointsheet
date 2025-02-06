@@ -1,7 +1,10 @@
 from flask import Blueprint, request, current_app, Response, jsonify
+
+from modules.event.commands.add_event_schedule import AddEventSchedule
 from modules.event.commands.create_event import CreateEvent
 from modules.event.commands.join_event import JoinEvent
 from modules.event.commands.leave_event import LeaveEvent
+from modules.event.commands.remove_schedule import RemoveSchedule
 from modules.event.commands.save_race_result import SaveEventResults
 from modules.event.queries.get_event import GetEvent
 from modules.event.queries.get_events import GetEvents
@@ -77,4 +80,17 @@ def upload_results(event_id):
 
 @event_bp.route("/events/<uuid:event_id>/schedule", methods=["POST"])
 @auth.login_required
-def add_event_schedule(event_id): ...
+def add_event_schedule(event_id):
+    cmd = AddEventSchedule(event_id=event_id, **request.json)
+    current_app.application.execute(cmd)
+    return Response(status=204)
+
+
+@event_bp.route(
+    "/events/<uuid:event_id>/schedule/<int:schedule_id>", methods=["DELETE"]
+)
+@auth.login_required
+def remove_event_schedule(event_id, schedule_id):
+    cmd = RemoveSchedule(event_id=event_id, schedule_id=schedule_id)
+    current_app.application.execute(cmd)
+    return Response(status=204)

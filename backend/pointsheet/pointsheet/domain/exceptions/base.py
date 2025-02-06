@@ -13,3 +13,8 @@ class BusinessRuleValidationException(PointSheetException):
 
     def __str__(self):
         return str(self.rule)
+
+
+class PointSheetValidationError(PointSheetException):
+    def __init__(self, message):
+        self.message = message

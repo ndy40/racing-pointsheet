@@ -134,6 +134,12 @@ class Event(AggregateRoot):
         if not self.schedule:
             self.schedule = []
 
+        if schedule.type in {ScheduleType.practice, ScheduleType.qualification}:
+            if any(s.type == schedule.type for s in self.schedule):
+                raise ValueError(
+                    f"Cannot add multiple schedules of type '{schedule.type.value}'."
+                )
+
         self.schedule.append(schedule)
         self.schedule.sort(
             key=lambda s: {"practice": 0, "qualification": 1, "race": 2}.get(
@@ -146,6 +152,11 @@ class Event(AggregateRoot):
             self.schedule = [
                 schedule for schedule in self.schedule if schedule.id != schedule_id
             ]
+            self.schedule.sort(
+                key=lambda s: {"practice": 0, "qualification": 1, "race": 2}.get(
+                    s.type.value, 3
+                )
+            )
 
     def remove_result(self, schedule_id: ScheduleId) -> None:
         if not self.results:

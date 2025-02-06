@@ -1,15 +1,11 @@
 import json
 import os
-from http import HTTPStatus
 from pathlib import Path
-
-from flask import Flask, render_template, Response
-
-from pydantic import ValidationError
 
 from api.auth import auth_bp
 from api.events import series_bp, event_bp
-
+from flask import Flask, render_template, Response
+from pydantic import ValidationError
 
 root_dir = os.path.join(Path(__file__).parent.parent)
 
@@ -57,8 +53,17 @@ def create_app(test_config=None):
     def app_validation_error(e: ValidationError):
         resp = {
             "code": 400,
-            "message": e.errors(
-                include_input=False, include_url=False, include_context=False
+            "message": dict(
+                list(
+                    map(
+                        lambda err: (err["loc"][0], err["msg"]),
+                        e.errors(
+                            include_input=False,
+                            include_url=False,
+                            include_context=False,
+                        ),
+                    )
+                )
             ),
         }
         return Response(
@@ -67,17 +72,17 @@ def create_app(test_config=None):
             response=json.dumps(resp),
         )
 
-    @app.errorhandler(Exception)
-    def handle_all_exceptions(e: Exception):
-        resp = {
-            "code": HTTPStatus.INTERNAL_SERVER_ERROR,
-            "message": str(e),
-        }
-        return Response(
-            content_type="application/json",
-            status=resp["code"],
-            response=json.dumps(resp),
-        )
+    # @app.errorhandler(Exception)
+    # def handle_all_exceptions(e: Exception):
+    #     resp = {
+    #         "code": HTTPStatus.INTERNAL_SERVER_ERROR,
+    #         "message": str(e),
+    #     }
+    #     return Response(
+    #         content_type="application/json",
+    #         status=resp["code"],
+    #         response=json.dumps(resp),
+    #     )
 
     from modules import application
 

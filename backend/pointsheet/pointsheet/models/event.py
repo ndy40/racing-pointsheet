@@ -65,7 +65,7 @@ class Event(BaseModel):
     host: Mapped[EntityId] = mapped_column(EntityIdType)
     status: Mapped[Optional[str]] = mapped_column(EventStatusType)
     schedule: Mapped[Optional[List[EventSchedule]]] = relationship(
-        cascade="all, delete"
+        cascade="all, delete-orphan"
     )
     drivers: Mapped[Optional[List[Driver]]] = relationship(
         Driver, cascade="delete-orphan, all"

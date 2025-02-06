@@ -40,3 +40,11 @@ class DriverJoinedEvent(Event):
 class DriverLeftEvent(Event):
     event_id: EntityId
     driver_id: EntityId
+
+
+class EventScheduleAdded(Event):
+    event_id: EntityId
+
+
+class EventScheduleRemoved(Event):
+    event_id: EntityId

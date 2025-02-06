@@ -335,6 +335,29 @@ paths:
           description: Bad request
         204:
           description: Schedule created
+  /events/{event_id}/schedule/{schedule_id}:
+    delete:
+      operationId: removeEventSchedule
+      tags:
+        - Events
+      parameters:
+        - name: event_id
+          in: path
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - name: schedule_id
+          in: path
+          schema:
+            type: integer
+          required: true
+      responses:
+        404:
+          description: Event not found
+        204:
+          description: Schedule deleted
+
   /events/{id}/join:
     put:
       operationId: joinEvent
