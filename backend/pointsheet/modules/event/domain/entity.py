@@ -48,6 +48,7 @@ class DriverResult(BaseModel):
 
 
 class RaceResult(BaseModel):
+    id: Optional[int] = None
     schedule_id: ScheduleId
     result: List[DriverResult]
     mark_down: Optional[str] = None

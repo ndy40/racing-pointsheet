@@ -1,9 +1,18 @@
 from datetime import datetime
 from typing import List, Optional
 
-from sqlalchemy import DateTime, ForeignKey, String, Integer, UniqueConstraint
+from sqlalchemy import (
+    DateTime,
+    ForeignKey,
+    String,
+    Integer,
+    UniqueConstraint,
+    JSON,
+    Text,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
+from modules.event.domain.entity import DriverResult
 from modules.event.domain.value_objects import SeriesStatus, ScheduleType
 from pointsheet.domain.entity import EntityId
 from pointsheet.models import BaseModel, SeriesStatusType
@@ -13,6 +22,27 @@ from pointsheet.models.custom_types import (
     EventStatusType,
     ScheduleTypeType,
 )
+
+
+class RaceResult(BaseModel):
+    __tablename__ = "race_results"
+
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, autoincrement=True, nullable=True
+    )
+    schedule_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey(
+            "event_schedule.id", ondelete="CASCADE", name="race_results_schedule_id"
+        ),
+    )
+    result: Mapped[List[DriverResult]] = mapped_column(JSON[List[DriverResult]])
+    mark_down: Mapped[str] = mapped_column(Text, nullable=True)
+    upload_file: Mapped[str] = mapped_column(Text, nullable=True)
+    event_id: Mapped[EntityId] = mapped_column(
+        EntityIdType,
+        ForeignKey("events.id", ondelete="CASCADE", name="race_results_event_id"),
+    )
 
 
 class EventSchedule(BaseModel):

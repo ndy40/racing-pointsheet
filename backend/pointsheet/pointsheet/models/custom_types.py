@@ -1,6 +1,7 @@
-from typing import Any, Optional
+from typing import Any, Optional, TypeVar
 
-from sqlalchemy import CHAR, Dialect, String, TypeDecorator
+from pydantic import BaseModel
+from sqlalchemy import CHAR, Dialect, String, TypeDecorator, JSON
 from sqlalchemy.sql.type_api import _T
 
 from modules.auth.value_objects import UserRole
@@ -109,3 +110,44 @@ class ScheduleTypeType(BaseCustomTypes):
 
     def __repr__(self):
         return "ScheduleTypeType()"
+
+
+# class DriverResultType(BaseCustomTypes):
+#     impl = JSON
+#
+#     def process_bind_param(self, value: Optional[BaseModel], dialect: Dialect) -> Any:
+#         if value:
+#             return value.model_dump()
+#         return value
+#
+#     def process_result_value(self, value: Optional[Any], dialect: Dialect) -> Optional[Any]:
+#         if value:
+#             return DriverResult(**value)
+#         return None
+
+T = TypeVar("T", bound=BaseModel)
+
+
+class PydanticJsonType[T](BaseCustomTypes):
+    impl = JSON
+    cache_ok = True
+
+    def process_bind_param(self, value: Optional[list[T] | T], dialect: Dialect) -> Any:
+        if not value:
+            return value
+
+        if isinstance(value, list):
+            return [item.model_dump() for item in value]
+
+        return value.model_dump()
+
+    def process_result_value(
+        self, value: Optional[Any], dialect: Dialect
+    ) -> Optional[Any]:
+        if not value:
+            return value
+
+        if isinstance(value, list):
+            return [T(**item) for item in value]
+
+        return T(**value)
