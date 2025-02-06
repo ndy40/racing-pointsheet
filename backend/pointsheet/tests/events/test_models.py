@@ -71,7 +71,7 @@ def test_save_race_result_to_event(db_session):
     driver = DriverFactory()
 
     driver_result = DriverResult(
-        driver_id=str(driver.id),
+        driver_id=driver.id,
         driver=driver.name,
         position=1,
         best_lap="00:34:00",
