@@ -3,12 +3,22 @@ services:
     restart: on-failure
     build:
       context: backend
+    image: pointsheet:latest
     ports:
       - "5000"
     volumes:
       - ./backend/pointsheet:/app
     env_file:
       - backend/pointsheet/.env
+
+  background_tasks:
+    image: pointsheet:latest
+    extends:
+      service: backend
+    depends_on:
+      - backend
+    command: |
+      celery -A pointsheet.celery worker --loglevel=info
 
   frontend:
     restart: on-failure
