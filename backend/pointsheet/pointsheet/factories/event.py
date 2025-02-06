@@ -8,7 +8,7 @@ from factory.alchemy import SQLAlchemyModelFactory
 from modules.event.domain.value_objects import SeriesStatus, EventStatus
 from pointsheet.db import get_session
 from pointsheet.models import Event, Series
-from pointsheet.models.event import Driver
+from pointsheet.models.event import EventDriver
 
 
 class EventFactory(SQLAlchemyModelFactory):
@@ -24,6 +24,7 @@ class EventFactory(SQLAlchemyModelFactory):
     starts_at = None
     ends_at = None
     track = None
+    drivers = []
 
 
 class SeriesFactory(SQLAlchemyModelFactory):
@@ -42,9 +43,10 @@ class SeriesFactory(SQLAlchemyModelFactory):
 
 class EventDriverFactory(SQLAlchemyModelFactory):
     class Meta:
-        model = Driver
+        model = EventDriver
         sqlalchemy_session_factory = get_session
         sqlalchemy_session_persistence = "commit"
 
+    id = factory.LazyFunction(uuid.uuid4)
     name = factory.Sequence(lambda n: "EventDriver %d" % n)
     event_id = None

@@ -7,7 +7,7 @@ from .custom_types import (
     SeriesStatusType,
     DriverResultType,
 )
-from .event import Series, Event, EventSchedule, Driver as EventDriver, RaceResult
+from .event import Series, Event, EventSchedule, EventDriver as EventDriver, RaceResult
 
 __all__ = [
     "BaseModel",

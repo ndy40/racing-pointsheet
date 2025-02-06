@@ -1,7 +1,7 @@
 from modules.event.domain.entity import Event as EventModel, Schedule
 from modules.event.domain.entity import Series as SeriesModel, Driver as DriverModel
 from pointsheet.models import Event, Series, EventSchedule
-from pointsheet.models.event import Driver
+from pointsheet.models.event import EventDriver
 from pointsheet.repository import DataMapper
 
 
@@ -26,7 +26,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             if instance.schedule
             else [],
             drivers=[
-                Driver(id=driver.id, name=driver.name, event_id=instance.id)
+                EventDriver(id=driver.id, name=driver.name, event_id=instance.id)
                 for driver in instance.drivers
             ]
             if instance.drivers

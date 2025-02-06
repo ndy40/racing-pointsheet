@@ -8,7 +8,7 @@ from pointsheet.domain import EntityId
 from pointsheet.factories.account import DriverFactory
 from pointsheet.factories.event import SeriesFactory, EventFactory
 from pointsheet.models import Event, Series
-from pointsheet.models.event import RaceResult, EventSchedule
+from pointsheet.models.event import RaceResult, EventSchedule, EventDriver
 
 
 def test_we_can_create_a_series_without_status_set(db_session):
@@ -62,6 +62,55 @@ def test_series_ends_at_cannot_be_in_past_if_starts_at_is_set(db_session):
         )
         db_session.add(series)
         db_session.commit()
+
+
+def test_add_multiple_race_schedules_to_event(db_session):
+    event = EventFactory()
+
+    driver1 = EventDriver(event_id=event.id, name="driver1", id=uuid4())
+    driver2 = EventDriver(event_id=event.id, name="driver2", id=uuid4())
+
+    db_session.add(driver1)
+    db_session.add(driver2)
+
+    schedule1 = EventSchedule(nbr_of_laps=20, duration="2 hours", type="race")
+    schedule2 = EventSchedule(nbr_of_laps=15, duration="1.5 hours", type="race")
+
+    driver_result1 = DriverResult(
+        driver_id=driver1.id,
+        driver=driver1.name,
+        position=1,
+        best_lap="00:32:00",
+        total="01:38:00",
+        points=25,
+        total_points=25,
+    )
+
+    driver_result2 = DriverResult(
+        driver_id=driver2.id,
+        driver=driver2.name,
+        position=2,
+        best_lap="00:33:00",
+        total="01:40:00",
+        points=18,
+        total_points=18,
+    )
+
+    race_result1 = RaceResult(
+        result=[driver_result1, driver_result2], schedule=schedule1
+    )
+    race_result2 = RaceResult(
+        result=[driver_result1, driver_result2], schedule=schedule2
+    )
+
+    schedule1.result = race_result1
+    schedule2.result = race_result2
+
+    event.schedule.extend([schedule1, schedule2])
+    db_session.merge(event)
+    db_session.commit()
+
+    assert len(event.schedule) == 2
 
 
 def test_save_race_result_to_event(db_session):

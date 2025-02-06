@@ -61,7 +61,7 @@ class EventSchedule(BaseModel):
     )
 
 
-class Driver(BaseModel):
+class EventDriver(BaseModel):
     __tablename__ = "event_drivers"
     id: Mapped[EntityId] = mapped_column(
         EntityIdType, primary_key=True, default=uuid_default()
@@ -98,8 +98,8 @@ class Event(BaseModel):
     schedule: Mapped[Optional[List[EventSchedule]]] = relationship(
         cascade="all, delete-orphan"
     )
-    drivers: Mapped[Optional[List[Driver]]] = relationship(
-        Driver, cascade="delete-orphan, all"
+    drivers: Mapped[Optional[List[EventDriver]]] = relationship(
+        EventDriver, cascade="all, delete-orphan"
     )
 
 
