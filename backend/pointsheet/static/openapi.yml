@@ -360,9 +360,66 @@ paths:
           schema:
             type: string
           required: true
+      tags:
+        - Events
       responses:
         204:
           description: Removed from event
+
+  /events/{id}/results:
+    post:
+      description: Upload results file for a given event
+      operationId: uploadEventResults
+      tags:
+        - Events
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - schedule_id
+              properties:
+                schedule_id:
+                  type: int
+                file:
+                  type: string
+                  format: binary
+      responses:
+        201:
+          description: Results file uploaded successfully
+        400:
+          description: Bad request
+        415:
+          description: Unsupported Media Type
+    get:
+      operationId: getResults
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: "uuid"
+      tags:
+        - Events
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/ListOfResults"
+        404:
+          description: Not found
+        400:
+          description: Bad request
 components:
   securitySchemes:
     BearerAuth:
@@ -619,7 +676,57 @@ components:
         duration:
           type: string
           example: 1h 30m
+    DriverResult:
+      type: object
+      required:
+        - driver
+        - driver_id
+        - position
+        - best_lap
+        - total
+        - penalties
+        - fl_points
+        - total_points
+        - total
+      properties:
+        driver_id:
+          type: string
+          format: "uuid"
+        driver:
+          type: string
+          example: driver 1
+        position:
+          type: integer
+        best_lap:
+          type: string
+        total:
+          type: string
+        penalties:
+          type: integer
+        fl_points:
+          type: integer
+        points:
+          type: integer
+        total_points:
+          type: integer
+    RaceResult:
+      type: object
+      properties:
+        schedule_id:
+          type: string
+        mark_down:
+          type: string
+        upload_file:
+          type: string
+        result:
+          type: array
+          items:
+            $ref: "#/components/schemas/DriverResult"
   responses:
+    ListOfResults:
+      type: array
+      items:
+        $ref: "#/components/schemas/RaceResult"
     ResourceCreated:
       type: object
       properties:

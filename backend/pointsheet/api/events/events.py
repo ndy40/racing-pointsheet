@@ -1,8 +1,8 @@
-from flask import Blueprint, request, current_app, Response
-
+from flask import Blueprint, request, current_app, Response, jsonify
 from modules.event.commands.create_event import CreateEvent
 from modules.event.commands.join_event import JoinEvent
 from modules.event.commands.leave_event import LeaveEvent
+from modules.event.commands.save_race_result import SaveEventResults
 from modules.event.queries.get_event import GetEvent
 from modules.event.queries.get_events import GetEvents
 from pointsheet.auth import auth, get_user_id
@@ -50,3 +50,31 @@ def leave_event(event_id):
     cmd = LeaveEvent(event_id=event_id, driver_id=get_user_id())
     current_app.application.execute(cmd)
     return Response(status=204)
+
+
+@event_bp.route(
+    "/events/<uuid:event_id>/results",
+    methods=["POST"],
+)
+@auth.login_required
+def upload_results(event_id):
+    uploaded_file = request.files.get("file")
+    if not uploaded_file:
+        return jsonify({"error": "No file provided"}), 400
+
+    allowed_extensions = {"csv", "jpg", "jpeg", "png"}
+    if (
+        "." not in uploaded_file.filename
+        or uploaded_file.filename.rsplit(".", 1)[1].lower() not in allowed_extensions
+    ):
+        return jsonify({"error": "Invalid file type"}), 400
+
+    # Assuming there's a command like SaveEventResults to handle file uploads
+    cmd = SaveEventResults(event_id=event_id, file=uploaded_file)
+    current_app.application.execute(cmd)
+    return Response(status=204)
+
+
+@event_bp.route("/events/<uuid:event_id>/schedule", methods=["POST"])
+@auth.login_required
+def add_event_schedule(event_id): ...
