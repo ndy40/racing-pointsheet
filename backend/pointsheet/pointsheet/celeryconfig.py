@@ -1,4 +1,4 @@
-from pointsheet import config
+from pointsheet.config import config
 
 broker_url = config.BROKER_URL
 result_backend = config.RESULT_BACKEND
