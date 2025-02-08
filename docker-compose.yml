@@ -18,7 +18,7 @@ services:
     depends_on:
       - backend
     command: |
-      celery -A pointsheet.celery worker --loglevel=info
+      celery -A pointsheet.celery_worker worker --loglevel=info
 
   frontend:
     restart: on-failure

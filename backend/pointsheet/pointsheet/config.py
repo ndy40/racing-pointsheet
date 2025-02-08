@@ -26,8 +26,8 @@ class Config(BaseSettings):
         default=upload_dir,
         description="Upload folder for files",
     )
-    QUEUE_BROKER: Optional[str]
-    BROKER_BACKEND: Optional[str] = "db+sqlite:///instance/task_result.db.sqlite"
+    BROKER_URL: Optional[str]
+    RESULT_BACKEND: Optional[str] = "db+sqlite:///instance/task_result.db.sqlite"
 
     model_config = SettingsConfigDict()
 

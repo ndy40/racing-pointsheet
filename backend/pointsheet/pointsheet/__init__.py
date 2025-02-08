@@ -5,13 +5,38 @@ from pathlib import Path
 
 from api.auth import auth_bp
 from api.events import series_bp, event_bp
+from celery import Celery, Task
 from flask import Flask, render_template, Response
 from pydantic import ValidationError
+
 
 root_dir = os.path.join(Path(__file__).parent.parent)
 
 static_directory = os.path.join(root_dir, "static")
 template_directory = os.path.join(root_dir, "templates")
+
+
+def celery_ini_app(app: Flask):
+    class FlaskTask(Task):
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return self.run(*args, **kwargs)
+
+    # Function to collect all submodules under 'modules'
+    def _celery_collect_submodules(directory):
+        submodules = []
+        for root, dirs, files in os.walk(directory):
+            if "__init__.py" in files:
+                module_name = root.replace(os.path.sep, ".")
+                submodules.append(module_name)
+        return submodules
+
+    celery_worker = Celery("pointsheet", task_cls=FlaskTask)
+    celery_worker.config_from_object("pointsheet.celeryconfig")
+    celery_worker.set_default()
+    celery_worker.autodiscover_tasks(_celery_collect_submodules("modules"))
+    app.extensions["celery"] = celery_worker
+    return celery_worker
 
 
 def create_app(test_config=None):
@@ -25,6 +50,8 @@ def create_app(test_config=None):
         SECRET_KEY="dev",
         DATABASE=os.path.join(app.instance_path, "point_sheets.db.sqlite"),
     )
+
+    celery_ini_app(app)
 
     try:
         os.makedirs(app.instance_path)

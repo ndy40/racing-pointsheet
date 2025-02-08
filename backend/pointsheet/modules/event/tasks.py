@@ -1,6 +1,6 @@
-from pointsheet.celery import app
+from pointsheet.celery_worker import celery_tasks
 
 
-@app.task
+@celery_tasks.task
 def say_hello():
     print("Hello world!!")
