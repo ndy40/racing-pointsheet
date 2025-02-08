@@ -163,3 +163,4 @@ cython_debug/
 !/backend/pointsheet/.env.local
 .DS_Store
 uploads/*
+/backend/pointsheet/uploads/
