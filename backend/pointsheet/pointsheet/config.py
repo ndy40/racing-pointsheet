@@ -20,8 +20,8 @@ class Config(BaseSettings):
     DATABASE: Optional[str]
     AUTH_TOKEN_MAX_AGE: Optional[int] = SEVEN_DAYS_IN_SECONDS
     UPLOAD_FOLDER: Optional[str] = "uploads/"
-    QUEUE_BROKER: Optional[str]
-    BROKER_BACKEND: Optional[str] = "db+sqlite:///instance/task_result.db.sqlite"
+    BROKER_URL: Optional[str]
+    RESULT_BACKEND: Optional[str] = "db+sqlite:///instance/task_result.db.sqlite"
 
     model_config = SettingsConfigDict()
 

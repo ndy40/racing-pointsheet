@@ -5,15 +5,15 @@ from modules.event.dependencies import container
 from modules.event.domain.entity import RaceResult, Event
 from modules.event.domain.value_objects import DriverResult
 from modules.event.repository import EventRepository
-from pointsheet.celery import app
+from pointsheet.celery_worker import celery_tasks
 
 
-@app.task
+@celery_tasks.task
 def say_hello():
     print("Hello world!!")
 
 
-@app.task(
+@celery_tasks.task(
     autoretry_for=(Exception,), retry_backoff=True, retry_kwargs={"max_retries": 5}
 )
 def extract_race_result_from_file(event_id, schedule_id, file_path):
