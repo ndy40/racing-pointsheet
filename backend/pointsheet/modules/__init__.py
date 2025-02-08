@@ -16,4 +16,6 @@ application.include_submodule(auth_module)
 
 @application.on_enter_transaction_context
 def on_enter_transaction_context(ctx: TransactionContext):
-    ctx.set_dependencies(user_id=get_user_id(), file_store=config.file_store)
+    ctx.set_dependencies(
+        user_id=get_user_id(), file_store=config.file_store, config=config
+    )

@@ -1,11 +1,33 @@
 from modules.event.domain.entity import Event as EventModel, Schedule
 from modules.event.domain.entity import Series as SeriesModel, Driver as DriverModel
-from pointsheet.models import Event, Series, EventSchedule
-from pointsheet.models.event import EventDriver
+from pointsheet.models import Event, Series, EventSchedule, RaceResult
+from pointsheet.models.event import EventDriver, RaceResult as RaceResultEntity
 from pointsheet.repository import DataMapper
 
 
+class ResultMapper(DataMapper[RaceResult, RaceResultEntity]):
+    def to_db_entity(self, instance: RaceResultEntity) -> RaceResult:
+        return RaceResult(
+            id=instance.id,
+            schedule_id=instance.schedule_id,
+            upload_file=instance.upload_file,
+            mark_down=instance.mark_down,
+            result=instance.result,
+        )
+
+    def to_domain_model(self, instance: RaceResult) -> RaceResultEntity:
+        return RaceResultEntity(
+            id=instance.id,
+            schedule_id=instance.schedule_id,
+            upload_file=instance.upload_file,
+            mark_down=instance.mark_down,
+            result=instance.result,
+        )
+
+
 class EventModelMapper(DataMapper[Event, EventModel]):
+    result_mapper = ResultMapper()
+
     def to_db_entity(self, instance: EventModel) -> Event:
         return Event(
             id=instance.id,
@@ -20,6 +42,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
                     nbr_of_laps=schedule.nbr_of_laps,
                     duration=schedule.duration,
                     id=schedule.id,
+                    result=schedule.result,
                 )
                 for schedule in instance.schedule
             ]
@@ -57,6 +80,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
                         nbr_of_laps=schedule.nbr_of_laps,
                         duration=schedule.duration,
                         id=schedule.id,
+                        result=schedule.result,
                     )
                 )
 

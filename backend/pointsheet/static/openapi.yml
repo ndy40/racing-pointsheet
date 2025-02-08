@@ -389,7 +389,7 @@ paths:
         204:
           description: Removed from event
 
-  /events/{id}/results:
+  /events/{id}/schedule/{schedule_id}/results:
     post:
       description: Upload results file for a given event
       operationId: uploadEventResults
@@ -401,6 +401,11 @@ paths:
           schema:
             type: string
           required: true
+        - in: path
+          name: schedule_id
+          schema:
+            type: integer
+          required: true
       requestBody:
         content:
           multipart/form-data:
@@ -408,10 +413,7 @@ paths:
               type: object
               required:
                 - file
-                - schedule_id
               properties:
-                schedule_id:
-                  type: int
                 file:
                   type: string
                   format: binary

@@ -224,7 +224,7 @@ def test_adding_race_result_to_event_with_no_schedule_id_fails():
         mark_down="Invalid schedule ID test case",
     )
 
-    with pytest.raises(ValueError, match="Cannot add result as no schedules exist."):
+    with pytest.raises(ValueError, match="Cannot add result as no schedules exist"):
         event.add_result(race_result)
 
 

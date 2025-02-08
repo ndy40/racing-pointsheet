@@ -32,12 +32,10 @@ class LocalFileStore(FileStore):
         if extension not in allowed_extensions:
             raise ValueError(f"File extension '{extension}' is not supported.")
 
-        full_path = os.path.join(self.base_path, sanitized_name)
-        os.makedirs(os.path.dirname(full_path), exist_ok=True)
-        with open(full_path, "wb") as file:
+        with open(file_path, "wb") as file:
             file.write(file_content)
 
-        return full_path
+        return file_path
 
     def fetch_file(self, file_path: str) -> bytes:
         """Fetch the content of a file with the given path."""

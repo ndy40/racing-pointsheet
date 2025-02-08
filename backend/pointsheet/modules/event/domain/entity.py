@@ -24,24 +24,25 @@ class StartEndDateMixin:
     ends_at: datetime
 
 
-class Schedule(BaseModel):
-    id: Optional[ScheduleId] = None
-    type: ScheduleType
-    nbr_of_laps: Optional[int] = None
-    duration: Optional[str] = None
-
-
-class Driver(BaseModel):
-    id: EntityId
-    name: str
-
-
 class RaceResult(BaseModel):
     id: Optional[int] = None
     schedule_id: ScheduleId
     result: List[DriverResult]
     mark_down: Optional[str] = None
     upload_file: Optional[str] = None
+
+
+class Schedule(BaseModel):
+    id: Optional[ScheduleId] = None
+    type: ScheduleType
+    nbr_of_laps: Optional[int] = None
+    duration: Optional[str] = None
+    result: Optional[RaceResult] = None
+
+
+class Driver(BaseModel):
+    id: EntityId
+    name: str
 
 
 class Event(AggregateRoot):
@@ -54,7 +55,6 @@ class Event(AggregateRoot):
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
     drivers: Optional[List[Driver]] = None
-    results: Optional[List[RaceResult]] = []
 
     @model_validator(mode="after")
     def check_start_and_end_date(self) -> Self:
@@ -69,42 +69,27 @@ class Event(AggregateRoot):
         return self
 
     def add_result(self, race_result: RaceResult) -> None:
-        if not self.schedule:
-            raise ValueError("Cannot add result as no schedules exist.")
+        """
+        Assigns a RaceResult to the correct Schedule's result field.
 
-        # Ensure the scheduleId matches a 'race' schedule
-        race_schedules = [
-            schedule for schedule in self.schedule if schedule.type == ScheduleType.race
-        ]
+        :param race_result: A RaceResult instance.
+        :raises ValueError: If the result is invalid, or the schedule is not found.
+        """
+        if not isinstance(race_result, RaceResult):
+            raise TypeError("The provided result must be an instance of RaceResult.")
 
-        if not any(
-            schedule.id == race_result.schedule_id for schedule in race_schedules
-        ):
-            raise ValueError(
-                f"Schedule ID {race_result.schedule_id} is not associated with a 'race' schedule."
-            )
+        schedule = next(
+            (
+                schedule
+                for schedule in (self.schedule or [])
+                if schedule.id == race_result.schedule_id
+            ),
+            None,
+        )
+        if schedule is None:
+            raise ValueError(f"Schedule with ID {race_result.schedule_id} not found.")
 
-        self.results = [
-            result
-            for result in self.results
-            if result.schedule_id != race_result.schedule_id
-        ]
-
-        # Ensure we don't exceed the number of race schedules
-        if self.results:
-            current_race_results = [
-                result
-                for result in self.results
-                if any(schedule.id == result.schedule_id for schedule in race_schedules)
-            ]
-            if len(current_race_results) >= len(race_schedules):
-                raise ValueError(
-                    "Cannot add more race results than the number of 'race' schedules."
-                )
-
-        # remove RaceResult if this is an update
-        self.results.append(race_result)
-        self.results.sort(key=lambda r: r.schedule_id)
+        schedule.result = race_result
 
     def add_driver(self, driver: Driver) -> None:
         if not self.drivers:

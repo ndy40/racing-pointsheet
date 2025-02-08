@@ -6,6 +6,7 @@ from modules.event.commands.join_event import JoinEvent
 from modules.event.commands.leave_event import LeaveEvent
 from modules.event.commands.remove_schedule import RemoveSchedule
 from modules.event.commands.save_race_result import SaveEventResults
+from modules.event.commands.save_uploaded_result import UploadRaceResult
 from modules.event.queries.get_event import GetEvent
 from modules.event.queries.get_events import GetEvents
 from pointsheet.auth import auth, get_user_id
@@ -92,5 +93,18 @@ def add_event_schedule(event_id):
 @auth.login_required
 def remove_event_schedule(event_id, schedule_id):
     cmd = RemoveSchedule(event_id=event_id, schedule_id=schedule_id)
+    current_app.application.execute(cmd)
+    return Response(status=204)
+
+
+@event_bp.route(
+    "/events/<uuid:event_id>/schedule/<int:schedule_id>/results", methods=["POST"]
+)
+@auth.login_required
+def upload_result(event_id, schedule_id):
+    uploaded_file = request.files.get("file")
+    cmd = UploadRaceResult(
+        event_id=event_id, schedule_id=schedule_id, file=uploaded_file
+    )
     current_app.application.execute(cmd)
     return Response(status=204)
