@@ -28,3 +28,13 @@ class DriverAlreadySingedUp(PointSheetException):
 class DriverNotFound(PointSheetException):
     message = "Driver not found"
     code = 404
+
+
+class DuplicatePositionInRaceResult(PointSheetException):
+    message = "Duplicate position in race result"
+    code = 400
+
+
+class DuplicateDriverInRaceResult(PointSheetException):
+    message = "Duplicate driver in race result"
+    code = 400

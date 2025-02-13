@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-from http import HTTPStatus
 from pathlib import Path
 
 from flask import Flask, render_template, Response
@@ -81,17 +80,17 @@ def create_app(test_config=None):
             response=json.dumps(resp),
         )
 
-    @app.errorhandler(Exception)
-    def handle_all_exceptions(e: Exception):
-        resp = {
-            "code": HTTPStatus.INTERNAL_SERVER_ERROR,
-            "message": str(e),
-        }
-        return Response(
-            content_type="application/json",
-            status=resp["code"],
-            response=json.dumps(resp),
-        )
+    # @app.errorhandler(Exception)
+    # def handle_all_exceptions(e: Exception):
+    #     resp = {
+    #         "code": HTTPStatus.INTERNAL_SERVER_ERROR,
+    #         "message": str(e),
+    #     }
+    #     return Response(
+    #         content_type="application/json",
+    #         status=resp["code"],
+    #         response=json.dumps(resp),
+    #     )
 
     from modules import application
 

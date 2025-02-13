@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, PositiveInt, field_serializer, NonNegativeInt
 
@@ -40,3 +40,17 @@ class DriverResult(BaseModel):
     @field_serializer("driver_id")
     def serialize_driver_id(self, driver_id: EntityId):
         return str(driver_id)
+
+
+class Result(BaseModel):
+    position: NonNegativeInt
+    driver: str
+    driver_id: Optional[EntityId] = None
+    best_lap: Optional[str] = None
+    race: Optional[str] = None
+    penalties: Optional[float] = None
+    total: Optional[str] = None
+
+
+class ListOfResults(BaseModel):
+    results: List[Result]

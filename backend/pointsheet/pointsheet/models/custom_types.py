@@ -144,7 +144,10 @@ class PydanticJsonType[T](BaseCustomTypes):
             return value
 
         if isinstance(value, list):
-            return [self.cls(**json.loads(item)) for item in value]
+            return [
+                self.cls(**json.loads(item)) if isinstance(item, str) else item
+                for item in value
+            ]
 
         return self.cls(**json.loads(value))
 

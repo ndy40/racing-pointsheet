@@ -389,7 +389,7 @@ paths:
         204:
           description: Removed from event
 
-  /events/{id}/schedule/{schedule_id}/results:
+  /events/{id}/schedule/{schedule_id}/results/file:
     post:
       description: Upload results file for a given event
       operationId: uploadEventResults
@@ -417,6 +417,51 @@ paths:
                 file:
                   type: string
                   format: binary
+      responses:
+        201:
+          description: Results file uploaded successfully
+        400:
+          description: Bad request
+        415:
+          description: Unsupported Media Type
+    get:
+      operationId: getResults
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: "uuid"
+      tags:
+        - Events
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/ListOfResults"
+        404:
+          description: Not found
+        400:
+          description: Bad request
+  /events/{id}/result:
+    post:
+      description: Upload results file for a given event
+      operationId: addRaceResult
+      tags:
+        - Events
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRaceResult"
       responses:
         201:
           description: Results file uploaded successfully
@@ -742,6 +787,15 @@ components:
         mark_down:
           type: string
         upload_file:
+          type: string
+        result:
+          type: array
+          items:
+            $ref: "#/components/schemas/DriverResult"
+    CreateRaceResult:
+      type: object
+      properties:
+        schedule_id:
           type: string
         result:
           type: array

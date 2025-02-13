@@ -5,7 +5,7 @@ from lato import Command, TransactionContext
 from modules.event import event_module
 from modules.event.commands.update_series_event import UpdateSeriesEvent
 from modules.event.dependencies import container
-from modules.event.domain.exceptions import SeriesNotFoundException
+from modules.event.exceptions import SeriesNotFoundException
 from modules.event.events import SeriesStarted, SeriesClosed, SeriesStatusNotStarted
 from modules.event.repository import SeriesRepository
 from pointsheet.domain import EntityId

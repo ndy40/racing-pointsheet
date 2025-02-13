@@ -2,14 +2,13 @@ from uuid import uuid4
 
 import cv2
 import pytesseract
-from typing import Any, List, Optional
+from typing import Any, List, Union
 
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import HumanMessagePromptTemplate
-from pydantic import BaseModel, NonNegativeInt
 
 from modules.event.domain.entity import RaceResult, Driver
-from modules.event.domain.value_objects import DriverResult
+from modules.event.domain.value_objects import DriverResult, ListOfResults, Result
 from modules.event.repository import EventRepository
 from pointsheet.langchain import vertex_ai
 
@@ -23,19 +22,6 @@ def get_text_from_image(file_path):
 
     median = cv2.medianBlur(thresh, 5)
     return pytesseract.image_to_string(median)
-
-
-class Result(BaseModel):
-    position: NonNegativeInt
-    driver: str
-    best_lap: Optional[str] = None
-    race: Optional[str] = None
-    penalties: Optional[float] = None
-    total: Optional[str] = None
-
-
-class ListOfResults(BaseModel):
-    results: List[Result]
 
 
 class ExtractRaceResult:
@@ -72,14 +58,22 @@ class SaveRaceResult:
     def __init__(self, event_repo: EventRepository):
         self.event_repo = event_repo
 
-    def __call__(self, event_id, schedule_id, race_result: ListOfResults):
-        if not race_result.results:
+    def __call__(
+        self, event_id, schedule_id, race_result: Union[ListOfResults | List[Result]]
+    ):
+        results = (
+            race_result.results
+            if isinstance(race_result, ListOfResults)
+            else race_result
+        )
+
+        if not results:
             return
 
         event = self.event_repo.find_by_id(event_id)
         driver_results = []
 
-        for result in race_result.results:
+        for result in results:
             driver = event.find_driver_by_id_or_name(result.driver_id or result.driver)
             if not driver:
                 driver = Driver(id=uuid4(), name=result.driver)
@@ -96,7 +90,7 @@ class SaveRaceResult:
             driver_results.append(driver_result)
 
         if driver_results:
-            event.add_result(
-                race_result=RaceResult(schedule_id=schedule_id, result=driver_results)
-            )
+            race_result = RaceResult(schedule_id=schedule_id)
+            race_result.add_result(*driver_results)
+            event.add_result(race_result=race_result)
             self.event_repo.update(event)

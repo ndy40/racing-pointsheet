@@ -6,7 +6,7 @@ from pydantic import ValidationError
 from modules.event.domain.entity import Schedule, RaceResult
 
 from modules.event.domain.entity import Series, Event, Driver
-from modules.event.domain.exceptions import (
+from modules.event.exceptions import (
     InvalidEventDateForSeries,
     DriverAlreadySingedUp,
 )

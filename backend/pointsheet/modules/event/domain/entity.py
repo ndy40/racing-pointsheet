@@ -3,10 +3,12 @@ from typing import List, Optional, Self, Dict
 
 from pydantic import BaseModel, model_validator
 
-from modules.event.domain.exceptions import (
+from modules.event.exceptions import (
     InvalidEventDateForSeries,
     SeriesAlreadyClosed,
     DriverAlreadySingedUp,
+    DuplicatePositionInRaceResult,
+    DuplicateDriverInRaceResult,
 )
 from modules.event.domain.value_objects import (
     EventStatus,
@@ -27,22 +29,45 @@ class StartEndDateMixin:
 class RaceResult(BaseModel):
     id: Optional[int] = None
     schedule_id: ScheduleId
-    result: List[DriverResult]
+    result: Optional[List[DriverResult]] = None
     mark_down: Optional[str] = None
     upload_file: Optional[str] = None
 
-    # def add_result(self, *driver_results: DriverResult) -> None:
-    #     """
-    #     Adds one or more DriverResults to the race result list.
-    #
-    #     :param driver_results: One or more DriverResult instances.
-    #     :raises TypeError: If any input is not a DriverResult instance.
-    #     """
-    #     for driver_result in driver_results:
-    #         if not isinstance(driver_result, DriverResult):
-    #             raise TypeError("All provided results must be instances of DriverResult.")
-    #         self.result.append(driver_result)
-    #
+    def add_result(self, *driver_results: DriverResult) -> None:
+        """
+        Adds one or more DriverResults to the race result list, ensuring no duplicates or conflicting positions.
+
+        :param driver_results: One or more DriverResult instances.
+        :raises TypeError: If any input is not a DriverResult instance.
+        :raises ValueError: If a duplicate driver or position is detected.
+        """
+
+        if not self.result:
+            self.result = []
+
+        for driver_result in driver_results:
+            if not isinstance(driver_result, DriverResult):
+                raise TypeError(
+                    "All provided results must be instances of DriverResult."
+                )
+
+            if any(
+                existing.driver_id == driver_result.driver_id
+                or existing.driver == driver_result.driver
+                for existing in self.result
+            ):
+                raise DuplicateDriverInRaceResult(
+                    f"Duplicate driver detected: {driver_result.driver_id} or {driver_result.driver}"
+                )
+
+            if any(
+                existing.position == driver_result.position for existing in self.result
+            ):
+                raise DuplicatePositionInRaceResult(
+                    f"Conflicting position detected: position {driver_result.position} is already taken."
+                )
+
+            self.result.append(driver_result)
 
 
 class Schedule(BaseModel):

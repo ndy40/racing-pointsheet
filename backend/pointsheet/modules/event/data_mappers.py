@@ -45,7 +45,10 @@ class EventModelMapper(DataMapper[Event, EventModel]):
                     nbr_of_laps=schedule.nbr_of_laps,
                     duration=schedule.duration,
                     id=schedule.id,
-                    # result=(schedule.result and self.result_mapper.to_db_entity(schedule.result)) ,
+                    result=(
+                        schedule.result
+                        and self.result_mapper.to_db_entity(schedule.result)
+                    ),
                 )
                 for schedule in instance.schedule
             ]

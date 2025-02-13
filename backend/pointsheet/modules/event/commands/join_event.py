@@ -4,7 +4,7 @@ from lato import Command, TransactionContext
 
 from modules.event import event_module
 from modules.event.dependencies import container
-from modules.event.domain.exceptions import DriverNotFound
+from modules.event.exceptions import DriverNotFound
 from modules.event.events import DriverJoinedEvent
 from modules.event.repository import EventRepository
 from pointsheet.domain import EntityId

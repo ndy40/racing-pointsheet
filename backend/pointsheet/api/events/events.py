@@ -1,6 +1,7 @@
 from flask import Blueprint, request, current_app, Response, jsonify
 
 from modules.event.commands.add_event_schedule import AddEventSchedule
+from modules.event.commands.add_race_result import AddEventResult
 from modules.event.commands.create_event import CreateEvent
 from modules.event.commands.join_event import JoinEvent
 from modules.event.commands.leave_event import LeaveEvent
@@ -106,5 +107,13 @@ def upload_result(event_id, schedule_id):
     cmd = UploadRaceResult(
         event_id=event_id, schedule_id=schedule_id, file=uploaded_file
     )
+    current_app.application.execute(cmd)
+    return Response(status=204)
+
+
+@event_bp.route("/events/<uuid:event_id>/result", methods=["POST"])
+@auth.login_required
+def add_race_result(event_id):
+    cmd = AddEventResult(event_id=event_id, **request.json)
     current_app.application.execute(cmd)
     return Response(status=204)
