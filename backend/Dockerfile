@@ -5,7 +5,7 @@ WORKDIR /app
 ENV PYTHONUNBUFFERED=1 \
     VIRTUAL_ENV="/opt/venv"
 
-RUN apt update -y && python -m venv $VIRTUAL_ENV
+RUN apt update -y && apt install -y libgl1 tesseract-ocr && python -m venv $VIRTUAL_ENV
 
 ENV PATH=$VIRTUAL_ENV/bin:$PATH
 

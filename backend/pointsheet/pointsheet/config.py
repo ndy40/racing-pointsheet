@@ -22,6 +22,7 @@ class Config(BaseSettings):
     UPLOAD_FOLDER: Optional[str] = "uploads/"
     BROKER_URL: Optional[str]
     RESULT_BACKEND: Optional[str] = "db+sqlite:///instance/task_result.db.sqlite"
+    GOOGLE_API_KEY: Optional[str] = "AIzaSyCQ2glxUjVNTd3FzrpR0v79pIj8UXeNd3w"
 
     model_config = SettingsConfigDict()
 

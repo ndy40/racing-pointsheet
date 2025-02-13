@@ -4,6 +4,8 @@ services:
     build:
       context: backend
     image: pointsheet:latest
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /app/auth.json
     ports:
       - "5000"
     volumes:
@@ -17,6 +19,8 @@ services:
       service: backend
     depends_on:
       - backend
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /app/auth.json
     command: |
       celery -A pointsheet.celery_worker worker --loglevel=info
 

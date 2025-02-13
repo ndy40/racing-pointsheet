@@ -10,6 +10,7 @@ from pydantic import ValidationError
 from api.auth import auth_bp
 from api.events import series_bp, event_bp
 
+
 root_dir = os.path.join(Path(__file__).parent.parent)
 
 static_directory = os.path.join(root_dir, "static")

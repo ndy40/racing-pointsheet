@@ -5,7 +5,6 @@ from .custom_types import (
     BaseCustomTypes,
     EntityIdType,
     SeriesStatusType,
-    DriverResultType,
 )
 from .event import Series, Event, EventSchedule, EventDriver as EventDriver, RaceResult
 
@@ -13,7 +12,6 @@ __all__ = [
     "BaseModel",
     "BaseCustomTypes",
     "Driver",
-    "DriverResultType",
     "Event",
     "EventDriver",
     "EventSchedule",

@@ -31,6 +31,19 @@ class RaceResult(BaseModel):
     mark_down: Optional[str] = None
     upload_file: Optional[str] = None
 
+    # def add_result(self, *driver_results: DriverResult) -> None:
+    #     """
+    #     Adds one or more DriverResults to the race result list.
+    #
+    #     :param driver_results: One or more DriverResult instances.
+    #     :raises TypeError: If any input is not a DriverResult instance.
+    #     """
+    #     for driver_result in driver_results:
+    #         if not isinstance(driver_result, DriverResult):
+    #             raise TypeError("All provided results must be instances of DriverResult.")
+    #         self.result.append(driver_result)
+    #
+
 
 class Schedule(BaseModel):
     id: Optional[ScheduleId] = None
@@ -38,6 +51,17 @@ class Schedule(BaseModel):
     nbr_of_laps: Optional[int] = None
     duration: Optional[str] = None
     result: Optional[RaceResult] = None
+
+    def add_result(self, race_result: RaceResult) -> None:
+        """
+        Assigns a RaceResult to this schedule's result field.
+
+        :param race_result: A RaceResult instance.
+        :raises TypeError: If the provided result is not a RaceResult instance.
+        """
+        if not isinstance(race_result, RaceResult):
+            raise TypeError("The provided result must be an instance of RaceResult.")
+        self.result = race_result
 
 
 class Driver(BaseModel):
@@ -104,6 +128,29 @@ class Event(AggregateRoot):
     def remove_driver(self, driver_id: EntityId) -> None:
         if self.drivers:
             self.drivers = [driver for driver in self.drivers if driver.id != driver_id]
+
+    def find_driver_by_id_or_name(self, identifier: str | EntityId) -> Optional[Driver]:
+        """
+        Find a driver by ID or name. Returns None if no driver is found.
+
+        :param identifier: The ID or name of the driver to find.
+        :return: The Driver instance if found, otherwise None.
+        """
+        if not self.drivers:
+            return None
+
+        return next(
+            (
+                driver
+                for driver in self.drivers
+                if driver.id == identifier
+                or (
+                    isinstance(identifier, str)
+                    and driver.name.lower() == identifier.lower()
+                )
+            ),
+            None,
+        )
 
     def add_schedule(self, schedule: Schedule) -> None:
         if not self.schedule:

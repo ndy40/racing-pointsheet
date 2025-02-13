@@ -1,4 +1,5 @@
-from typing import Any, Optional, TypeVar
+import json
+from typing import Any, Optional, TypeVar, Type
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -10,7 +11,6 @@ from modules.event.domain.value_objects import (
     EventStatus,
     SeriesStatus,
     ScheduleType,
-    DriverResult,
 )
 from pointsheet.domain.entity import EntityId
 
@@ -118,35 +118,22 @@ class ScheduleTypeType(BaseCustomTypes):
         return "ScheduleTypeType()"
 
 
-class DriverResultType(BaseCustomTypes):
-    impl = JSON
-
-    def process_bind_param(self, value: Optional[BaseModel], dialect: Dialect) -> Any:
-        if value:
-            return value.model_dump_json()
-        return value
-
-    def process_result_value(
-        self, value: Optional[Any], dialect: Dialect
-    ) -> Optional[Any]:
-        if value:
-            return DriverResult(**value)
-
-        return None
-
-
 T = TypeVar("T", bound=BaseModel)
 
 
 class PydanticJsonType[T](BaseCustomTypes):
     impl = JSON
 
+    def __init__(self, cls: Type[T], *args, **kwargs):
+        self.cls = cls
+        super().__init__(*args, **kwargs)
+
     def process_bind_param(self, value: Optional[list[T] | T], dialect: Dialect) -> Any:
         if not value:
             return value
 
         if isinstance(value, list):
-            return [item.model_dump_json() for item in value]
+            return [item.model_dump() for item in value]
 
         return value.model_dump()
 
@@ -157,9 +144,9 @@ class PydanticJsonType[T](BaseCustomTypes):
             return value
 
         if isinstance(value, list):
-            return [T(**item) for item in value]
+            return [self.cls(**json.loads(item)) for item in value]
 
-        return T(**value)
+        return self.cls(**json.loads(value))
 
 
 class GUID(TypeDecorator):

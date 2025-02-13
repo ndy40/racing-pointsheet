@@ -19,6 +19,11 @@ lagom = "^2.7.5"
 bcrypt = "^4.2.1"
 flask-httpauth = "^4.8.0"
 celery = "^5.4.0"
+langchain = {extras = ["google-vertexai"], version = "^0.3.18"}
+langchain-google-vertexai = "^2.0.13"
+gcloud = "^0.18.3"
+pytesseract = "^0.3.13"
+opencv-python-headless = "^4.11.0.86"
 
 
 [tool.poetry.group.dev.dependencies]

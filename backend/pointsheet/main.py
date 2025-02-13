@@ -17,6 +17,9 @@ if os.environ.get("APP_ENV", "dev") != "prod":
 alembic_cfg_path = os.path.join(os.path.dirname(__file__), "alembic.ini")
 alembic_cfg = Config(alembic_cfg_path)
 
+# logging.basicConfig(level=logging.DEBUG)
+# logger = logging.getLogger(__name__)
+
 
 @click.group()
 def db():

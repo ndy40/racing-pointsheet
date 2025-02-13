@@ -48,3 +48,8 @@ class EventScheduleAdded(Event):
 
 class EventScheduleRemoved(Event):
     event_id: EntityId
+
+
+class RaceResultUploaded(Event):
+    event_id: EntityId
+    schedule_id: int

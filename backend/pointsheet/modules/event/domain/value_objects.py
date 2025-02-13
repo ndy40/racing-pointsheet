@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, PositiveInt, field_serializer
+from pydantic import BaseModel, PositiveInt, field_serializer, NonNegativeInt
 
 from pointsheet.domain import EntityId
 
@@ -30,12 +30,12 @@ class DriverResult(BaseModel):
     driver_id: EntityId
     driver: str
     position: PositiveInt
-    best_lap: str
-    total: str
+    total: Optional[str] = None
+    best_lap: Optional[str] = None
     penalties: Optional[int] = 0
     fl_points: Optional[int] = 0
     points: Optional[int] = 0
-    total_points: Optional[PositiveInt] = 0
+    total_points: Optional[NonNegativeInt] = 0
 
     @field_serializer("driver_id")
     def serialize_driver_id(self, driver_id: EntityId):

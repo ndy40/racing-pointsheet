@@ -26,7 +26,7 @@ class FileStore(abc.ABC):
 class LocalFileStore(FileStore):
     def save_file(self, file_path: str, file_content: bytes) -> None:
         """Save a file with the given path and content."""
-        allowed_extensions = {"jpeg", "png", "csv", "pdf"}
+        allowed_extensions = {"jpeg", "png", "csv", "pdf", "jpg"}
         sanitized_name = secure_filename(file_path)
         extension = os.path.splitext(sanitized_name)[1].lower().lstrip(".")
         if extension not in allowed_extensions:

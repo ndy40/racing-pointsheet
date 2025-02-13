@@ -13,7 +13,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from modules.event.domain.value_objects import SeriesStatus, ScheduleType, DriverResult
 from pointsheet.domain.entity import EntityId
-from pointsheet.models import BaseModel, SeriesStatusType, DriverResultType
+from pointsheet.models import BaseModel, SeriesStatusType
 from pointsheet.models.base import uuid_default
 from pointsheet.models.custom_types import (
     EntityIdType,
@@ -36,7 +36,7 @@ class RaceResult(BaseModel):
         ),
     )
     result: Mapped[List[DriverResult]] = mapped_column(
-        PydanticJsonType[List[DriverResultType]]
+        PydanticJsonType[DriverResult](DriverResult)
     )
     mark_down: Mapped[str] = mapped_column(Text, nullable=True)
     upload_file: Mapped[str] = mapped_column(Text, nullable=True)

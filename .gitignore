@@ -164,3 +164,4 @@ cython_debug/
 .DS_Store
 uploads/*
 /backend/pointsheet/uploads/
+/backend/pointsheet/auth.json
