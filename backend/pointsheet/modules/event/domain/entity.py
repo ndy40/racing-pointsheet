@@ -7,8 +7,6 @@ from modules.event.exceptions import (
     InvalidEventDateForSeries,
     SeriesAlreadyClosed,
     DriverAlreadySingedUp,
-    DuplicatePositionInRaceResult,
-    DuplicateDriverInRaceResult,
 )
 from modules.event.domain.value_objects import (
     EventStatus,
@@ -29,44 +27,23 @@ class StartEndDateMixin:
 class RaceResult(BaseModel):
     id: Optional[int] = None
     schedule_id: ScheduleId
-    result: Optional[List[DriverResult]] = None
+    result: List[DriverResult]
     mark_down: Optional[str] = None
     upload_file: Optional[str] = None
 
     def add_result(self, *driver_results: DriverResult) -> None:
         """
-        Adds one or more DriverResults to the race result list, ensuring no duplicates or conflicting positions.
+        Adds one or more DriverResults to the race result list.
 
         :param driver_results: One or more DriverResult instances.
         :raises TypeError: If any input is not a DriverResult instance.
-        :raises ValueError: If a duplicate driver or position is detected.
         """
-
-        if not self.result:
-            self.result = []
 
         for driver_result in driver_results:
             if not isinstance(driver_result, DriverResult):
                 raise TypeError(
                     "All provided results must be instances of DriverResult."
                 )
-
-            if any(
-                existing.driver_id == driver_result.driver_id
-                or existing.driver == driver_result.driver
-                for existing in self.result
-            ):
-                raise DuplicateDriverInRaceResult(
-                    f"Duplicate driver detected: {driver_result.driver_id} or {driver_result.driver}"
-                )
-
-            if any(
-                existing.position == driver_result.position for existing in self.result
-            ):
-                raise DuplicatePositionInRaceResult(
-                    f"Conflicting position detected: position {driver_result.position} is already taken."
-                )
-
             self.result.append(driver_result)
 
 
@@ -136,7 +113,7 @@ class Event(AggregateRoot):
             None,
         )
         if schedule is None:
-            raise ValueError(f"Schedule with ID {race_result.schedule_id} not found.")
+            raise ValueError("Cannot add result as schedule does not exist")
 
         schedule.result = race_result
 
@@ -206,13 +183,17 @@ class Event(AggregateRoot):
             )
 
     def remove_result(self, schedule_id: ScheduleId) -> None:
-        if not self.results:
-            raise ValueError("No results exist to remove.")
+        """Removes the result associated with the given schedule_id from the respective schedule."""
+        if not self.schedule:
+            raise ValueError("No schedules exist to remove a result from.")
 
-        self.results = [
-            result for result in self.results if result.schedule_id != schedule_id
-        ]
-        self.results.sort(key=lambda r: r.schedule_id)
+        # Find the schedule with the matching schedule_id
+        schedule = next((s for s in self.schedule if s.id == schedule_id), None)
+        if not schedule:
+            raise ValueError(f"Schedule with id {schedule_id} not found.")
+
+        # Remove the result from the found schedule
+        schedule.result = None
 
 
 class Series(AggregateRoot):

@@ -38,7 +38,8 @@ jsonschema = "^4.23.0"
 minversion = "6.0"
 addopts = "-ra"
 testpaths = [
-    "tests"
+    "tests",
+    "modules"
 ]
 env = [
     "DATABASE=sqlite://",

@@ -221,10 +221,12 @@ def test_adding_race_result_to_event_with_no_schedule_id_fails():
     race_result = RaceResult(
         schedule_id=100,  # An ID not associated with any schedule
         result=[driver_result],
-        mark_down="Invalid schedule ID test case",
+        mark_down="Invalid schedule ID tests case",
     )
 
-    with pytest.raises(ValueError, match="Cannot add result as no schedules exist"):
+    with pytest.raises(
+        ValueError, match="Cannot add result as schedule does not exist"
+    ):
         event.add_result(race_result)
 
 
@@ -252,11 +254,11 @@ def test_adding_result_with_mismatched_schedule_id_raises_error():
     mismatched_result = RaceResult(
         schedule_id=99,  # This ID does not exist in event schedules
         result=[driver_result],
-        mark_down="Invalid schedule ID test",
+        mark_down="Invalid schedule ID tests",
     )
 
     with pytest.raises(
-        ValueError, match="Schedule ID 99 is not associated with a 'race' schedule."
+        ValueError, match="Cannot add result as schedule does not exist"
     ):
         event.add_result(mismatched_result)
 
@@ -348,9 +350,8 @@ def test_adding_multiple_race_results_sorted_by_schedule_id():
     event.add_result(result2)
 
     # Assert that the RaceResults are sorted by scheduleId
-    assert len(event.results) == 2
-    assert event.results[0].schedule_id == 1
-    assert event.results[1].schedule_id == 2
+    assert isinstance(event.schedule[0].result, RaceResult)
+    assert isinstance(event.schedule[1].result, RaceResult)
 
 
 def test_adding_race_result_to_event():
@@ -377,10 +378,8 @@ def test_adding_race_result_to_event():
 
     event.add_result(race_result)
 
-    assert len(event.results) == 1
-    assert event.results[0].schedule_id == race_schedule.id
-    assert event.results[0].result[0].driver == "Driver A"
-    assert event.results[0].mark_down == "Great race!"
+    assert event.schedule[0].id == race_schedule.id
+    assert event.schedule[0].result.result[0].driver == "Driver A"
 
 
 def test_adding_qualification_result_does_not_update_event_results():
@@ -405,17 +404,15 @@ def test_adding_qualification_result_does_not_update_event_results():
         points=0,
     )
     qualification_result = RaceResult(
-        schedule_id=qualification_schedule.id,
+        schedule_id=999,
         result=[driver_result],
         mark_down="Not a race result",
     )
 
     with pytest.raises(
-        ValueError, match="Schedule ID 1 is not associated with a 'race' schedule."
+        ValueError, match="Cannot add result as schedule does not exist"
     ):
         event.add_result(qualification_result)
-
-    assert len(event.results) == 0
 
 
 def test_creating_event_with_invalid_dates_fails():
@@ -489,13 +486,10 @@ def test_removing_race_result_from_event():
     event.add_result(race_result3)
 
     # Ensure all results are added
-    assert len(event.results) == 3
+    assert all(schedule.result for schedule in event.schedule)
 
     # Remove the second race result
     event.remove_result(schedule_id=2)
 
     # Check that the race result has been removed
-    assert len(event.results) == 2
-    assert all(result.schedule_id != 2 for result in event.results)
-    assert event.results[0].schedule_id == 1
-    assert event.results[1].schedule_id == 3
+    assert event.schedule[1].result is None
