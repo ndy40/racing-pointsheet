@@ -5,7 +5,8 @@ from modules.event.dependencies import container
 from modules.event.domain.entity import Event
 from modules.event.events import RaceResultUploaded
 from modules.event.repository import EventRepository
-from modules.event.use_case.extract_race_result import ExtractRaceResult, SaveRaceResult
+from modules.event.use_case.extract_race_result import ExtractRaceResult
+from modules.event.use_case.save_race_result import SaveRaceResult
 from pointsheet.celery_worker import celery_task
 
 

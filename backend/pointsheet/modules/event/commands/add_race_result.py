@@ -6,7 +6,7 @@ from modules.event import event_module
 from modules.event.dependencies import container
 from modules.event.domain.value_objects import ScheduleId, Result
 from modules.event.repository import EventRepository
-from modules.event.use_case.extract_race_result import SaveRaceResult
+from modules.event.use_case.save_race_result import SaveRaceResult
 from pointsheet.domain import EntityId
 
 
