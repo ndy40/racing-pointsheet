@@ -24,6 +24,7 @@ langchain-google-vertexai = "^2.0.13"
 gcloud = "^0.18.3"
 pytesseract = "^0.3.13"
 opencv-python-headless = "^4.11.0.86"
+flask-cors = "^5.0.0"
 
 
 [tool.poetry.group.dev.dependencies]

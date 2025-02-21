@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 
 from flask import Flask, render_template, Response
+from flask_cors import CORS
 from pydantic import ValidationError
 
 from api.auth import auth_bp
@@ -25,6 +26,7 @@ def create_app(test_config=None):
         static_folder=static_directory,
         template_folder=template_directory,
     )
+    CORS(app)
 
     app.config.from_mapping(
         SECRET_KEY="dev",

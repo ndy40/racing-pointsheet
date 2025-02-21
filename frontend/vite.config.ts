@@ -6,7 +6,10 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   server: {
     host: "0.0.0.0",
-    allowedHosts: ["localhost", "pointsheet-app.com"]
+    cors: {
+      origin: "*",
+    },
+    allowedHosts: ["localhost", "pointsheet-app.com"],
   },
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
 });

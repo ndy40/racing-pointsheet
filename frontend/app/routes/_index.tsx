@@ -1,5 +1,6 @@
 import type { Route } from "./+types/_index";
 
+
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "New React Router App" },
@@ -8,5 +9,5 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Index() {
-  return <h1>Welcome to React Router!</h1>;
+  return <h1>Index</h1>;
 }
