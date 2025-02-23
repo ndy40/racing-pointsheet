@@ -2,7 +2,7 @@ import logo from './pointsheet.png';
 
 export function Navigation() {
     return <nav className="flex justify-between rounded-b-2xl h-auto bg-gray-700">
-        <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-5">
             <div className="flex h-16 justify-between">
                 <div id="logo" className="flex items-center space-x-4">
                     <img src={logo} alt="Pointsheet logo" className="size-10 rounded-full"/>

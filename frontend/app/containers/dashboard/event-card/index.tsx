@@ -1,4 +1,4 @@
-import {LargeRaceCard} from "@/components/race_card";
+import {LargeRaceCard} from "~/components/race_card";
 
 
 interface EventDetails {
