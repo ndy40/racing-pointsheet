@@ -1,4 +1,5 @@
 import type { Route } from "./+types/_index";
+import {Welcome} from "~/welcome/welcome";
 
 
 export function meta({}: Route.MetaArgs) {
@@ -9,5 +10,5 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Index() {
-  return <h1>Index</h1>;
+  return <Welcome/>;
 }

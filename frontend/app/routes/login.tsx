@@ -34,7 +34,7 @@ export async function action({request}: Route.ActionArgs){
             cookie.token = token;
         }
 
-        return redirect("/", {
+        return redirect("/dashboard", {
             headers: {
                 'Set-Cookie': await userCookies.serialize(cookie),
             }
