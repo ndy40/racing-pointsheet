@@ -27,13 +27,6 @@ export function Navigation() {
                         </NavigationMenuItem>
                     </NavigationMenuList>
                 </NavigationMenu>
-                {/* Menu items starts here */}
-                {/*<div className="flex items-center">*/}
-                {/*    <a href="#" className="px-2 text-base text-gray-100 hover:text-gray-400">Schedule</a>*/}
-                {/*    <a href="#" className="px-2 text-base text-gray-100 hover:text-gray-400">Series</a>*/}
-                {/*    <a href="#" className="px-2 text-base text-gray-100 hover:text-gray-400">Drivers</a>*/}
-                {/*    <a href="#" className="px-2"><span className="material-icons-outlined text-gray-400">account_circle</span></a>*/}
-                {/*</div>*/}
             </div>
         </div>
     </nav>
