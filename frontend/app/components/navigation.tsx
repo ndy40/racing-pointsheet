@@ -1,15 +1,15 @@
 import logo from './pointsheet.png';
 import {
-    NavigationMenu,
+    NavigationMenu, NavigationMenuContent, NavigationMenuIndicator,
     NavigationMenuItem,
     NavigationMenuLink,
-    NavigationMenuList
+    NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport
 } from "~/components/ui/navigation-menu";
 
 export function Navigation() {
     return <nav className="flex justify-between rounded-b-2xl h-auto bg-gray-700">
-        <div className="w-full px-4 sm:px-6 lg:px-5">
-            <div className="flex h-16 justify-between pl-4">
+        <div className="w-full sm:px-6 lg:px-5">
+            <div className="flex h-16 justify-between">
                 <div id="logo" className="flex items-center space-x-4">
                     <img src={logo} alt="Pointsheet logo" className="size-10 rounded-full"/>
                     <h1 className="text-lg text-gray-100">Team Name</h1>
@@ -17,16 +17,18 @@ export function Navigation() {
                 <NavigationMenu>
                     <NavigationMenuList className="flex space-x-2">
                         <NavigationMenuItem>
-                            <NavigationMenuLink href="/schedule" className="text-white hover:bg-transparent hover:bg-gray-500 hover:text-gray-100">Schedule</NavigationMenuLink>
+                            <NavigationMenuLink href="/calendar" className="text-white hover:bg-transparent hover:bg-gray-500 hover:text-gray-100">Calendar</NavigationMenuLink>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                            <NavigationMenuLink href="/series" className="text-white hover:bg-transparent hover:bg-gray-500 hover:text-gray-100">Series</NavigationMenuLink>
+                            <NavigationMenuLink href="/events" className="text-white hover:bg-transparent hover:bg-gray-500 hover:text-gray-100">Events</NavigationMenuLink>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                            <NavigationMenuLink href="/drivers" className="text-white hover:bg-transparent hover:bg-gray-500 hover:text-gray-100">Driver</NavigationMenuLink>
+                            <NavigationMenuLink href="/drivers" className="text-white hover:bg-transparent hover:bg-gray-500 hover:text-gray-100">Drivers</NavigationMenuLink>
                         </NavigationMenuItem>
                     </NavigationMenuList>
+                    <NavigationMenuViewport/>
                 </NavigationMenu>
+
             </div>
         </div>
     </nav>

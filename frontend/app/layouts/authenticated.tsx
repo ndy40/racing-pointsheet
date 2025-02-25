@@ -10,7 +10,7 @@ export default function Authenticated() {
         <Meta />
     </head>
     <body>
-    <div id="wrapper" className="container mx-auto h-screen max-w-[960px]">
+    <div id="wrapper" className="container mx-auto h-screen">
         <main>
             <Navigation/>
             <Outlet />
