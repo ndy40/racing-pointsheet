@@ -1,4 +1,4 @@
-import logo from './pointsheet.png';
+import logo from '../assets/pointsheet.png';
 import {
     NavigationMenu, NavigationMenuContent, NavigationMenuIndicator,
     NavigationMenuItem,
