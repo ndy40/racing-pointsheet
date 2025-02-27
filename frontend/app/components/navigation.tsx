@@ -20,7 +20,7 @@ export function Navigation() {
                             <NavigationMenuLink href="/calendar" className="text-white hover:bg-transparent hover:bg-gray-500 hover:text-gray-100">Calendar</NavigationMenuLink>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                            <NavigationMenuLink href="/events" className="text-white hover:bg-transparent hover:bg-gray-500 hover:text-gray-100">Events</NavigationMenuLink>
+                            <NavigationMenuLink href="/races" className="text-white hover:bg-transparent hover:bg-gray-500 hover:text-gray-100">Races</NavigationMenuLink>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <NavigationMenuLink href="/drivers" className="text-white hover:bg-transparent hover:bg-gray-500 hover:text-gray-100">Drivers</NavigationMenuLink>

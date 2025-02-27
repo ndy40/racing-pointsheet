@@ -13,8 +13,8 @@ import {useState} from "react";
 export default function Events() {
     const [open, setOpen] = useState('');
 
-    return (
-        <div className="p-2">
+    return <>
+        <section role="menu" className="p-2">
             <Menubar className="bg-white border-none shadow-none bg-none px-15 gap-2" onValueChange={setOpen}>
                 <MenubarMenu value="series">
                     <MenubarTrigger className="border border-gray-500 px-4 hover:bg-gray-200">
@@ -24,8 +24,8 @@ export default function Events() {
                         }
                     </MenubarTrigger>
                     <MenubarContent>
+                        <MenubarItem>New Series</MenubarItem>
                         <MenubarItem>View</MenubarItem>
-                        <MenubarItem>Create New</MenubarItem>
                         <MenubarArrow/>
                     </MenubarContent>
                 </MenubarMenu>
@@ -37,13 +37,15 @@ export default function Events() {
                         }
                     </MenubarTrigger>
                     <MenubarContent>
+                        <MenubarItem>New Event</MenubarItem>
                         <MenubarItem>View</MenubarItem>
-                        <MenubarItem>Create</MenubarItem>
                     </MenubarContent>
                 </MenubarMenu>
             </Menubar>
             <Separator className="my-2"/>
-
-        </div>
-        )
+        </section>
+        <section id="dashboard">
+            <p>Dashboard section with stats and list of ongoing series and Events. Will show Calendar widget</p>
+        </section>
+    </>;
 }
