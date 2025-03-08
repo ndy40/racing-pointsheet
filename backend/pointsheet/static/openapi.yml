@@ -69,7 +69,7 @@ paths:
       description: Fetch all series
       operationId: fetchAllSeries
       tags:
-        - Home
+        - Series
       security:
         BearerAuth: []
       parameters:
@@ -96,7 +96,7 @@ paths:
       description: Create series
       operationId: createSeries
       tags:
-        - Home
+        - Series
       requestBody:
         content:
           application/json:
@@ -104,7 +104,7 @@ paths:
               $ref: "#/components/schemas/CreateSeriesRequest"
       responses:
         201:
-          description: Created Home
+          description: Created Series
           content:
             application/json:
               schema:
@@ -122,10 +122,10 @@ paths:
           schema:
             type: string
       tags:
-        - Home
+        - Series
       responses:
         200:
-          description: Home
+          description: Series
           content:
             application/json:
               schema:
@@ -144,16 +144,16 @@ paths:
             type: string
           required: true
       tags:
-        - Home
+        - Series
       responses:
         204:
           description: Delete series
   /series/{series_id}/status:
     put:
       operationId: updateSeriesStatus
-      description: Update the status of Home.
+      description: Update the status of Series.
       tags:
-        - Home
+        - Series
       parameters:
         - in: path
           name: series_id
@@ -190,7 +190,7 @@ paths:
           schema:
             type: uuid
       tags:
-        - Home
+        - Series
       requestBody:
         content:
           application/json:
@@ -202,7 +202,7 @@ paths:
     put:
       operationId: updateSeriesEvent
       tags:
-        - Home
+        - Series
       parameters:
         - in: path
           name: series_id
@@ -224,7 +224,7 @@ paths:
       description: Remove event from series
       operationId: removeEventFromSeries
       tags:
-        - Home
+        - Series
       parameters:
         - in: path
           name: series_id
