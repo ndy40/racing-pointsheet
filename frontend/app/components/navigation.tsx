@@ -12,7 +12,7 @@ export function Navigation() {
         <div className="w-full sm:px-6 lg:px-5">
             <div className="flex h-16 justify-between">
                 <Link to="/" className="flex items-center space-x-2 h-16">
-                    <img src="/static/pointsheet-thumbnail.png" alt="Pointsheet logo" className="size-10 rounded-full"/>
+                    <img src="https://res.cloudinary.com/ndy40/image/upload/c_thumb,g_face,w_100/v1740482698/pointsheet-app/pointsheet_yae9rd.jpg" alt="Pointsheet logo" className="size-10 rounded-full"/>
                     <h1 className="text-lg text-gray-100">Team Name</h1>
                 </Link>
                 <NavigationMenu>
