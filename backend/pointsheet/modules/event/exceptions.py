@@ -3,7 +3,7 @@ from pointsheet.domain.exceptions.base import PointSheetException
 
 class SeriesNotFoundException(PointSheetException):
     code = 404
-    message = "Series not found"
+    message = "Home not found"
 
 
 class EventAlreadyExists(PointSheetException):
@@ -12,7 +12,7 @@ class EventAlreadyExists(PointSheetException):
 
 class SeriesAlreadyClosed(PointSheetException):
     code = 400
-    message = "Series can't be started after being closed"
+    message = "Home can't be started after being closed"
 
 
 class InvalidEventDateForSeries(PointSheetException):

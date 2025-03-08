@@ -38,6 +38,7 @@ services:
     volumes:
       - ./frontend:/app/
       - node_modules:/app/node_modules
+      - frontend_static:/app/public/
 
   nginx_proxy:
     image: nginx:1.27-alpine
@@ -45,6 +46,7 @@ services:
       - "80:80"
     volumes:
       - ./docker/nginx/pointsheet.conf:/etc/nginx/conf.d/default.conf:ro
+      - frontend_static:/app/public
     depends_on:
       - backend
     extra_hosts:
@@ -53,3 +55,4 @@ services:
 
 volumes:
   node_modules:
+  frontend_static:

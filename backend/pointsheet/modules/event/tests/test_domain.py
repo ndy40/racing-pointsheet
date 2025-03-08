@@ -154,7 +154,7 @@ def test_event_ends_at_same_time_as_series_valid():
     series_end = now_date + timedelta(days=3)
 
     series = Series(
-        title="Test Series",
+        title="Test Home",
         status=SeriesStatus.not_started,
         starts_at=now_date,
         ends_at=series_end,

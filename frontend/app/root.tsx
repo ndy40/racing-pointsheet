@@ -20,7 +20,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </head>
       <body>
       <div id="wrapper" className="container mx-auto h-screen">
-        {/*<Navigation/>*/}
         {children}
       </div>
       <ScrollRestoration />

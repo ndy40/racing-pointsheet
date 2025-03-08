@@ -7,7 +7,7 @@ def run():
 
     with session.begin():
         for i in range(0, 3):
-            SeriesFactory(title=f"Series {i}")
+            SeriesFactory(title=f"Home {i}")
             EventFactory()
 
         session.commit()

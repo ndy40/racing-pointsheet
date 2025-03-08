@@ -1,6 +1,7 @@
 
 
 
-export default function Series() {
+export default function View() {
     return <div>Series Management</div>
 }
+

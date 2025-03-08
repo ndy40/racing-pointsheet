@@ -12,13 +12,13 @@ from pointsheet.models.event import RaceResult, EventSchedule, EventDriver
 
 
 def test_we_can_create_a_series_without_status_set(db_session):
-    series = Series(title="Series 1")
+    series = Series(title="Home 1")
     db_session.add(series)
     db_session.commit()
 
 
 def test_create_series_without_associated_event(db_session):
-    series = Series(title="Series 2", status=SeriesStatus.started)
+    series = Series(title="Home 2", status=SeriesStatus.started)
     db_session.add(series)
     db_session.commit()
     assert series.id is not None

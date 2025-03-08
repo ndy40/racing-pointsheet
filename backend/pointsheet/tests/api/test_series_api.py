@@ -18,7 +18,7 @@ def test_create_series(client, start_end_date_future, auth_token):
     start_date, end_date = start_end_date_future
 
     payload = {
-        "title": "Series 1",
+        "title": "Home 1",
         "status": "started",
         "starts_at": start_date.isoformat(),
         "ends_at": end_date.isoformat(),
@@ -33,7 +33,7 @@ def test_create_series_defaults_to_not_started_status(
 ):
     start_date, end_date = start_end_date_future
     payload = {
-        "title": "Series 1",
+        "title": "Home 1",
         "starts_at": start_date.isoformat(),
         "ends_at": end_date.isoformat(),
     }

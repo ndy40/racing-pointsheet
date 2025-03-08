@@ -34,7 +34,7 @@ class SeriesFactory(SQLAlchemyModelFactory):
         sqlalchemy_session_persistence = "commit"
 
     id = factory.LazyFunction(uuid.uuid4)
-    title = factory.Sequence(lambda n: "Series %d" % n)
+    title = factory.Sequence(lambda n: "Home %d" % n)
     status = SeriesStatus.started.value
     starts_at = LazyFunction(lambda: datetime.now() + timedelta(days=1))
     ends_at = LazyFunction(lambda: datetime.now() + timedelta(days=7))
