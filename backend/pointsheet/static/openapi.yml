@@ -76,11 +76,13 @@ paths:
         - in: query
           name: status
           schema:
-            type: string
-            enum:
-              - started
-              - closed
-              - not_started
+            type: array
+            items:
+              type: string
+              enum:
+                - started
+                - closed
+                - not_started
       responses:
         200:
           description: List of series

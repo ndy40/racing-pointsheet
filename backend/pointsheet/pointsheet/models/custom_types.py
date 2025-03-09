@@ -39,6 +39,7 @@ class EntityIdType(BaseCustomTypes):
 
 class SeriesStatusType(BaseCustomTypes):
     impl = String
+    cache_ok = True
 
     def process_bind_param(self, value: Optional[_T], dialect: Dialect) -> Any:
         if value and value not in SeriesStatus.__members__.values():

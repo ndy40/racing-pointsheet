@@ -7,9 +7,7 @@ from flask import Flask, render_template, Response
 from flask_cors import CORS
 from pydantic import ValidationError
 
-from api.auth import auth_bp
-from api.events import series_bp, event_bp
-
+from api import api_blueprint
 
 root_dir = os.path.join(Path(__file__).parent.parent)
 
@@ -25,9 +23,11 @@ def create_app(test_config=None):
         __name__,
         static_folder=static_directory,
         template_folder=template_directory,
+        subdomain_matching=True,
     )
     CORS(app)
 
+    app.config["SERVER_NAME"] = "pointsheet-app.com"
     app.config.from_mapping(
         SECRET_KEY="dev",
         DATABASE=os.path.join(app.instance_path, "point_sheets.db.sqlite"),
@@ -38,8 +38,12 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route("/")
+    @app.route("/", subdomain=None)
     def index():
+        return "web page"
+
+    @app.route("/", subdomain="api")
+    def api_home():
         return render_template("index.html")
 
     from pointsheet.domain.exceptions.base import PointSheetException
@@ -97,9 +101,6 @@ def create_app(test_config=None):
     from modules import application
 
     app.application = application
-
-    app.register_blueprint(series_bp)
-    app.register_blueprint(event_bp)
-    app.register_blueprint(auth_bp)
-
+    app.register_blueprint(api_blueprint)
+    print(app.config["SERVER_NAME"])
     return app
