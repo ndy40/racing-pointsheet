@@ -24,21 +24,6 @@ services:
     command: |
       celery -A pointsheet.celery_worker worker --loglevel=info
 
-  frontend:
-    restart: on-failure
-    build:
-      context: frontend
-    container_name: frontend
-    working_dir: /app
-    command: npm run dev
-    environment:
-      BACKEND_DOMAIN: "backend:5000"
-    ports:
-      - "5173"
-    volumes:
-      - ./frontend:/app/
-      - node_modules:/app/node_modules
-
   nginx_proxy:
     image: nginx:1.27-alpine
     ports:
