@@ -30,6 +30,7 @@ services:
       - "80:80"
     volumes:
       - ./docker/nginx/pointsheet.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./backend/pointsheet/static:/app/static
     depends_on:
       - backend
     extra_hosts:

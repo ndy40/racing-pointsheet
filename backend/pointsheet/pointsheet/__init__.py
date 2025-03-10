@@ -23,11 +23,9 @@ def create_app(test_config=None):
         __name__,
         static_folder=static_directory,
         template_folder=template_directory,
-        subdomain_matching=True,
     )
     CORS(app)
 
-    app.config["SERVER_NAME"] = "pointsheet-app.com"
     app.config.from_mapping(
         SECRET_KEY="dev",
         DATABASE=os.path.join(app.instance_path, "point_sheets.db.sqlite"),
@@ -38,13 +36,13 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route("/", subdomain=None)
+    @app.route("/")
     def index():
-        return "web page"
-
-    @app.route("/", subdomain="api")
-    def api_home():
         return render_template("index.html")
+
+    @app.route("/docs")
+    def api_home():
+        return render_template("spec.html")
 
     from pointsheet.domain.exceptions.base import PointSheetException
 
@@ -102,5 +100,4 @@ def create_app(test_config=None):
 
     app.application = application
     app.register_blueprint(api_blueprint)
-    print(app.config["SERVER_NAME"])
     return app
