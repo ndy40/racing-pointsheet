@@ -3,13 +3,13 @@ import logging
 import os
 from pathlib import Path
 
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, session, redirect
+from flask_wtf.csrf import CSRFProtect
 from flask_cors import CORS
 from pydantic import ValidationError
 
-from api.auth import auth_bp
-from api.events import series_bp, event_bp
-
+import views
+from api import api_bp
 
 root_dir = os.path.join(Path(__file__).parent.parent)
 
@@ -18,6 +18,10 @@ template_directory = os.path.join(root_dir, "templates")
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+# logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+
+
+csrf = CSRFProtect()
 
 
 def create_app(test_config=None):
@@ -26,11 +30,16 @@ def create_app(test_config=None):
         static_folder=static_directory,
         template_folder=template_directory,
     )
+    csrf.init_app(app)
     CORS(app)
 
     app.config.from_mapping(
         SECRET_KEY="dev",
         DATABASE=os.path.join(app.instance_path, "point_sheets.db.sqlite"),
+        WTF_CSRF_CHECK_DEFAULT=False,
+        WTF_CSRF_EXEMPT_ROUTES=["/api/*"],
+        SQLALCHEMY_ECHO=True,
+        DEBUG=True,
     )
 
     try:
@@ -40,7 +49,13 @@ def create_app(test_config=None):
 
     @app.route("/")
     def index():
-        return render_template("index.html")
+        if session.get("token"):
+            return redirect("/home")
+        return redirect("/auth")
+
+    @app.route("/api")
+    def api():
+        return render_template("docs.html")
 
     from pointsheet.domain.exceptions.base import PointSheetException
 
@@ -82,6 +97,13 @@ def create_app(test_config=None):
             response=json.dumps(resp),
         )
 
+    @app.context_processor
+    def inject_is_authenticated():
+        return dict(
+            is_authenticated=session.get("is_authenticated", False),
+            user_id=session.get("user_id", None),
+        )
+
     # @app.errorhandler(Exception)
     # def handle_all_exceptions(e: Exception):
     #     resp = {
@@ -98,8 +120,8 @@ def create_app(test_config=None):
 
     app.application = application
 
-    app.register_blueprint(series_bp)
-    app.register_blueprint(event_bp)
-    app.register_blueprint(auth_bp)
+    app.register_blueprint(api_bp)
+    csrf.exempt(api_bp)
+    app.register_blueprint(views.views_bp)
 
     return app

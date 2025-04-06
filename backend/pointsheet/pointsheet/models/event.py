@@ -102,6 +102,15 @@ class Event(BaseModel):
         EventDriver, cascade="all, delete-orphan"
     )
 
+    @validates("starts_at", "ends_at", include_removes=False)
+    def validate_date_formats(self, key, value):
+        if isinstance(value, str):
+            try:
+                return datetime.strptime(value)
+            except ValueError:
+                return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
+        return value
+
 
 class Series(BaseModel):
     __tablename__ = "series"

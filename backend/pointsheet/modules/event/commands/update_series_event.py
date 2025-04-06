@@ -4,7 +4,6 @@ from lato import Command, TransactionContext
 from pydantic import BaseModel
 
 from modules.event import event_module
-from modules.event.dependencies import container
 from modules.event.domain.value_objects import EventStatus
 from pointsheet.domain import EntityId
 from modules.event.events import SeriesUpdated
@@ -25,8 +24,9 @@ class UpdateSeriesEvent(Command):
 
 
 @event_module.handler(UpdateSeriesEvent)
-def update_series_event(cmd: UpdateSeriesEvent, ctx: TransactionContext):
-    repo: SeriesRepository = container[SeriesRepository]
+def update_series_event(
+    cmd: UpdateSeriesEvent, ctx: TransactionContext, repo: SeriesRepository
+):
     series = repo.find_by_id(cmd.series_id)
 
     if not series:

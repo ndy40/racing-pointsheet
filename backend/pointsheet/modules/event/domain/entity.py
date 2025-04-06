@@ -195,6 +195,9 @@ class Event(AggregateRoot):
         # Remove the result from the found schedule
         schedule.result = None
 
+    def is_participating(self, driver_id: EntityId) -> bool:
+        return self.find_driver_by_id_or_name(driver_id) is not None
+
 
 class Series(AggregateRoot):
     title: str

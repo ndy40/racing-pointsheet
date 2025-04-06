@@ -10,14 +10,14 @@ from modules.event.commands.save_race_result import SaveEventResults
 from modules.event.commands.save_uploaded_result import UploadRaceResult
 from modules.event.queries.get_event import GetEvent
 from modules.event.queries.get_events import GetEvents
-from pointsheet.auth import auth, get_user_id
+from pointsheet.auth import api_auth, get_user_id
 from pointsheet.domain.responses import ResourceCreated
 
 event_bp = Blueprint("events", __name__)
 
 
 @event_bp.route("/events/", methods=["POST"])
-@auth.login_required
+@api_auth.login_required
 def events():
     cmd = CreateEvent(**request.json)
     current_app.application.execute(cmd)
@@ -26,7 +26,7 @@ def events():
 
 
 @event_bp.route("/events/", methods=["GET"])
-@auth.login_required
+@api_auth.login_required
 def get_events():
     cmd = GetEvents()
     all_events = current_app.application.execute(cmd)
@@ -34,7 +34,7 @@ def get_events():
 
 
 @event_bp.route("/events/<uuid:event_id>/", methods=["GET"])
-@auth.login_required
+@api_auth.login_required
 def get_event(event_id):
     query = GetEvent(event_id=event_id)
     event = current_app.application.execute(query)
@@ -42,7 +42,7 @@ def get_event(event_id):
 
 
 @event_bp.route("/events/<uuid:event_id>/join", methods=["PUT"])
-@auth.login_required
+@api_auth.login_required
 def join_event(event_id):
     cmd = JoinEvent(event_id=event_id, driver_id=get_user_id())
     current_app.application.execute(cmd)
@@ -50,7 +50,7 @@ def join_event(event_id):
 
 
 @event_bp.route("/events/<uuid:event_id>/leave", methods=["PUT"])
-@auth.login_required
+@api_auth.login_required
 def leave_event(event_id):
     cmd = LeaveEvent(event_id=event_id, driver_id=get_user_id())
     current_app.application.execute(cmd)
@@ -61,7 +61,7 @@ def leave_event(event_id):
     "/events/<uuid:event_id>/results",
     methods=["POST"],
 )
-@auth.login_required
+@api_auth.login_required
 def upload_results(event_id):
     uploaded_file = request.files.get("file")
     if not uploaded_file:
@@ -81,7 +81,7 @@ def upload_results(event_id):
 
 
 @event_bp.route("/events/<uuid:event_id>/schedule", methods=["POST"])
-@auth.login_required
+@api_auth.login_required
 def add_event_schedule(event_id):
     cmd = AddEventSchedule(event_id=event_id, **request.json)
     current_app.application.execute(cmd)
@@ -91,7 +91,7 @@ def add_event_schedule(event_id):
 @event_bp.route(
     "/events/<uuid:event_id>/schedule/<int:schedule_id>", methods=["DELETE"]
 )
-@auth.login_required
+@api_auth.login_required
 def remove_event_schedule(event_id, schedule_id):
     cmd = RemoveSchedule(event_id=event_id, schedule_id=schedule_id)
     current_app.application.execute(cmd)
@@ -101,7 +101,7 @@ def remove_event_schedule(event_id, schedule_id):
 @event_bp.route(
     "/events/<uuid:event_id>/schedule/<int:schedule_id>/results", methods=["POST"]
 )
-@auth.login_required
+@api_auth.login_required
 def upload_result(event_id, schedule_id):
     uploaded_file = request.files.get("file")
     cmd = UploadRaceResult(
@@ -112,7 +112,7 @@ def upload_result(event_id, schedule_id):
 
 
 @event_bp.route("/events/<uuid:event_id>/result", methods=["POST"])
-@auth.login_required
+@api_auth.login_required
 def add_race_result(event_id):
     cmd = AddEventResult(event_id=event_id, **request.json)
     current_app.application.execute(cmd)

@@ -3,7 +3,6 @@ from abc import abstractmethod
 from typing import Any, Generic, List, TypeVar
 
 from sqlalchemy import select
-from sqlalchemy.orm import Session
 
 from pointsheet.domain import EntityId
 from pointsheet.models import BaseModel
@@ -29,8 +28,8 @@ class AbstractRepository(Generic[DbModel, T], abc.ABC):
     mapper_class: type[DataMapper[DbModel, T]]
     model_class: type[T]
 
-    def __init__(self, db_session: Session):
-        self._session = db_session
+    def __init__(self, db_session_factory):
+        self._session = db_session_factory
 
     def add(self, model: T) -> None:
         entity: DbModel = self._map_to_entity(model)

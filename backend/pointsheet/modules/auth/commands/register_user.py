@@ -1,15 +1,13 @@
 from typing import Optional
 
 from lato import Command, TransactionContext
-from pydantic import Field, field_validator
-from werkzeug.security import generate_password_hash
-
 from modules.auth import auth_module
-from modules.auth.dependencies import container
 from modules.auth.domain import UserRole
 from modules.auth.events.user_registered import UserRegistered
 from modules.auth.exceptions import UserAlreadyExists
-from modules.auth.repository import RegisterUserRepository, ActiveUserRepository
+from modules.auth.repository import ActiveUserRepository, RegisterUserRepository
+from pydantic import Field, field_validator
+from werkzeug.security import generate_password_hash
 
 
 class RegisterUser(Command):
@@ -30,9 +28,12 @@ class RegisterUser(Command):
 
 
 @auth_module.handler(RegisterUser)
-def handle_register_user(cmd: RegisterUser, ctx: TransactionContext):
-    repo = container[RegisterUserRepository]
-    active_repo = container[ActiveUserRepository]
+def handle_register_user(
+    cmd: RegisterUser,
+    ctx: TransactionContext,
+    repo: RegisterUserRepository,
+    active_repo: ActiveUserRepository,
+):
     active_user = active_repo.find_by_username(username=cmd.username)
 
     if active_user:

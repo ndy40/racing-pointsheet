@@ -1,7 +1,6 @@
 from lato import Command, TransactionContext
 
 from modules.event import event_module
-from modules.event.dependencies import container
 from modules.event.domain.entity import Event
 from pointsheet.domain import EntityId
 from modules.event.events import SeriesUpdated
@@ -15,8 +14,9 @@ class CreateEventForSeries(Command):
 
 
 @event_module.handler(CreateEventForSeries)
-def create_series_event(cmd: CreateEventForSeries, ctx: TransactionContext):
-    repo: SeriesRepository = container[SeriesRepository]
+def create_series_event(
+    cmd: CreateEventForSeries, ctx: TransactionContext, repo: SeriesRepository
+):
     series = repo.find_by_id(id=cmd.series_id)
 
     if not series:

@@ -12,7 +12,7 @@ from modules.event.commands.update_series_event import (
 )
 from modules.event.commands.update_series_status import UpdateSeriesStatus
 from modules.event.domain.entity import Event, Series
-from pointsheet.auth import auth
+from pointsheet.auth import api_auth
 from pointsheet.domain import EntityId
 from modules.event.queries.get_all_series import GetAllSeries
 from modules.event.queries.get_series_by_id import GetSeriesById
@@ -23,7 +23,7 @@ series_bp = Blueprint("event", __name__)
 
 
 @series_bp.route("/series", methods=["GET"])
-@auth.login_required
+@api_auth.login_required
 def fetch_all_series():
     cmd = GetAllSeries(**request.args.to_dict())
     result = current_app.application.execute(cmd)
@@ -31,7 +31,7 @@ def fetch_all_series():
 
 
 @series_bp.route("/series", methods=["POST"])
-@auth.login_required
+@api_auth.login_required
 def create_series():
     cmd = CreateSeries(**request.json)
     current_app.application.execute(cmd)
@@ -40,7 +40,7 @@ def create_series():
 
 
 @series_bp.route("/series/<uuid:series_id>/status", methods=["PUT"])
-@auth.login_required
+@api_auth.login_required
 def update_series_status(series_id):
     cmd = UpdateSeriesStatus(series_id=series_id, status=request.json.get("status"))
     current_app.application.execute(cmd)
@@ -48,14 +48,14 @@ def update_series_status(series_id):
 
 
 @series_bp.route("/series/<uuid:series_id>", methods=["DELETE"])
-@auth.login_required
+@api_auth.login_required
 def delete_series(series_id):
     current_app.application.execute(DeleteSeries(id=series_id))
     return Response(status=HTTPStatus.NO_CONTENT)
 
 
 @series_bp.route("/series/<uuid:series_id>", methods=["GET"])
-@auth.login_required
+@api_auth.login_required
 def fetch_series_by_id(series_id):
     cmd = GetSeriesById(id=series_id)
     series: Series = current_app.application.execute(GetSeriesById(id=cmd.id))
@@ -67,7 +67,7 @@ def fetch_series_by_id(series_id):
 
 
 @series_bp.route("/series/<uuid:series_id>/events", methods=["POST"])
-@auth.login_required
+@api_auth.login_required
 def create_event_for_series(series_id):
     cmd = CreateEventForSeries(series_id=series_id, event=Event(**request.json))
     current_app.application.execute(cmd)
@@ -75,7 +75,7 @@ def create_event_for_series(series_id):
 
 
 @series_bp.route("/series/<uuid:series_id>/events", methods=["PUT"])
-@auth.login_required
+@api_auth.login_required
 def update_event_for_series(series_id: EntityId):
     cmd = UpdateSeriesEvent(series_id=series_id, event=UpdateEventModel(**request.json))
     current_app.application.execute(cmd)
@@ -83,7 +83,7 @@ def update_event_for_series(series_id: EntityId):
 
 
 @series_bp.route("/series/<uuid:series_id>/events/<uuid:event_id>/", methods=["DELETE"])
-@auth.login_required
+@api_auth.login_required
 def delete_series_event(series_id, event_id):
     cmd = DeleteSeriesEvent(series_id=series_id, event_id=event_id)
     current_app.application.execute(cmd)

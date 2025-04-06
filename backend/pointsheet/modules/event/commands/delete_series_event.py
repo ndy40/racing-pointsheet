@@ -1,7 +1,6 @@
 from lato import Command, TransactionContext
 
 from modules.event import event_module
-from modules.event.dependencies import container
 from pointsheet.domain import EntityId
 from modules.event.events import SeriesUpdated
 from modules.event.exceptions import SeriesNotFoundException
@@ -14,8 +13,9 @@ class DeleteSeriesEvent(Command):
 
 
 @event_module.handler(DeleteSeriesEvent)
-def handle_delete_series_event(cmd: DeleteSeriesEvent, ctx: TransactionContext):
-    repository: SeriesRepository = container[SeriesRepository]
+def handle_delete_series_event(
+    cmd: DeleteSeriesEvent, ctx: TransactionContext, repository: SeriesRepository
+):
     series = repository.find_by_id(cmd.series_id)
 
     if not series:

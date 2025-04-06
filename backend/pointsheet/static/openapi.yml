@@ -6,7 +6,7 @@ info:
 servers:
   - url: "http://localhost:5000"
     description: localhost
-  - url: "http://api.pointsheet-app.com"
+  - url: "http://pointsheet-app.com/api"
     description: local domain
 security:
   - BearerAuth: []

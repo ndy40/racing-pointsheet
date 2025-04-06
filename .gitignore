@@ -165,4 +165,3 @@ cython_debug/
 uploads/*
 /backend/pointsheet/uploads/
 /backend/pointsheet/auth.json
-!/frontend/node_modules/

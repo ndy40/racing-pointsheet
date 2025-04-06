@@ -2,7 +2,6 @@ from lato import Command, TransactionContext
 
 from modules.auth.exceptions import EventNotFoundException
 from modules.event import event_module
-from modules.event.dependencies import container
 from modules.event.events import EventScheduleRemoved
 from modules.event.repository import EventRepository
 from pointsheet.domain import EntityId
@@ -14,8 +13,9 @@ class RemoveSchedule(Command):
 
 
 @event_module.handler(RemoveSchedule)
-def handle_remove_event(cmd: RemoveSchedule, ctx: TransactionContext):
-    event_repo = container[EventRepository]
+def handle_remove_event(
+    cmd: RemoveSchedule, ctx: TransactionContext, event_repo: EventRepository
+):
     event = event_repo.find_by_id(cmd.event_id)
 
     if not event:

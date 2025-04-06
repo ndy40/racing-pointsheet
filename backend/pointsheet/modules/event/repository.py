@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any, List
 
 from lato import Query
@@ -10,6 +11,7 @@ from .data_mappers import EventModelMapper, SeriesModelMapper
 from .domain.entity import Event as EventModel
 from .domain.entity import Series as SeriesModel
 from pointsheet.domain import EntityId
+from .domain.value_objects import EventStatus
 
 
 class EventRepository(AbstractRepository[Event, EventModel]):
@@ -32,6 +34,36 @@ class EventRepository(AbstractRepository[Event, EventModel]):
         entity_to_delete = self._session.get(Event.id, id)
         self._session.delete(entity_to_delete)
         self._session.commit()
+
+    def get_recent_event_by_user(self, query: Query):
+        driver_search = {"id": str(query.driver_id)}
+
+        stmt = (
+            select(Event)
+            .where(Event.drivers.contains([driver_search]))
+            .order_by(Event.starts_at.desc())
+            .limit(1)
+        )
+        result = self._session.execute(stmt).scalar()
+        return self._map_to_model(result) if result else None
+
+    def get_available_events(self, query: Query = None):
+        stmt = (
+            select(Event)
+            .where(Event.starts_at > datetime.now(), Event.status == EventStatus.open)
+            .order_by(Event.starts_at)
+        )
+        result = self._session.execute(stmt).scalars()
+        return [self._map_to_model(item) for item in result]
+
+    def get_ongoing_events(self, query: Query = None):
+        stmt = (
+            select(Event)
+            .where(Event.status == EventStatus.in_progress)
+            .order_by(Event.starts_at)
+        )
+        result = self._session.execute(stmt).scalars()
+        return [self._map_to_model(item) for item in result]
 
 
 class SeriesRepository(AbstractRepository[Series, SeriesModel]):
