@@ -1,13 +1,16 @@
+from typing import Optional
+
 from lato import Query
 
 from modules import event_module
 from modules.event.repository import EventRepository
+from pointsheet.domain import EntityId
 
 
 class GetAvailableEvents(Query):
-    pass
+    user_id: Optional[EntityId]
 
 
 @event_module.handler(GetAvailableEvents)
 def handle_get_available_events(event: GetAvailableEvents, repo: EventRepository):
-    return repo.get_available_events()
+    return repo.get_available_events(event)

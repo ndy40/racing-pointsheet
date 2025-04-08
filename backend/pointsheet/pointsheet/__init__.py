@@ -18,7 +18,7 @@ template_directory = os.path.join(root_dir, "templates")
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-# logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+logging.getLogger("sqlalchemy.engine").setLevel(logging.DEBUG)
 
 
 csrf = CSRFProtect()
@@ -53,7 +53,9 @@ def create_app(test_config=None):
             return redirect("/home")
         return redirect("/auth")
 
-    @app.route("/api")
+    @app.route(
+        "/api",
+    )
     def api():
         return render_template("docs.html")
 

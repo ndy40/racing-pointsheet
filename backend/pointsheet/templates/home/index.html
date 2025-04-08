@@ -1,9 +1,8 @@
-{% extends 'base.html' %} {% block content %} {% include
-'_partials/navigation.html' %}
-<section id="race-cards" class="mt-1 container mt-4">
+{% extends 'app.html' %} {% block content %}
+<section id="race-cards" class="mt-1 container" style="height: 450px">
   <div class="row gap-3">
-    <div class="col">{% include '_partials/components/race_card.html' %}</div>
-    <div class="col">{% include '_partials/components/race_card.html' %}</div>
+    <div class="col">{% include '_partials/components/last_card.html' %}</div>
+    <div class="col">{% include '_partials/components/next_race.html' %}</div>
     <div class="col">{% include '_partials/components/race_card.html' %}</div>
   </div>
 </section>
@@ -76,23 +75,6 @@
         </section>
       </div>
 
-      <!-- Upcoming Events Content -->
-      <!--      <div-->
-      <!--        class="tab-pane fade"-->
-      <!--        id="upcoming"-->
-      <!--        role="tabpanel"-->
-      <!--        aria-labelledby="upcoming-tab"-->
-      <!--      >-->
-      <!--        <section class="mt-4">-->
-      <!--          <div class="row row-cols-1 row-cols-md-3 g-3">-->
-      <!--            &lt;!&ndash; Your race cards for upcoming events &ndash;&gt;-->
-      <!--            <div class="col">-->
-      <!--              {% include '_partials/components/race_card.html' %}-->
-      <!--            </div>-->
-      <!--          </div>-->
-      <!--        </section>-->
-      <!--      </div>-->
-
       <!-- On Going Series Content -->
       <div
         class="tab-pane fade"
@@ -113,5 +95,4 @@
     </div>
   </div>
 </section>
-
 {% endblock %}

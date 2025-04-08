@@ -74,7 +74,7 @@ class Driver(BaseModel):
 class Event(AggregateRoot):
     title: str
     host: EntityId
-    track: Optional[str] = "TBD"
+    track: Optional[str] = "-"
     status: Optional[EventStatus] = EventStatus.open
     rules: Optional[str] = None
     schedule: Optional[List[Schedule]] = None

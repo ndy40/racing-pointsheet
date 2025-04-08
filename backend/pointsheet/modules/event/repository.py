@@ -2,9 +2,9 @@ from datetime import datetime
 from typing import Any, List
 
 from lato import Query
-from sqlalchemy import select
+from sqlalchemy import select, or_
 
-from pointsheet.models import Event, Series
+from pointsheet.models import Event, Series, EventDriver
 from pointsheet.repository import AbstractRepository
 
 from .data_mappers import EventModelMapper, SeriesModelMapper
@@ -53,15 +53,25 @@ class EventRepository(AbstractRepository[Event, EventModel]):
             .where(Event.starts_at > datetime.now(), Event.status == EventStatus.open)
             .order_by(Event.starts_at)
         )
+
+        if query.user_id:
+            stmt = stmt.outerjoin(EventDriver).where(
+                or_(EventDriver.id != query.user_id, EventDriver.id.is_(None))
+            )
+
         result = self._session.execute(stmt).scalars()
         return [self._map_to_model(item) for item in result]
 
-    def get_ongoing_events(self, query: Query = None):
+    def get_ongoing_events(self, query: Query):
         stmt = (
             select(Event)
-            .where(Event.status == EventStatus.in_progress)
+            .where(Event.status.in_([EventStatus.in_progress, EventStatus.open]))
             .order_by(Event.starts_at)
         )
+
+        if query.user_id:
+            stmt = stmt.join(EventDriver).where(EventDriver.id == str(query.user_id))
+
         result = self._session.execute(stmt).scalars()
         return [self._map_to_model(item) for item in result]
 
