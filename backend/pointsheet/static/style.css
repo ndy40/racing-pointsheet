@@ -67,7 +67,7 @@ body {
 }
 
 .nav-tabs .nav-link.active {
-  color: #2e2e49;
+  color: #372e49;
   font-weight: lighter;
 }
 
@@ -102,27 +102,7 @@ footer {
   background-color: #dfe7ef;
 }
 
-/*.schedule-entries {*/
-/*  max-height: 300px;  !* Adjust this value as needed *!*/
-/*  overflow-y: auto;*/
-/*  padding-right: 5px; !* Add some padding for the scrollbar *!*/
-/*}*/
-
-/*!* Optional: Customize the scrollbar appearance *!*/
-/*.schedule-entries::-webkit-scrollbar {*/
-/*  width: 6px;*/
-/*}*/
-
-/*.schedule-entries::-webkit-scrollbar-track {*/
-/*  background: #f1f1f1;*/
-/*  border-radius: 3px;*/
-/*}*/
-
-/*.schedule-entries::-webkit-scrollbar-thumb {*/
-/*  background: #888;*/
-/*  border-radius: 3px;*/
-/*}*/
-
-/*.schedule-entries::-webkit-scrollbar-thumb:hover {*/
-/*  background: #555;*/
-/*}*/
+nav .nav-link:hover {
+  color: rgba(218, 236, 244, 0.95);
+  text-decoration: underline;
+}

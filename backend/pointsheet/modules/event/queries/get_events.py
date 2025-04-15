@@ -9,6 +9,6 @@ class GetEvents(Query):
 
 
 @event_module.handler(GetEvents)
-def fetch_all_events(repo: EventRepository):
+def fetch_all_events(cmd: GetEvents, repo: EventRepository):
     result = repo.all()
     return result

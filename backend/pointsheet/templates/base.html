@@ -23,7 +23,7 @@
       {% block navbar %}
       <h2>Nav bar content</h2>
       {% endblock %}
-      <main class="row py-4 px-4">
+      <main class="row py-4 px-4" style="min-height: 70%">
         {% block content %}
         <h2 class="text-2xl">Hello World</h2>
         {% endblock %}
@@ -49,5 +49,21 @@
       crossorigin="anonymous"
     ></script>
     {% endblock %}
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="page-modal"
+      tabindex="-1"
+      aria-labelledby="pageModalLabel"
+      aria-hidden="false"
+      style="display: none"
+      aria-modal="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content"></div>
+      </div>
+    </div>
+    <!-- end model -->
   </body>
 </html>
