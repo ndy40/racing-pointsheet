@@ -10,7 +10,13 @@
       ></button>
     </div>
     <div class="modal-body">
-      <form hx-post="/events/create" hx-trigger="submit">
+      <form
+        action="/events/create"
+        hx-post="/events/create"
+        hx-trigger="submit"
+        method="POST"
+      >
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <div class="row g-3">
           <div class="col-6">
             <label for="title" class="form-label">Title</label>
@@ -28,34 +34,25 @@
               class="form-control"
               list="hostOptions"
               id="host"
+              name="host"
               placeholder="Type to search..."
             />
             <datalist id="hostOptions">
-              <option value="Host 1"></option>
+              <option
+                value="f61886a5-e2e5-4ba4-97d5-bf4e34bbced9"
+                label="Daniel"
+              ></option>
               <option value="Host 1"></option>
               <option value="Host 1"></option>
               <option value="Host 1"></option>
             </datalist>
           </div>
-          <div class="col-6 mb-3">
-            <label for="date" class="form-label">Date</label>
-            <input
-              type="date"
-              class="form-control"
-              id="date"
-              name="date"
-              title="Date of event"
-              aria-label="Date"
-              placeholder="Date of event"
-            />
-          </div>
-
           <div class="col-12">
             <div class="row g-3">
               <div class="col-6">
                 <label for="starts_at" class="form-label">Starts At</label>
                 <input
-                  type="time"
+                  type="datetime-local"
                   class="form-control"
                   id="starts_at"
                   name="starts_at"
@@ -67,10 +64,10 @@
               <div class="col-6">
                 <label for="starts_at" class="form-label">Ends At</label>
                 <input
-                  type="time"
+                  type="datetime-local"
                   class="form-control"
                   id="ends_at"
-                  name="starts_at"
+                  name="ends_at"
                   title="Ends at"
                   aria-label="Ends at"
                   placeholder="Ends at"
@@ -92,7 +89,7 @@
           </div>
           <div class="col-6">
             <img
-              src="laguna_seca_turns.jpg"
+              src="{{ url_for('static', filename='images/racetrack2.png') }}"
               alt="Laguna Seca Track Turns"
               class="img-fluid"
             />

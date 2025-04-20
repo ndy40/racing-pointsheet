@@ -74,11 +74,13 @@
           <td>{{ event.drivers|length if event.drivers else '-' }}</td>
           <td>{{ event.schedule.nbr_of_laps if event.schedule else '-' }}</td>
           <td>
+            {% if event.status %}
             <span
               class="badge {% if event.status == 'Open' %}bg-success{% elif event.status == 'In Progress' %}bg-warning{% else %}bg-secondary{% endif %}"
             >
               {{ event.status.value|title }}
             </span>
+            {% else %} - {% endif %}
           </td>
           <td class="d-flex-inline text-center">
             <a href="/events/{{ event.id }}" class="btn btn-sm">

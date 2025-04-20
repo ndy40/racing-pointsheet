@@ -1,5 +1,6 @@
 from flask import Blueprint, current_app, render_template, request
 
+from modules.event.commands.create_event import CreateEvent
 from modules.event.commands.join_event import JoinEvent
 from modules.event.commands.leave_event import LeaveEvent
 from modules.event.queries.get_event import GetEvent
@@ -23,7 +24,6 @@ def join_event(event_id):
     cmd = JoinEvent(event_id=event_id, driver_id=get_user_id())
     current_app.application.execute(cmd)
     event = current_app.application.execute(GetEvent(event_id=event_id))
-    print("Update event ", event.model_dump())
     return render_template(
         "_partials/components/event_card.html", event=event.model_dump()
     )
@@ -45,4 +45,26 @@ def leave_event(event_id):
 def create_event():
     if request.method == "GET":
         return render_template("events/create.html")
-    print("asdfasdf")
+
+    app = current_app.application
+
+    cmd = CreateEvent(**request.form.to_dict())
+    app.execute(cmd)
+
+    event = app.execute(GetEvent(event_id=cmd.id))
+
+    headers = {"HX-Redirect": "/events/%s" % event.id}
+
+    return (
+        "created",
+        201,
+        headers,
+    )
+
+
+@events_bp.route("/<uuid:event_id>/", methods=["GET", "POST"])
+@web_auth.login_required
+def view_event(event_id):
+    if request.method == "GET":
+        event = current_app.application.execute(GetEvent(event_id=event_id))
+        return render_template("events/edit.html", event=event.model_dump())
