@@ -71,6 +71,14 @@ class Driver(BaseModel):
     name: str
 
 
+class Track(BaseModel):
+    id: int
+    name: str
+    layout: str
+    country: str
+    length: int
+
+
 class Event(AggregateRoot):
     title: str
     host: EntityId

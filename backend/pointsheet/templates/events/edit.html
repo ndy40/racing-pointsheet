@@ -1,14 +1,24 @@
 {% extends "app.html" %} {% block content %}
-<div class="d-flex justify-content-between align-items-center">
-  <h4 class="fw-light">Event Details</h4>
-  <div class="pb-2">
-    <button type="submit" class="btn btn-primary me-2">Save Changes</button>
-    <a href="/events/{{ event.id }}/" class="btn btn-secondary">Cancel</a>
-  </div>
-</div>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a href="/events">Events</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      {{ event.title }}
+    </li>
+  </ol>
+</nav>
+
+<h4 class="fw-light">Event Details</h4>
 <form
-  hx-put="/events/{{ event.id }}/"
+  method="PATCH"
+  ,
+  action="/events/{{ event.id }}/"
+  hx-patch="/events/{{ event.id }}/"
   hx-target="this"
+  hx-trigger="submit"
   hx-swap="outerHTML"
   class="p-4"
 >
@@ -33,10 +43,20 @@
           type="text"
           id="track"
           name="track"
-          value="{{ event.track }}"
+          value="{{ event.track|default('') }}"
           class="form-control"
+          list="track-list"
           required
         />
+        <datalist id="track-list">
+          {% for track in tracks %}
+          <option
+            value="{{ track.name }} - {{track.layout}}"
+            label="{{track.layout}}"
+            aria-label="{{track.name}}"
+          ></option>
+          {% endfor %}
+        </datalist>
       </div>
 
       <!-- Start Date -->
@@ -68,120 +88,77 @@
       <!-- Status -->
       <div class="mb-3 col-4">
         <label for="status" class="form-label">Status</label>
-        <select id="status" name="status" class="form-select">
+        <select id="status" name="status" class="form-select" required>
+          <option value="">Select Status</option>
           <option
-            value="draft"
+            value="open"
             {%
             if
             event.status=""
-            ="draft"
-            %}selected
+            ="open"
+            %}
+            selected
             {%
             endif
             %}
           >
-            Draft
+            Open
           </option>
           <option
-            value="published"
+            value="closed"
             {%
             if
             event.status=""
-            ="published"
+            ="closed"
             %}selected{%
             endif
             %}
           >
-            Published
+            Closed
           </option>
           <option
-            value="cancelled"
+            value="in_progress"
             {%
             if
             event.status=""
-            ="cancelled"
+            ="in_progress"
             %}selected{%
             endif
             %}
           >
-            Cancelled
-          </option>
-          <option
-            value="completed"
-            {%
-            if
-            event.status=""
-            ="completed"
-            %}selected{%
-            endif
-            %}
-          >
-            Completed
+            In Progress
           </option>
         </select>
       </div>
-    </div>
-  </fieldset>
-
-  <fieldset class="row mt-4">
-    <div class="mb-4 col-4">
-      <h4 class="h4 fw-light">Participants</h4>
-      <div id="drivers-list d-flex-inline flex-wrap">
-        <ul class="list">
-          <li>Driver 1</li>
-          <li>Driver 2</li>
-        </ul>
-        {% if event.drivers %} {% for driver in event.drivers %}
-        <div
-          class="card-body d-flex justify-content-between align-items-center"
-        >
-          <span>{{ driver.name }}</span>
-        </div>
-        {% endfor %} {% else %}
-        <p>No participants yet.</p>
-        {% endif %}
+      <div class="col-12 align-items-end d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary me-2">Save Changes</button>
       </div>
-    </div>
-    <div class="mb-4 col border-start px-4">
-      <h4 class="fw-light h4">Schedule</h4>
-
-      {% if event.schedule %}
-
-      <table class="table table-hover shadow-sm">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">No. Of Laps</th>
-            <th scope="col">Duration</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for schedule in event.schedule %}
-          <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ schedule.type.value|capitalize }}</td>
-            <td>{{ schedule.nbr_of_laps|default('-') }}</td>
-            <td>{{ schedule.duration }}</td>
-            <td>
-              <button
-                type="button"
-                hx-put="/events/{{ event.id }}/schedules/{{ schedule.id }}/delete"
-                hx-target="closest tr"
-                class="btn btn-sm btn-primary"
-              >
-                <i class="bi bi-pen"></i>
-              </button>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% else %}
-      <p class="text-muted">No Schedule set.</p>
-      {% endif %}
     </div>
   </fieldset>
 </form>
+<div class="row mt-4">
+  <div class="mb-4 col-3">
+    <h4 class="h4 fw-light">Participants</h4>
+    <div id="drivers-list d-flex-inline flex-wrap">
+      <ul class="list">
+        <li>Driver 1</li>
+        <li>Driver 2</li>
+      </ul>
+      {% if event.drivers %} {% for driver in event.drivers %}
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <span>{{ driver.name }}</span>
+      </div>
+      {% endfor %} {% else %}
+      <p>No participants yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div
+    class="mb-4 col border-start px-4"
+    hx-get="/events/{{ event.id }}/schedules"
+    hx-trigger="load"
+    id="schedule-table"
+  ></div>
+</div>
 {% endblock %}

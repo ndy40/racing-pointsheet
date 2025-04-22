@@ -76,6 +76,23 @@ class EventDriver(BaseModel):
     __table_args__ = (UniqueConstraint("id", "event_id", name="unique_driver_event"),)
 
 
+class Track(BaseModel):
+    __tablename__ = "tracks"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(255))
+    layout: Mapped[str] = mapped_column(String(255))
+    country: Mapped[str] = mapped_column(String(255))
+    length: Mapped[str] = mapped_column(String(20))
+
+    def __str__(self):
+        name = self.name
+
+        if self.layout:
+            name = f"{name} ({self.layout})"
+
+        return name
+
+
 class Event(BaseModel):
     __tablename__ = "events"
     id: Mapped[EntityId] = mapped_column(

@@ -1,0 +1,87 @@
+<h4 class="fw-light h4">Schedule</h4>
+
+<!--      Add Schedule Form-->
+<form
+  action="/events/{{ event.id }}/schedules"
+  method="POST"
+  hx-post="/events/{{ event.id }}/schedules"
+  hx-target="#schedule-table"
+>
+  <div class="row g-3 mb-3 align-items-end">
+    <div class="col-3">
+      <div class="input-group">
+        <span class="input-group-text"> Type </span>
+        <select class="form-select" id="type" name="type" required>
+          <option selected>--</option>
+          <option value="practice">Practice</option>
+          <option value="qualification">Qualification</option>
+          <option value="race">Race</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="input-group">
+        <span for="nbr_of_laps" class="input-group-text">Laps</span>
+        <input
+          type="number"
+          class="form-control"
+          id="nbr_of_laps"
+          name="nbr_of_laps"
+        />
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="input-group">
+        <span class="input-group-text"> Duration </span>
+        <input
+          type="time"
+          class="form-control"
+          id="duration"
+          name="duration"
+          placeholder="Duration"
+          required
+        />
+      </div>
+    </div>
+    <div class="col">
+      <button type="submit" class="btn btn-primary w-100">Add</button>
+    </div>
+  </div>
+</form>
+{% if event.schedule %}
+<table
+  id="schedule-table"
+  class="table table-hover shadow-sm mt-2 table-striped"
+>
+  <thead class="table-dark" style="font-size: 0.875rem">
+    <tr>
+      <th scope="col" style="min-width: 15%"></th>
+      <th scope="col">No. Of Laps</th>
+      <th scope="col">Duration</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for schedule in event.schedule %}
+    <tr class="align-center">
+      <td>{{ schedule.type.value|capitalize }}</td>
+      <td>{{ schedule.nbr_of_laps|default('-') }}</td>
+      <td>{{ schedule.duration }}</td>
+      <td>
+        <button
+          type="button"
+          hx-trigger="click"
+          hx-delete="/events/{{ event.id }}/schedules/{{ schedule.id }}"
+          hx-target="#schedule-table"
+          class="btn btn-sm btn-danger"
+        >
+          <i class="bi bi-trash3"></i>
+        </button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="bg-info-subtle p-3 text-muted">No Schedule set.</p>
+{% endif %}

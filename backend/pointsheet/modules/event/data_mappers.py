@@ -2,9 +2,17 @@ from modules.event.domain.entity import (
     Event as EventModel,
     Schedule,
     RaceResult as RaceResultEntity,
+    Track as TrackModel,
 )
 from modules.event.domain.entity import Series as SeriesModel, Driver as DriverModel
-from pointsheet.models import Event, Series, EventSchedule, RaceResult, EventDriver
+from pointsheet.models import (
+    Event,
+    Series,
+    EventSchedule,
+    RaceResult,
+    EventDriver,
+    Track,
+)
 from pointsheet.repository import DataMapper
 
 
@@ -123,4 +131,24 @@ class SeriesModelMapper(DataMapper[Series, SeriesModel]):
             ]
             if instance.events
             else [],
+        )
+
+
+class TrackModelMapper(DataMapper[Track, TrackModel]):
+    def to_db_entity(self, instance: TrackModel) -> Track:
+        return Track(
+            id=instance.id,
+            name=instance.name,
+            country=instance.country,
+            layout=instance.layout,
+            length=instance.length,
+        )
+
+    def to_domain_model(self, instance: Track) -> TrackModel:
+        return TrackModel(
+            id=instance.id,
+            name=instance.name,
+            layout=instance.layout,
+            country=instance.country,
+            length=instance.length,
         )

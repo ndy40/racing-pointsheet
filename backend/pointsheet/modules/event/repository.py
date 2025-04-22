@@ -4,12 +4,13 @@ from typing import Any, List
 from lato import Query
 from sqlalchemy import select, or_
 
-from pointsheet.models import Event, Series, EventDriver
+from pointsheet.models import Event, Series, EventDriver, Track
 from pointsheet.repository import AbstractRepository
 
-from .data_mappers import EventModelMapper, SeriesModelMapper
+from .data_mappers import EventModelMapper, SeriesModelMapper, TrackModelMapper
 from .domain.entity import Event as EventModel
 from .domain.entity import Series as SeriesModel
+from .domain.entity import Track as TrackModel
 from pointsheet.domain import EntityId
 from .domain.value_objects import EventStatus
 
@@ -94,8 +95,22 @@ class SeriesRepository(AbstractRepository[Series, SeriesModel]):
 
         if result:
             return self._map_to_model(result)
+        return None
 
     def delete(self, id: EntityId) -> None:
         entity_to_delete = self._session.get(Series, id)
         self._session.delete(entity_to_delete)
         self._session.commit()
+
+
+class TrackRepository(AbstractRepository[Track, TrackModel]):
+    mapper_class = TrackModelMapper
+    model_class = TrackModel
+
+    def all(self) -> List[TrackModel]:
+        stmt = select(Track).order_by(Track.id)
+        result = self._session.execute(stmt).scalars()
+        return [self._map_to_model(item) for item in result]
+
+    def delete(self, id: Any or EntityId) -> None:
+        pass
