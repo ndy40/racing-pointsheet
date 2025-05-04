@@ -30,7 +30,7 @@ def events():
 def get_events():
     cmd = GetEvents()
     all_events = current_app.application.execute(cmd)
-    return [evt.model_dump() for evt in all_events] if events else []
+    return [evt.model_dump() for evt in all_events] if all_events else []
 
 
 @event_bp.route("/events/<uuid:event_id>/", methods=["GET"])
@@ -63,19 +63,21 @@ def leave_event(event_id):
 )
 @api_auth.login_required
 def upload_results(event_id):
-    uploaded_file = request.files.get("file")
-    if not uploaded_file:
-        return jsonify({"error": "No file provided"}), 400
+    from utils.file_validation import validate_file, secure_filename
 
+    uploaded_file = request.files.get("file")
     allowed_extensions = {"csv", "jpg", "jpeg", "png"}
-    if (
-        "." not in uploaded_file.filename
-        or uploaded_file.filename.rsplit(".", 1)[1].lower() not in allowed_extensions
-    ):
-        return jsonify({"error": "Invalid file type"}), 400
+
+    # Validate the file
+    is_valid, error_message = validate_file(uploaded_file, allowed_extensions)
+    if not is_valid:
+        return jsonify({"error": error_message}), 400
+
+    # Generate a secure filename
+    secure_name = secure_filename(uploaded_file.filename)
 
     # Assuming there's a command like SaveEventResults to handle file uploads
-    cmd = SaveEventResults(event_id=event_id, file=uploaded_file)
+    cmd = SaveEventResults(event_id=event_id, file=uploaded_file, filename=secure_name)
     current_app.application.execute(cmd)
     return Response(status=204)
 
@@ -103,9 +105,24 @@ def remove_event_schedule(event_id, schedule_id):
 )
 @api_auth.login_required
 def upload_result(event_id, schedule_id):
+    from utils.file_validation import validate_file, secure_filename
+
     uploaded_file = request.files.get("file")
+    allowed_extensions = {"csv", "jpg", "jpeg", "png"}
+
+    # Validate the file
+    is_valid, error_message = validate_file(uploaded_file, allowed_extensions)
+    if not is_valid:
+        return jsonify({"error": error_message}), 400
+
+    # Generate a secure filename
+    secure_name = secure_filename(uploaded_file.filename)
+
     cmd = UploadRaceResult(
-        event_id=event_id, schedule_id=schedule_id, file=uploaded_file
+        event_id=event_id,
+        schedule_id=schedule_id,
+        file=uploaded_file,
+        filename=secure_name,
     )
     current_app.application.execute(cmd)
     return Response(status=204)

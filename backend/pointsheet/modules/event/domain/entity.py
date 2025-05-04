@@ -76,7 +76,7 @@ class Track(BaseModel):
     name: str
     layout: str
     country: str
-    length: int
+    length: str
 
 
 class Event(AggregateRoot):

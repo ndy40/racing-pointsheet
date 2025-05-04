@@ -7,9 +7,9 @@ from alembic import command
 from alembic.config import Config
 from dotenv import load_dotenv
 
-from pointsheet.app import get_session
+from pointsheet.db import get_session
 from pointsheet.models.event import Track
-from pointsheet import app
+
 
 debug = False
 
