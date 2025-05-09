@@ -11,7 +11,6 @@ engine = create_engine(
     _config.DATABASE,
     connect_args={"check_same_thread": False},
     pool_size=20,
-    max_overflow=0,
     pool_recycle=3600,
     pool_pre_ping=True,
 )
