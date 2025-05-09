@@ -23,7 +23,7 @@ def test_create_series(client, start_end_date_future, auth_token):
         "starts_at": start_date.isoformat(),
         "ends_at": end_date.isoformat(),
     }
-    resp = client.post("/series", json=payload, headers=auth_token)
+    resp = client.post("/api/series", json=payload, headers=auth_token)
     validate(resource_created, resp.json)
     assert resp.status_code == HTTPStatus.CREATED
 
@@ -38,7 +38,7 @@ def test_create_series_defaults_to_not_started_status(
         "ends_at": end_date.isoformat(),
     }
     with nullcontext():
-        resp = client.post("/series", json=payload, headers=auth_token)
+        resp = client.post("/api/series", json=payload, headers=auth_token)
         validate(resource_created, resp.json)
         assert resp.status_code == HTTPStatus.CREATED
 
@@ -47,7 +47,7 @@ def test_fetch_series_by_id(client, db_session, auth_token):
     series = SeriesFactory(status=None)
 
     with nullcontext():
-        resp = client.get(f"/series/{series.id}", headers=auth_token)
+        resp = client.get(f"/api/series/{series.id}", headers=auth_token)
         validate(create_series_no_events_schema, resp.json)
         assert str(series.id) == resp.json["id"]
 
@@ -62,7 +62,7 @@ def test_add_event_to_series(client, db_session, auth_token):
     }
 
     resp = client.post(
-        f"/series/{series.id}/events", json=event_payload, headers=auth_token
+        f"/api/series/{series.id}/events", json=event_payload, headers=auth_token
     )
     assert resp.status_code == HTTPStatus.NO_CONTENT, resp.json
 
@@ -80,8 +80,8 @@ def test_update_event_in_series(client, db_session, auth_token):
     event = series.events[0]
 
     payload = {"id": str(event.id), "status": EventStatus.closed}
-    client.put(f"/series/{series.id}/events", json=payload, headers=auth_token)
-    resp = client.get(f"/series/{series.id}", json=payload, headers=auth_token)
+    client.put(f"/api/series/{series.id}/events", json=payload, headers=auth_token)
+    resp = client.get(f"/api/series/{series.id}", json=payload, headers=auth_token)
 
     validate(event_is_closed_after_update_under_series, resp.json)
     assert resp.status_code == HTTPStatus.OK, resp.json
@@ -92,7 +92,7 @@ def test_delete_event_from_series(client, db_session, auth_token):
     event = Event(id=id, status=EventStatus.open, host=uuid.uuid4(), title="Event 1")
     series = SeriesFactory(status=SeriesStatus.started, events=[event])
 
-    resp = client.delete(f"/series/{series.id}/events/{id}/", headers=auth_token)
+    resp = client.delete(f"/api/series/{series.id}/events/{id}/", headers=auth_token)
     assert resp.status_code == HTTPStatus.NO_CONTENT, resp.json
 
 
@@ -101,7 +101,7 @@ def test_series_startus_cannot_be_started_after_close(client, db_session, auth_t
     db_session.commit()
 
     resp = client.put(
-        f"/series/{series.id}/status",
+        f"/api/series/{series.id}/status",
         json={"status": SeriesStatus.started.value},
         headers=auth_token,
     )

@@ -80,7 +80,7 @@ def default_user(db_session):
 @pytest.fixture(scope="function", autouse=True)
 def login(client):
     response = client.post(
-        "/auth",
+        "/api/auth",
         json={"username": "testuser", "password": "password1"},
     )
     return response.json
