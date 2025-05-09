@@ -1,6 +1,6 @@
 from lato import Query
 
-from modules import TrackRepository
+from modules.event.repository import TrackRepository
 from modules.event import event_module
 
 
