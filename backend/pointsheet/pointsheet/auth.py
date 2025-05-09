@@ -2,21 +2,25 @@ import abc
 import os
 from abc import abstractmethod
 from typing import Any
+from uuid import UUID
 
-from flask_httpauth import HTTPTokenAuth
+from flask import session
+from flask_httpauth import HTTPTokenAuth, HTTPBasicAuth
 from itsdangerous import BadSignature, Serializer, URLSafeTimedSerializer
 
 from pointsheet.config import config
 from pointsheet.domain.exceptions.base import PointSheetException
 
-auth = HTTPTokenAuth(scheme="Bearer")
+
+api_auth = HTTPTokenAuth(scheme="Bearer")
+web_auth = HTTPBasicAuth()
 
 
 class _AuthenticationException(PointSheetException):
     message = "Authentication failed"
 
 
-@auth.verify_token
+@api_auth.verify_token
 def verify_token(token):
     try:
         result = TimedSerializer().deserializer(token)
@@ -25,9 +29,20 @@ def verify_token(token):
         raise _AuthenticationException()
 
 
+@web_auth.verify_password
+def verify_password(username, password):
+    if session.get("is_authenticated"):
+        return session.get("user_id")
+    return False
+
+
 def get_user_id():
-    if user := auth.current_user():
-        return user["id"]
+    if user := api_auth.current_user():
+        if isinstance(user, UUID):
+            return user
+        return user
+
+    return web_auth.current_user()
 
 
 def generate_salt():

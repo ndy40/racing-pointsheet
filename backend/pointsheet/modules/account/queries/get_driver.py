@@ -1,7 +1,6 @@
 from lato import Query
 
 from modules.account import account_module
-from modules.account.dependencies import container
 from modules.account.repository import DriverRepository
 from pointsheet.domain import EntityId
 
@@ -11,8 +10,6 @@ class GetDriver(Query):
 
 
 @account_module.handler(GetDriver)
-def get_driver(cmd: GetDriver):
-    repo = container[DriverRepository]
+def get_driver(cmd: GetDriver, repo: DriverRepository):
     driver = repo.find_by_id(cmd.driver_id)
-
     return driver

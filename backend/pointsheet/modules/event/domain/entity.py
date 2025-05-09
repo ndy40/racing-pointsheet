@@ -71,10 +71,18 @@ class Driver(BaseModel):
     name: str
 
 
+class Track(BaseModel):
+    id: int
+    name: str
+    layout: str
+    country: str
+    length: str
+
+
 class Event(AggregateRoot):
     title: str
     host: EntityId
-    track: Optional[str] = "TBD"
+    track: Optional[str] = "-"
     status: Optional[EventStatus] = EventStatus.open
     rules: Optional[str] = None
     schedule: Optional[List[Schedule]] = None
@@ -194,6 +202,9 @@ class Event(AggregateRoot):
 
         # Remove the result from the found schedule
         schedule.result = None
+
+    def is_participating(self, driver_id: EntityId) -> bool:
+        return self.find_driver_by_id_or_name(driver_id) is not None
 
 
 class Series(AggregateRoot):

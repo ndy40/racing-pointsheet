@@ -1,10 +1,15 @@
 import os
+import csv
 from importlib import import_module
 
 import click
 from alembic import command
 from alembic.config import Config
 from dotenv import load_dotenv
+
+from pointsheet.db import get_session
+from pointsheet.models.event import Track
+
 
 debug = False
 
@@ -17,29 +22,26 @@ if os.environ.get("APP_ENV", "dev") != "prod":
 alembic_cfg_path = os.path.join(os.path.dirname(__file__), "alembic.ini")
 alembic_cfg = Config(alembic_cfg_path)
 
-# logging.basicConfig(level=logging.DEBUG)
-# logger = logging.getLogger(__name__)
-
 
 @click.group()
-def db():
+def app():
     pass
 
 
-@db.command()
+@app.command()
 @click.option("--rev", default="head")
 def migrate(rev):
     command.upgrade(alembic_cfg, rev)
 
 
-@db.command("mkm", help="create new migration scripts")
+@app.command("mkm", help="create new migration scripts")
 @click.argument("msg")
 @click.option("--autogenerate", default=True)
 def make_migration(msg, autogenerate):
     command.revision(alembic_cfg, message=msg, autogenerate=autogenerate)
 
 
-@db.command("run-server")
+@app.command("run-server")
 @click.option("--debug", default=True)
 def run_server(debug):
     from pointsheet import create_app
@@ -48,12 +50,28 @@ def run_server(debug):
     app.run(host="0.0.0.0", port=5000, debug=debug, load_dotenv=True)
 
 
-@db.command()
+@app.command()
 def seed_data():
     module = import_module("pointsheet.seed_factories")
     if hasattr(module, "run"):
         getattr(module, "run")()
 
 
+@app.command("load-tracks")
+def load_tracks_command():
+    load_tracks()
+
+
+def load_tracks():
+    csv_path = os.path.join(os.path.dirname(__file__), "data", "tracks.csv")
+
+    with get_session() as session:
+        with open(csv_path, "r") as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                track = Track(**row)
+                session.add(track)
+
+
 if __name__ == "__main__":
-    db()
+    app()

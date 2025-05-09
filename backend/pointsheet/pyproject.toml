@@ -25,6 +25,7 @@ gcloud = "^0.18.3"
 pytesseract = "^0.3.13"
 opencv-python-headless = "^4.11.0.86"
 flask-cors = "^5.0.0"
+flask-wtf = "^1.2.2"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -50,6 +51,15 @@ env = [
 
 [tool.isort]
 profile = "hug"
+
+[tool.djlint]
+profile="jinja"
+blank_line_after_tag="load,extends,include"
+blank_line_before_tag="load,extends,include"
+format_css=true
+
+[tool.djlint.css]
+indent_size=5
 
 
 [build-system]

@@ -1,7 +1,6 @@
 from lato import Query
 
 from modules.event import event_module
-from modules.event.dependencies import container
 from modules.event.repository import EventRepository
 
 
@@ -10,7 +9,6 @@ class GetEvents(Query):
 
 
 @event_module.handler(GetEvents)
-def fetch_all_events():
-    repo = container[EventRepository]
+def fetch_all_events(cmd: GetEvents, repo: EventRepository):
     result = repo.all()
     return result

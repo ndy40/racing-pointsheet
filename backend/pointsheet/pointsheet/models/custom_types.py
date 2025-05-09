@@ -59,6 +59,7 @@ class SeriesStatusType(BaseCustomTypes):
 
 class EventStatusType(BaseCustomTypes):
     impl = String
+    cache_ok = True
 
     def process_bind_param(self, value: Optional[_T], dialect: Dialect) -> Any:
         if value and value not in EventStatus.__members__.values():

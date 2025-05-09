@@ -6,7 +6,6 @@ from typing_extensions import Optional
 
 from modules.auth.exceptions import EventNotFoundException
 from modules.event import event_module
-from modules.event.dependencies import container
 from modules.event.domain.entity import Schedule
 from modules.event.domain.value_objects import ScheduleType
 from modules.event.events import EventScheduleAdded
@@ -36,9 +35,8 @@ class AddEventSchedule(Command):
 
 @event_module.handler(AddEventSchedule)
 def handle_add_event_schedule(
-    cmd: AddEventSchedule, ctx: TransactionContext, file_store
+    cmd: AddEventSchedule, ctx: TransactionContext, repo: EventRepository
 ):
-    repo = container[EventRepository]
     event = repo.find_by_id(cmd.event_id)
 
     if not event:

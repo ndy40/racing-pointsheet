@@ -76,6 +76,23 @@ class EventDriver(BaseModel):
     __table_args__ = (UniqueConstraint("id", "event_id", name="unique_driver_event"),)
 
 
+class Track(BaseModel):
+    __tablename__ = "tracks"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(255))
+    layout: Mapped[str] = mapped_column(String(255))
+    country: Mapped[str] = mapped_column(String(255))
+    length: Mapped[str] = mapped_column(String(20))
+
+    def __str__(self):
+        name = self.name
+
+        if self.layout:
+            name = f"{name} ({self.layout})"
+
+        return name
+
+
 class Event(BaseModel):
     __tablename__ = "events"
     id: Mapped[EntityId] = mapped_column(
@@ -101,6 +118,15 @@ class Event(BaseModel):
     drivers: Mapped[Optional[List[EventDriver]]] = relationship(
         EventDriver, cascade="all, delete-orphan"
     )
+
+    @validates("starts_at", "ends_at", include_removes=False)
+    def validate_date_formats(self, key, value):
+        if isinstance(value, str):
+            try:
+                return datetime.strptime(value)
+            except ValueError:
+                return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
+        return value
 
 
 class Series(BaseModel):

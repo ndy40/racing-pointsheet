@@ -1,15 +1,41 @@
+from contextlib import contextmanager
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 from pointsheet.config import Config
 
 _config = Config()
 
-engine = create_engine(_config.DATABASE)
-Session = sessionmaker(
-    engine,
+engine = create_engine(
+    _config.DATABASE,
+    connect_args={"check_same_thread": False},
+    pool_size=20,
+    max_overflow=0,
+    pool_recycle=3600,
+    pool_pre_ping=True,
 )
 
+# Create a sessionmaker that can be used to create sessions
+SessionFactory = sessionmaker(bind=engine)
+Session = scoped_session(SessionFactory)
 
-def get_session():
+
+# Function to get a new session
+def get_db_session():
+    """Returns a new database session."""
     return Session()
+
+
+@contextmanager
+def get_session():
+    """Context manager for database sessions."""
+    session = get_db_session()
+    try:
+        yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()

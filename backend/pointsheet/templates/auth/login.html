@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="vh-100 d-flex align-items-center justify-content-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card shadow">
+                        <div class="card-body p-4">
+                            <h2 class="text-center mb-4">Sign In</h2>
+                            <form action="{{ url_for("views.auth.authenticate") }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="username"
+                                           name="username"
+                                           required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password"
+                                           class="form-control"
+                                           id="password"
+                                           name="password"
+                                           required />
+                                </div>
+                                <div class="mb-3 d-flex justify-content-between">
+                                    <div>
+                                        <a href="#" class="text-decoration-none">Sign up</a>
+                                    </div>
+                                    <div>
+                                        <a href="#" class="text-decoration-none text-secondary">Forgot password?</a>
+                                    </div>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit"
+                                            class="btn text-white bg-black fw-semibold text-capitalize">
+                                        Sign In
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

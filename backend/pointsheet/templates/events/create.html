@@ -1,0 +1,88 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="pageModalLabel">Add Event</h1>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="/events/create"
+                  hx-post="/events/create"
+                  hx-trigger="submit"
+                  method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <div class="row g-3">
+                    <div class="col-6">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text"
+                               class="form-control"
+                               id="title"
+                               name="title"
+                               title="Title of event" />
+                    </div>
+                    <div class="col-6">
+                        <label for="host" class="form-label">Select Host</label>
+                        <input class="form-control"
+                               list="hostOptions"
+                               id="host"
+                               name="host"
+                               placeholder="Type to search..." />
+                        <datalist id="hostOptions">
+                            <option value="f61886a5-e2e5-4ba4-97d5-bf4e34bbced9" label="Daniel"></option>
+                            <option value="Host 1"></option>
+                            <option value="Host 1"></option>
+                            <option value="Host 1"></option>
+                        </datalist>
+                    </div>
+                    <div class="col-12">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label for="starts_at" class="form-label">Starts At</label>
+                                <input type="datetime-local"
+                                       class="form-control"
+                                       id="starts_at"
+                                       name="starts_at"
+                                       title="Starts at"
+                                       aria-label="Starts at"
+                                       placeholder="Starts at" />
+                            </div>
+                            <div class="col-6">
+                                <label for="starts_at" class="form-label">Ends At</label>
+                                <input type="datetime-local"
+                                       class="form-control"
+                                       id="ends_at"
+                                       name="ends_at"
+                                       title="Ends at"
+                                       aria-label="Ends at"
+                                       placeholder="Ends at" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <label for="track" class="form-label">Track</label>
+                        <input type="text"
+                               class="form-control"
+                               id="track"
+                               name="track"
+                               title="Description of event"
+                               aria-label="Track"
+                               placeholder="Track" />
+                    </div>
+                    <div class="col-6">
+                        <img src="{{ url_for('static', filename='images/racetrack2.png') }}"
+                             alt="Laguna Seca Track Turns"
+                             class="img-fluid" />
+                    </div>
+                </div>
+                <div class="col-12 mt-5">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="button"
+                            class="btn btn-secondary-outlined"
+                            data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

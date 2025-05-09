@@ -1,0 +1,108 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+ps-btn-primary {
+  background-color: #7171d2;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden; /* Prevents body scrolling */
+}
+
+/* Blurred background container */
+.bg-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: url("../static/images/racetrack2.png") no-repeat center;
+  background-size: cover;
+  filter: blur(4px); /* Adjust blur amount as needed */
+  -webkit-filter: blur(2px); /* For Safari support */
+}
+
+/* Content wrapper */
+#wrapper {
+  position: fixed; /* Makes wrapper sticky */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto; /* Allows scrolling inside wrapper */
+  background-color: rgba(255, 255, 255, 0.94);
+  z-index: 1;
+}
+
+/*body {*/
+/*  color: #373434;*/
+/*}*/
+
+.title {
+  color: rgba(43, 41, 41, 0.94);
+  height: 18px;
+}
+
+.ps-race-card {
+  background-color: #dfe7ef;
+  min-width: 320px;
+}
+
+.race-card {
+  background-color: #dfe7ef;
+  height: 100vh;
+  border-radius: 10px;
+  transition: transform 0.2s;
+}
+
+.race-time {
+  color: #5b5858;
+}
+
+.nav-tabs .nav-link {
+  color: #373434;
+}
+
+.nav-tabs .nav-link.active {
+  color: #372e49;
+  font-weight: lighter;
+}
+
+.tab-content {
+  padding-top: 20px;
+}
+
+.card {
+  border-radius: 10px;
+  transition: transform 0.2s;
+}
+
+.btn-primary {
+  background-color: #7171d2;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #5959b8;
+}
+
+.badge {
+  font-weight: 500;
+  padding: 0.5em 1em;
+}
+
+.bi {
+  font-size: 1rem;
+}
+
+footer {
+  background-color: #dfe7ef;
+}
+
+nav .nav-link:hover {
+  color: rgba(218, 236, 244, 0.95);
+  text-decoration: underline;
+}

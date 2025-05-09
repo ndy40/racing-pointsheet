@@ -3,7 +3,7 @@
 exclude: ^(frontend|docker)/
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.2.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -13,13 +13,24 @@ repos:
     rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
-        types_or: [yaml, markdown, html, css, scss, javascript, json]
+        types_or: [yaml, markdown, css, scss, javascript, json]
+  - repo: https://github.com/djlint/djLint
+    rev: v1.34.1 # Use the latest version
+    hooks:
+      - id: djlint-reformat-jinja
+        types_or: ["html", "jinja"]
+      - id: djlint-jinja
+        types_or: ["html", "jinja"]
+        # Optional: Add additional arguments
+        args: ["--reformat"]
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.8.3
+    rev: v0.11.8
     hooks:
       # Run the linter
       - id: ruff
         args: [--fix]
+        exclude: '.*\.html$'
       # Run the formatter
       - id: ruff-format
+        exclude: '.*\.html$'

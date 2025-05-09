@@ -6,7 +6,7 @@ from factory import LazyFunction
 from factory.alchemy import SQLAlchemyModelFactory
 
 from modules.event.domain.value_objects import SeriesStatus, EventStatus
-from pointsheet.db import get_session
+from pointsheet.db import get_db_session
 from pointsheet.models import Event, Series
 from pointsheet.models.event import EventDriver
 
@@ -14,7 +14,7 @@ from pointsheet.models.event import EventDriver
 class EventFactory(SQLAlchemyModelFactory):
     class Meta:
         model = Event
-        sqlalchemy_session_factory = get_session
+        sqlalchemy_session_factory = get_db_session
         sqlalchemy_session_persistence = "commit"
 
     id = factory.LazyFunction(uuid.uuid4)
@@ -30,7 +30,7 @@ class EventFactory(SQLAlchemyModelFactory):
 class SeriesFactory(SQLAlchemyModelFactory):
     class Meta:
         model = Series
-        sqlalchemy_session_factory = get_session
+        sqlalchemy_session_factory = get_db_session
         sqlalchemy_session_persistence = "commit"
 
     id = factory.LazyFunction(uuid.uuid4)
@@ -44,7 +44,7 @@ class SeriesFactory(SQLAlchemyModelFactory):
 class EventDriverFactory(SQLAlchemyModelFactory):
     class Meta:
         model = EventDriver
-        sqlalchemy_session_factory = get_session
+        sqlalchemy_session_factory = get_db_session
         sqlalchemy_session_persistence = "commit"
 
     id = factory.LazyFunction(uuid.uuid4)

@@ -5,7 +5,6 @@ from lato import Command
 from pydantic import ValidationError, model_validator, field_validator
 
 from modules.event import event_module
-from modules.event.dependencies import container
 from modules.event.domain.entity import Event
 from modules.event.domain.value_objects import EventStatus
 from modules.event.repository import EventRepository
@@ -42,9 +41,6 @@ class CreateEvent(Command):
 
 
 @event_module.handler(CreateEvent)
-def create_event(cmd: CreateEvent):
-    repo = container[EventRepository]
+def create_event(cmd: CreateEvent, repo: EventRepository):
     event = Event(**cmd.model_dump())
-    print(event)
-    print("CMD ", cmd.model_dump())
     repo.add(event)

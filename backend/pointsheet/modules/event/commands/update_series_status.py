@@ -4,7 +4,6 @@ from lato import Command, TransactionContext
 
 from modules.event import event_module
 from modules.event.commands.update_series_event import UpdateSeriesEvent
-from modules.event.dependencies import container
 from modules.event.exceptions import SeriesNotFoundException
 from modules.event.events import SeriesStarted, SeriesClosed, SeriesStatusNotStarted
 from modules.event.repository import SeriesRepository
@@ -23,8 +22,9 @@ class UpdateSeriesStatus(Command):
 
 
 @event_module.handler(UpdateSeriesStatus)
-def update_series_status(cmd: UpdateSeriesEvent, ctx: TransactionContext):
-    repo = container[SeriesRepository]
+def update_series_status(
+    cmd: UpdateSeriesEvent, ctx: TransactionContext, repo: SeriesRepository
+):
     series = repo.find_by_id(cmd.series_id)
 
     if not series:

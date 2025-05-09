@@ -1,7 +1,6 @@
 from lato import Command, TransactionContext
 
 from modules.auth import auth_module
-from modules.auth.dependencies import container
 from modules.auth.exceptions import InvalidUserException
 from modules.auth.repository import ActiveUserRepository
 
@@ -12,8 +11,9 @@ class AuthUser(Command):
 
 
 @auth_module.handler(AuthUser)
-def handle_authenticate_user(cmd: AuthUser, ctx: TransactionContext):
-    repo = container[ActiveUserRepository]
+def handle_authenticate_user(
+    cmd: AuthUser, ctx: TransactionContext, repo: ActiveUserRepository
+):
     active_user = repo.find_by_username(cmd.username)
 
     if not active_user:
