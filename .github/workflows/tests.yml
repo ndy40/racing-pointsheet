@@ -35,5 +35,7 @@ jobs:
 
       - name: Run tests
         working-directory: ./backend/pointsheet
+        env:
+          BROKER_URL: "//broker.local"
         run: |
           poetry run pytest
