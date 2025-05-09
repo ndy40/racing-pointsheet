@@ -16,7 +16,6 @@ from pointsheet.auth import get_user_id
 from .event.repository import EventRepository, SeriesRepository, TrackRepository
 
 app_container = Container()
-app_container[Session] = Session()
 dp = LagomDependencyProvider(app_container)
 
 
@@ -32,17 +31,16 @@ application.include_submodule(auth_module)
 
 @application.on_create_transaction_context
 def on_create_transaction_context():
-    session = application.dependency_provider.get_dependency(Session)
     txn_container = Container()
     txn_container[CorrelationId] = uuid.uuid4()
 
     # repository
-    txn_container[EventRepository] = EventRepository(session)
-    txn_container[SeriesRepository] = SeriesRepository(session)
-    txn_container[ActiveUserRepository] = ActiveUserRepository(session)
-    txn_container[RegisterUserRepository] = RegisterUserRepository(session)
-    txn_container[TrackRepository] = TrackRepository(session)
-    txn_container[DriverRepository] = DriverRepository(session)
+    txn_container[EventRepository] = EventRepository(Session)
+    txn_container[SeriesRepository] = SeriesRepository(Session)
+    txn_container[ActiveUserRepository] = ActiveUserRepository(Session)
+    txn_container[RegisterUserRepository] = RegisterUserRepository(Session)
+    txn_container[TrackRepository] = TrackRepository(Session)
+    txn_container[DriverRepository] = DriverRepository(Session)
 
     return TransactionContext(
         LagomDependencyProvider(txn_container),

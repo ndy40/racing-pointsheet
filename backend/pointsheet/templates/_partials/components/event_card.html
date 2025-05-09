@@ -1,81 +1,70 @@
 <div class="card shadow-sm" id="event-{{ event.id }}">
-  <div class="card-body">
-    <!-- Header with Title and Join Button -->
-    <div class="d-flex justify-content-between align-items-start mb-3">
-      <h5 class="card-title mb-0">{{ event.title }}</h5>
-
-      {% if event.status == 'open' %}
-      <span class="badge bg-success">Available</span>
-      {% elif event.status == 'in_progress' %}
-      <span class="badge bg-secondary">In Progress</span>
-      {% else %}
-      <span class="badge bg-danger">Closed</span>
-      {% endif %}
-    </div>
-
-    <!-- Race Details -->
-    <div class="mb-3">
-      <div class="d-flex justify-content-between mb-2">
-        <div class="text-muted">
-          <i class="bi bi-calendar-event"></i>
-          <small>Start: {{ event.starts_at|datetime('%Y-%m-%d') }}</small>
-        </div>
-        <div class="text-muted">
-          <i class="bi bi-calendar-check"></i>
-          <small>End: {{ event.ends_at|datetime('%Y-%m-%d') }}</small>
-        </div>
-      </div>
-
-      <!-- Track and Time Info -->
-      <div class="d-flex flex-column gap-1">
-        <div class="d-flex align-items-center justify-content-between">
-          <div class="d-flex align-items-center gap-1">
-            <i class="bi bi-geo-alt"></i>
-            <span class="text-body-secondary">{{ event.track }}</span>
-          </div>
-          <div class="d-flex align-items-center gap-1">
-            {% if event.drivers %}
-            <i class="bi bi-person-check"></i>
-            <span class="text-body-secondary">{{ event.drivers|length }} </span>
+    <div class="card-body">
+        <!-- Header with Title and Join Button -->
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <h5 class="card-title mb-0">{{ event.title }}</h5>
+            {% if event.status == 'open' %}
+                <span class="badge bg-success">Available</span>
+            {% elif event.status == 'in_progress' %}
+                <span class="badge bg-secondary">In Progress</span>
             {% else %}
-            <i class="bi bi-person-dash"></i>
-            <span class="text-body-secondary">0</span>
+                <span class="badge bg-danger">Closed</span>
             {% endif %}
-          </div>
         </div>
-
-        <div class="d-flex align-items-center justify-content-between">
-          <div class="d-flex align-items-center gap-1">
-            <i class="bi bi-clock"></i>
-            <span class="text-body-secondary"
-              >{{ event.starts_at|datetime('%H:%M %Z') }}</span
-            >
-          </div>
+        <!-- Race Details -->
+        <div class="mb-3">
+            <div class="d-flex justify-content-between mb-2">
+                <div class="text-muted">
+                    <i class="bi bi-calendar-event"></i>
+                    <small>Start: {{ event.starts_at|datetime("%Y-%m-%d") }}</small>
+                </div>
+                <div class="text-muted">
+                    <i class="bi bi-calendar-check"></i>
+                    <small>End: {{ event.ends_at|datetime("%Y-%m-%d") }}</small>
+                </div>
+            </div>
+            <!-- Track and Time Info -->
+            <div class="d-flex flex-column gap-1">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-1">
+                        <i class="bi bi-geo-alt"></i>
+                        <span class="text-body-secondary">{{ event.track }}</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        {% if event.drivers %}
+                            <i class="bi bi-person-check"></i>
+                            <span class="text-body-secondary">{{ event.drivers|length }}</span>
+                        {% else %}
+                            <i class="bi bi-person-dash"></i>
+                            <span class="text-body-secondary">0</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-1">
+                        <i class="bi bi-clock"></i>
+                        <span class="text-body-secondary">{{ event.starts_at|datetime("%H:%M %Z") }}</span>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+        <!-- Status Badge -->
+        {% if event.drivers|selectattr("id", 'eq', user_id)|list|length > 0 %}
+            <button class="btn btn-secondary btn-sm"
+                    hx-put="/events/{{ event.id }}/leave"
+                    hx-trigger="click"
+                    hx-target="closest div:has(div#event-{{ event.id }})">
+                <i class="bi bi-box-arrow-left mr-3"></i>
+                Leave
+            </button>
+        {% else %}
+            <button class="btn btn-primary btn-sm"
+                    hx-put="/events/{{ event.id }}/join"
+                    hx-trigger="click"
+                    hx-target="closest div:has(div#event-{{ event.id }})">
+                <i class="bi bi-box-arrow-in-right mr-3"></i>
+                Join Event
+            </button>
+        {% endif %}
     </div>
-
-    <!-- Status Badge -->
-    {% if event.drivers|selectattr("id", 'eq', user_id)|list|length > 0 %}
-    <button
-      class="btn btn-secondary btn-sm"
-      hx-put="/events/{{ event.id }}/leave"
-      hx-trigger="click"
-      hx-target="closest div:has(div#event-{{ event.id }})"
-    >
-      <i class="bi bi-box-arrow-left mr-3"></i>
-      Leave
-    </button>
-    {% else %}
-    <button
-      class="btn btn-primary btn-sm"
-      hx-put="/events/{{ event.id }}/join"
-      hx-trigger="click"
-      hx-target="closest div:has(div#event-{{ event.id }})"
-    >
-      <i class="bi bi-box-arrow-in-right mr-3"></i>
-      Join Event
-    </button>
-    {% endif %}
-  </div>
 </div>

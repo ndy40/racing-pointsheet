@@ -1,98 +1,94 @@
-{% extends 'app.html' %} {% block content %}
-<section id="race-cards" class="mt-1 container" style="height: 450px">
-  <div class="row gap-3">
-    <div class="col">{% include '_partials/components/last_card.html' %}</div>
-    <div class="col">{% include '_partials/components/next_race.html' %}</div>
-    <div class="col">{% include '_partials/components/race_card.html' %}</div>
-  </div>
-</section>
-<section id="race-tabs" class="container mt-4">
-  <div class="container mt-4">
-    <ul class="nav nav-tabs" id="eventsTab" role="tablist">
-      <!-- Available Events Tab -->
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link active"
-          id="available-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#available"
-          type="button"
-          role="tab"
-          aria-controls="available"
-          aria-selected="true"
-        >
-          Available Events
-        </button>
-      </li>
-      <!-- Upcoming Events Tab -->
-      <!--      <li class="nav-item" role="presentation">-->
-      <!--        <button-->
-      <!--          class="nav-link"-->
-      <!--          id="upcoming-tab"-->
-      <!--          data-bs-toggle="tab"-->
-      <!--          data-bs-target="#upcoming"-->
-      <!--          type="button"-->
-      <!--          role="tab"-->
-      <!--          aria-controls="upcoming"-->
-      <!--          aria-selected="false"-->
-      <!--        >-->
-      <!--          Upcoming Events-->
-      <!--        </button>-->
-      <!--      </li>-->
-      <!-- On Going Series Tab -->
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="ongoing-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#ongoing"
-          type="button"
-          role="tab"
-          aria-controls="ongoing"
-          aria-selected="false"
-        >
-          On Going Series
-        </button>
-      </li>
-    </ul>
+{% extends 'app.html' %}
 
-    <div class="tab-content" id="eventsTabContent">
-      <!-- Available Events Content -->
-      <div
-        class="tab-pane fade show active"
-        id="available"
-        role="tabpanel"
-        aria-labelledby="available-tab"
-      >
-        <section class="mt-2">
-          <div
-            class="row row-cols-1 row-cols-md-3 g-3"
-            hx-get="/home/available_events"
-            hx-trigger="load"
-          >
-            <!-- Your race cards for available events -->
-          </div>
-        </section>
-      </div>
+{% block content %}
+    <section id="race-cards" class="mt-1 container" style="height: 450px">
+        <div class="row gap-3">
+            <div class="col">
 
-      <!-- On Going Series Content -->
-      <div
-        class="tab-pane fade"
-        id="ongoing"
-        role="tabpanel"
-        aria-labelledby="ongoing-tab"
-      >
-        <section class="mt-4">
-          <div
-            class="row row-cols-1 row-cols-md-3 g-3"
-            hx-get="/home/ongoing-events"
-            hx-trigger="load"
-          >
-            <!-- Your race cards for ongoing series -->
-          </div>
-        </section>
-      </div>
-    </div>
-  </div>
-</section>
+                {% include '_partials/components/last_card.html' %}
+
+            </div>
+            <div class="col">
+
+                {% include '_partials/components/next_race.html' %}
+
+            </div>
+            <div class="col">
+
+                {% include '_partials/components/race_card.html' %}
+
+            </div>
+        </div>
+    </section>
+    <section id="race-tabs" class="container mt-4">
+        <div class="container mt-4">
+            <ul class="nav nav-tabs" id="eventsTab" role="tablist">
+                <!-- Available Events Tab -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active"
+                            id="available-tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#available"
+                            type="button"
+                            role="tab"
+                            aria-controls="available"
+                            aria-selected="true">Available Events</button>
+                </li>
+                <!-- Upcoming Events Tab -->
+                <!--      <li class="nav-item" role="presentation">-->
+                <!--        <button -->
+                <!--          class="nav-link"-->
+                <!--          id="upcoming-tab"-->
+                <!--          data-bs-toggle="tab"-->
+                <!--          data-bs-target="#upcoming"-->
+                <!--          type="button"-->
+                <!--          role="tab"-->
+                <!--          aria-controls="upcoming"-->
+                <!--          aria-selected="false"-->
+                <!--        >-->
+                <!--          Upcoming Events-->
+                <!--        </button>-->
+                <!--      </li>-->
+                <!-- On Going Series Tab -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"
+                            id="ongoing-tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#ongoing"
+                            type="button"
+                            role="tab"
+                            aria-controls="ongoing"
+                            aria-selected="false">On Going Series</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="eventsTabContent">
+                <!-- Available Events Content -->
+                <div class="tab-pane fade show active"
+                     id="available"
+                     role="tabpanel"
+                     aria-labelledby="available-tab">
+                    <section class="mt-2">
+                        <div class="row row-cols-1 row-cols-md-3 g-3"
+                             hx-get="/home/available_events"
+                             hx-trigger="load">
+                            <!-- Your race cards for available events -->
+                        </div>
+                    </section>
+                </div>
+                <!-- On Going Series Content -->
+                <div class="tab-pane fade"
+                     id="ongoing"
+                     role="tabpanel"
+                     aria-labelledby="ongoing-tab">
+                    <section class="mt-4">
+                        <div class="row row-cols-1 row-cols-md-3 g-3"
+                             hx-get="/home/ongoing-events"
+                             hx-trigger="load">
+                            <!-- Your race cards for ongoing series -->
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}

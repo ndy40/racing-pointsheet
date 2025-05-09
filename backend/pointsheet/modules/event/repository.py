@@ -25,6 +25,7 @@ class EventRepository(AbstractRepository[Event, EventModel]):
 
         if result:
             return self._map_to_model(result)
+        return None
 
     def all(self) -> List[EventModel]:
         stmt = select(Event).order_by(Event.id)

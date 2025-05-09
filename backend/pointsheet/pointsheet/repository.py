@@ -29,25 +29,49 @@ class AbstractRepository(Generic[DbModel, T], abc.ABC):
     model_class: type[T]
 
     def __init__(self, db_session_factory):
-        self._session = db_session_factory
+        """
+        Initialize with a session factory function.
+
+        Args:
+            db_session_factory: A function that returns a new database session
+        """
+        self._session_factory = db_session_factory
+
+    @property
+    def _session(self):
+        """Get a session using the factory."""
+        return self._session_factory()
 
     def add(self, model: T) -> None:
         entity: DbModel = self._map_to_entity(model)
-        self._session.add(entity)
-        self._session.commit()
+        session = self._session
+        try:
+            session.add(entity)
+            session.commit()
+        finally:
+            session.close()
 
     def update(self, model: T) -> None:
         entity: DbModel = self._map_to_entity(model)
-        self._session.merge(entity)
-        self._session.commit()
+        session = self._session
+        try:
+            session.merge(entity)
+            session.commit()
+        finally:
+            session.close()
 
     @abstractmethod
     def delete(self, id: Any or EntityId) -> None: ...
 
     def all(self) -> List[T]:
-        stmt = select(DbModel).order_by(DbModel.id)
-        result = self._session.execute(stmt).scalars()
-        return [self._map_to_model(item) for item in result]
+        session = self._session
+        try:
+            stmt = select(DbModel).order_by(DbModel.id)
+            result = session.execute(stmt).scalars()
+            return [self._map_to_model(item) for item in result]
+        finally:
+            session.close()
+        return None
 
     @property
     def mapper(self):

@@ -3,11 +3,7 @@ from pointsheet.factories.event import SeriesFactory, EventFactory
 
 
 def run():
-    session = get_session()
-
-    with session.begin():
+    with get_session():
         for i in range(0, 3):
             SeriesFactory(title=f"Home {i}")
             EventFactory()
-
-        session.commit()

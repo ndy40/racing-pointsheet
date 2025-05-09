@@ -1,142 +1,139 @@
-{% extends "app.html" %} {% block content %}
+{% extends "app.html" %}
 
-<div class="container">
-  <!-- Search and Filter Section -->
-  <div class="card mb-4">
-    <div class="card-body">
-      <div class="row g-3">
-        <div class="col-md-4">
-          <input
-            type="text"
-            class="form-control"
-            id="searchInput"
-            placeholder="Search events..."
-          />
+{% block content %}
+    <div class="container">
+        <!-- Search and Filter Section -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text"
+                               class="form-control"
+                               id="searchInput"
+                               placeholder="Search events..." />
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="statusFilter">
+                            <option value="">Filter by Status</option>
+                            <option value="Open">Open</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date"
+                               class="form-control"
+                               id="dateFilter"
+                               placeholder="Filter by date" />
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-3">
-          <select class="form-select" id="statusFilter">
-            <option value="">Filter by Status</option>
-            <option value="Open">Open</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Closed">Closed</option>
-          </select>
+        <!-- Add button -->
+        <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-primary"
+                    hx-get="/events/create"
+                    hx-trigger="click delay:500ms"
+                    hx-target="#page-modal"
+                    data-bs-target="#page-modal"
+                    data-bs-toggle="modal">
+                <i class="bi bi-plus-circle"></i> Add Event
+            </button>
         </div>
-        <div class="col-md-3">
-          <input
-            type="date"
-            class="form-control"
-            id="dateFilter"
-            placeholder="Filter by date"
-          />
+        <!-- Events Table -->
+        <div class="table-responsive">
+            <table class="table table-hover table-striped shadow-sm">
+                <thead class="table-dark" style="font-size: 0.875rem">
+                    <tr class="text-uppercase text-center">
+                        <th class="fw-lighter" scope="col">Event Title</th>
+                        <th class="fw-lighter" scope="col">
+                            <i class="bi bi-clock"></i> Starts At
+                        </th>
+                        <th class="fw-lighter" scope="col">
+                            <i class="bi bi-clock"></i> Ends At
+                        </th>
+                        <th class="fw-lighter" scope="col">
+                            <i class="bi bi-person-check"></i> Drivers
+                        </th>
+                        <th class="fw-lighter" scope="col">No. Laps</th>
+                        <th class="fw-lighter" scope="col">Status</th>
+                        <th class="fw-lighter" scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="fst-normal">
+                    {% for event in events %}
+                        <tr class="align-center text-center">
+                            <td>{{ event.title }}</td>
+                            <td>{{ event.starts_at.strftime("%Y-%m-%d %H:%M") }}</td>
+                            <td>{{ event.ends_at.strftime("%Y-%m-%d %H:%M") }}</td>
+                            <td>{{ event.drivers|length if event.drivers else '-' }}</td>
+                            <td>{{ event.schedule.nbr_of_laps if event.schedule else '-' }}</td>
+                            <td>
+                                {% if event.status %}
+                                    <span class="badge {% if event.status == 'Open' %}bg-success{% elif event.status == 'In Progress' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                        {{ event.status.value|title }}
+                                    </span>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td class="d-flex-inline text-center">
+                                <a href="/events/{{ event.id }}" class="btn btn-sm">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm">
+                                    <i class="bi bi-clipboard"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-      </div>
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <div class="showing-entries">
+                Showing <span id="startEntry">1</span> to <span id="endEntry">10</span> of
+                <span id="totalEntries">0</span> entries
+            </div>
+            <nav aria-label="Event pagination">
+                <ul class="pagination">
+                    <li class="page-item" id="previousPage">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" id="nextPage">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="entries-per-page">
+                <select class="form-select form-select-sm" id="entriesPerPage">
+                    <option value="10">10 per page</option>
+                    <option value="25">25 per page</option>
+                    <option value="50">50 per page</option>
+                    <option value="100">100 per page</option>
+                </select>
+            </div>
+        </div>
     </div>
-  </div>
-  <!-- Add button -->
-  <div class="d-flex justify-content-end mb-3">
-    <button
-      class="btn btn-primary"
-      hx-get="/events/create"
-      hx-trigger="click delay:500ms"
-      hx-target="#page-modal"
-      data-bs-target="#page-modal"
-      data-bs-toggle="modal"
-    >
-      <i class="bi bi-plus-circle"></i> Add Event
-    </button>
-  </div>
-  <!-- Events Table -->
-  <div class="table-responsive">
-    <table class="table table-hover table-striped shadow-sm">
-      <thead class="table-dark" style="font-size: 0.875rem">
-        <tr class="text-uppercase text-center">
-          <th class="fw-lighter" scope="col">Event Title</th>
-          <th class="fw-lighter" scope="col">
-            <i class="bi bi-clock"></i> Starts At
-          </th>
-          <th class="fw-lighter" scope="col">
-            <i class="bi bi-clock"></i> Ends At
-          </th>
-          <th class="fw-lighter" scope="col">
-            <i class="bi bi-person-check"></i> Drivers
-          </th>
-          <th class="fw-lighter" scope="col">No. Laps</th>
-          <th class="fw-lighter" scope="col">Status</th>
-          <th class="fw-lighter" scope="col">Action</th>
-        </tr>
-      </thead>
-      <tbody class="fst-normal">
-        {% for event in events %}
-        <tr class="align-center text-center">
-          <td>{{ event.title }}</td>
-          <td>{{ event.starts_at.strftime('%Y-%m-%d %H:%M') }}</td>
-          <td>{{ event.ends_at.strftime('%Y-%m-%d %H:%M') }}</td>
-          <td>{{ event.drivers|length if event.drivers else '-' }}</td>
-          <td>{{ event.schedule.nbr_of_laps if event.schedule else '-' }}</td>
-          <td>
-            {% if event.status %}
-            <span
-              class="badge {% if event.status == 'Open' %}bg-success{% elif event.status == 'In Progress' %}bg-warning{% else %}bg-secondary{% endif %}"
-            >
-              {{ event.status.value|title }}
-            </span>
-            {% else %} - {% endif %}
-          </td>
-          <td class="d-flex-inline text-center">
-            <a href="/events/{{ event.id }}" class="btn btn-sm">
-              <i class="bi bi-eye"></i>
-            </a>
-            <a href="#" class="btn btn-sm">
-              <i class="bi bi-clipboard"></i>
-            </a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  <div class="d-flex justify-content-between align-items-center mt-4">
-    <div class="showing-entries">
-      Showing <span id="startEntry">1</span> to <span id="endEntry">10</span> of
-      <span id="totalEntries">0</span> entries
-    </div>
-    <nav aria-label="Event pagination">
-      <ul class="pagination">
-        <li class="page-item" id="previousPage">
-          <a class="page-link" href="#" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <li class="page-item" id="nextPage">
-          <a class="page-link" href="#" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-    <div class="entries-per-page">
-      <select class="form-select form-select-sm" id="entriesPerPage">
-        <option value="10">10 per page</option>
-        <option value="25">25 per page</option>
-        <option value="50">50 per page</option>
-        <option value="100">100 per page</option>
-      </select>
-    </div>
-  </div>
-</div>
-<style>
-  .table-hover tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.075);
-    cursor: pointer;
-  }
+    <style>
+         .table-hover tbody tr:hover {
+              background-color: rgba(0, 0, 0, 0.075);
+              cursor: pointer;
+         }
 
-  .badge {
-    font-size: 0.875rem;
-    padding: 0.5em 0.75em;
-  }
-</style>
-{% endblock %} {% block scripts %} {{ super() }}
-<script>
+         .badge {
+              font-size: 0.875rem;
+              padding: 0.5em 0.75em;
+         }
+    </style>
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script>
   document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("searchInput");
     const statusFilter = document.getElementById("statusFilter");
@@ -170,5 +167,5 @@
       previousPage.classList.toggle("disabled", currentPage === 1);
     }
   });
-</script>
+    </script>
 {% endblock %}

@@ -1,10 +1,12 @@
 from lagom import Container
 
 from modules.auth.repository import ActiveUserRepository, RegisterUserRepository
-from pointsheet.db import get_session
+from pointsheet.db import get_db_session
 
 container = Container()
-container[ActiveUserRepository] = ActiveUserRepository(db_session_factory=get_session())
+container[ActiveUserRepository] = ActiveUserRepository(
+    db_session_factory=get_db_session
+)
 container[RegisterUserRepository] = RegisterUserRepository(
-    db_session_factory=get_session()
+    db_session_factory=get_db_session
 )
