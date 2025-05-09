@@ -2,7 +2,7 @@ from typing import Optional
 
 from lato import Query
 
-from modules import event_module
+from modules.event import event_module
 from modules.event.repository import EventRepository
 from pointsheet.domain import EntityId
 
