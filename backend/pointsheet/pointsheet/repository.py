@@ -40,7 +40,11 @@ class AbstractRepository(Generic[DbModel, T], abc.ABC):
     @property
     def _session(self):
         """Get a session using the factory."""
-        return self._session_factory()
+        return (
+            self._session_factory()
+            if callable(self._session_factory)
+            else self._session_factory
+        )
 
     def add(self, model: T) -> None:
         entity: DbModel = self._map_to_entity(model)
