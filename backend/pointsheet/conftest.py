@@ -96,9 +96,3 @@ def current_user(default_user):
     with patch("modules.get_user_id") as mock_get_current_user:
         mock_get_current_user.return_value = default_user.id
         yield default_user
-
-
-@pytest.fixture(scope="function", autouse=True)
-def mock_user_id(login):
-    with patch("pointsheet.auth.get_user_id", return_value=login.id):
-        yield login.id
