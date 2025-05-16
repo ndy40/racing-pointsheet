@@ -1,0 +1,33 @@
+{
+    # Global options
+    email your-email@example.com  # Replace with your email for Let's Encrypt
+    # Uncomment for production
+    # acme_ca https://acme-v02.api.letsencrypt.org/directory
+}
+
+pointsheet.com {
+    # Enable automatic HTTPS
+    tls {
+        # Uncomment for local development
+        # internal
+    }
+    
+    # Set maximum upload size to 100MB
+    request_body {
+        max_size 100MB
+    }
+    
+    # Reverse proxy to your application
+    reverse_proxy 127.0.0.1:5000
+    
+    # Log settings
+    log {
+        output file /var/log/caddy/pointsheet.log
+        format json
+    }
+    
+    # Handle errors
+    handle_errors {
+        respond "{http.error.status_code} {http.error.status_text}"
+    }
+}

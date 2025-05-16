@@ -1,0 +1,100 @@
+name: Test and Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1 tesseract-ocr
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        working-directory: ./backend/pointsheet
+        run: |
+          poetry install
+
+      - name: Run tests
+        working-directory: ./backend/pointsheet
+        env:
+          BROKER_URL: "//broker.local"
+        run: |
+          poetry run pytest
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Generate version number
+        id: version
+        run: |
+          # Generate version based on date and commit hash
+          VERSION=$(date +'%Y%m%d%H%M')-${GITHUB_SHA::7}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create deployment package
+        run: |
+          # Create a directory with the version name
+          mkdir -p pointsheet-$VERSION
+
+          # Copy necessary files (adjust paths as needed)
+          cp -r backend pointsheet-$VERSION/
+          cp -r docker pointsheet-$VERSION/
+          cp -r bin pointsheet-$VERSION/
+
+          # Create a version file
+          echo $VERSION > pointsheet-$VERSION/VERSION
+
+          # Create zip file
+          zip -r pointsheet-$VERSION.zip pointsheet-$VERSION
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Upload to server
+        run: |
+          # Create deployment directory if it doesn't exist
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "mkdir -p ${{ secrets.DEPLOY_DIR }}"
+
+          # Upload the zip file
+          scp pointsheet-$VERSION.zip ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_DIR }}/
+
+          # Unzip on the server
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.DEPLOY_DIR }} && unzip -q pointsheet-$VERSION.zip"
+
+      - name: Deploy on server
+        run: |
+          # Run the deployment script
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "export DEPLOY_DIR=${{ secrets.DEPLOY_DIR }} && ${{ secrets.DEPLOY_DIR }}/pointsheet-$VERSION/bin/deploy.sh $VERSION"
+
+      - name: Cleanup
+        run: |
+          rm -rf ~/.ssh/id_rsa
+          rm -rf pointsheet-$VERSION
+          rm -f pointsheet-$VERSION.zip
