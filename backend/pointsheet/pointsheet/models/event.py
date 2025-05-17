@@ -26,9 +26,7 @@ from pointsheet.models.custom_types import (
 class RaceResult(BaseModel):
     __tablename__ = "race_results"
 
-    id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, autoincrement=True, nullable=True
-    )
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     schedule_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey(
@@ -45,9 +43,7 @@ class RaceResult(BaseModel):
 
 class EventSchedule(BaseModel):
     __tablename__ = "event_schedule"
-    id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, autoincrement=True, nullable=True
-    )
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     type: Mapped[ScheduleType] = mapped_column(ScheduleTypeType)
     nbr_of_laps: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     duration: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
@@ -119,6 +115,17 @@ class Event(BaseModel):
         EventDriver, cascade="all, delete-orphan"
     )
 
+    def model_dump(self):
+        return {
+            "id": str(self.id),
+            "title": self.title,
+            "status": self.status,
+            "track": self.track,
+            "starts_at": self.starts_at.isoformat() if self.starts_at else None,
+            "ends_at": self.ends_at.isoformat() if self.ends_at else None,
+            "host": str(self.host) if self.host else None,
+        }
+
     @validates("starts_at", "ends_at", include_removes=False)
     def validate_date_formats(self, key, value):
         if isinstance(value, str):
@@ -132,7 +139,7 @@ class Event(BaseModel):
 class Series(BaseModel):
     __tablename__ = "series"
     id: Mapped[EntityId] = mapped_column(
-        EntityIdType, primary_key=True, default=uuid_default
+        EntityIdType, primary_key=True, default=uuid_default()
     )
     title: Mapped[str]
     status: Mapped[Optional[str]] = mapped_column(
@@ -141,6 +148,17 @@ class Series(BaseModel):
     events: Mapped[Optional[List[Event]]] = relationship(cascade="all, delete")
     starts_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     ends_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+
+    def model_dump(self):
+        events = [event.model_dump() for event in self.events] if self.events else []
+        return {
+            "id": str(self.id),
+            "title": self.title,
+            "status": self.status,
+            "starts_at": self.starts_at.isoformat() if self.starts_at else None,
+            "ends_at": self.ends_at.isoformat() if self.ends_at else None,
+            "events": events,
+        }
 
     @validates("ends_at")
     def validate_ends_at(self, key, value):

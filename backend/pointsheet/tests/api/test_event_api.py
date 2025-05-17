@@ -42,7 +42,6 @@ def test_create_event_with_ends_at_past_of_starts_at(client):
 
 
 def test_create_and_fetch_event_by_id(client, db_session, auth_token):
-    EventFactory.sqlalchemy_session_factory = lambda: db_session
     event = EventFactory()
 
     # Fetch the event by ID
@@ -76,18 +75,14 @@ def test_create_event_with_ends_at_exceeds_one_month_of_starts_at(client, auth_t
     assert response.status_code == 400
 
 
-def test_driver_joining_event(client, db_session, auth_token, default_user):
-    EventFactory.sqlalchemy_session_factory = lambda: db_session
+def test_driver_joining_event(client, auth_token, default_user):
     event = EventFactory()
     DriverFactory(id=default_user.id)
-
     response = client.put(f"/api/events/{event.id}/join", headers=auth_token)
-
     assert response.status_code == 204
 
 
 def test_driver_joining_event_twice_fails(client, db_session, auth_token, default_user):
-    EventFactory.sqlalchemy_session_factory = lambda: db_session
     event = EventFactory()
     DriverFactory(id=default_user.id)
 
@@ -98,7 +93,6 @@ def test_driver_joining_event_twice_fails(client, db_session, auth_token, defaul
 
 
 def test_driver_leaving_event_succeeds(client, db_session, auth_token, default_user):
-    EventFactory.sqlalchemy_session_factory = lambda: db_session
     event = EventFactory()
     EventDriverFactory(id=default_user.id, event_id=event.id)
 
@@ -109,7 +103,6 @@ def test_driver_leaving_event_succeeds(client, db_session, auth_token, default_u
 def test_driver_leaving_event_twice_returns_204(
     client, db_session, auth_token, default_user
 ):
-    EventFactory.sqlalchemy_session_factory = lambda: db_session
     event = EventFactory()
     EventDriverFactory(id=default_user.id, event_id=event.id)
 
@@ -119,7 +112,6 @@ def test_driver_leaving_event_twice_returns_204(
 
 
 def test_add_schedule_to_event(client, db_session, auth_token):
-    EventFactory.sqlalchemy_session_factory = lambda: db_session
     event = EventFactory()
 
     payload = {
@@ -136,7 +128,6 @@ def test_add_schedule_to_event(client, db_session, auth_token):
 
 
 def test_removing_schedule_from_event_succeeds(client, db_session, auth_token):
-    EventFactory.sqlalchemy_session_factory = lambda: db_session
     event = EventFactory()
 
     # Add three schedules: practice, qualification, and race
@@ -179,7 +170,6 @@ def test_removing_schedule_from_event_succeeds(client, db_session, auth_token):
 def test_removing_non_existent_schedule_from_event_returns_400(
     client, db_session, auth_token
 ):
-    EventFactory.sqlalchemy_session_factory = lambda: db_session
     event = EventFactory()
 
     # Attempt to remove a schedule with an ID that does not exist
@@ -194,7 +184,6 @@ def test_removing_non_existent_schedule_from_event_returns_400(
 
 
 def test_add_duplicate_practice_schedule_fails(client, db_session, auth_token):
-    EventFactory.sqlalchemy_session_factory = lambda: db_session
     event = EventFactory()
 
     # Add the first 'practice' schedule
@@ -213,7 +202,6 @@ def test_add_duplicate_practice_schedule_fails(client, db_session, auth_token):
 
 
 def test_add_duplicate_qualification_schedule_fails(client, db_session, auth_token):
-    EventFactory.sqlalchemy_session_factory = lambda: db_session
     event = EventFactory()
 
     # Add the first 'qualification' schedule

@@ -19,6 +19,7 @@ class ActiveUserRepository(AbstractRepository[User, ActiveUser]):
 
         if active_user:
             return self._map_to_model(active_user)
+        return None
 
     def find_by_username(self, username: str) -> ActiveUser:
         stmt = select(User).where(User.username == username)
@@ -26,6 +27,7 @@ class ActiveUserRepository(AbstractRepository[User, ActiveUser]):
 
         if active_user:
             return self._map_to_model(active_user)
+        return None
 
     def delete(self, id: Any or EntityId) -> None:
         pass

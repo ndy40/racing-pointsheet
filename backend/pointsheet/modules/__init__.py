@@ -5,7 +5,7 @@ from lagom import Container
 from lato import Application, TransactionContext
 
 from pointsheet.config import config
-from pointsheet.db import Session
+from pointsheet.db import get_session
 from .account import account_module
 from .account.repository import DriverRepository
 from .auth import auth_module
@@ -34,13 +34,15 @@ def on_create_transaction_context():
     txn_container = Container()
     txn_container[CorrelationId] = uuid.uuid4()
 
+    session = next(get_session())
+
     # repository
-    txn_container[EventRepository] = EventRepository(Session)
-    txn_container[SeriesRepository] = SeriesRepository(Session)
-    txn_container[ActiveUserRepository] = ActiveUserRepository(Session)
-    txn_container[RegisterUserRepository] = RegisterUserRepository(Session)
-    txn_container[TrackRepository] = TrackRepository(Session)
-    txn_container[DriverRepository] = DriverRepository(Session)
+    txn_container[EventRepository] = EventRepository(session)
+    txn_container[SeriesRepository] = SeriesRepository(session)
+    txn_container[ActiveUserRepository] = ActiveUserRepository(session)
+    txn_container[RegisterUserRepository] = RegisterUserRepository(session)
+    txn_container[TrackRepository] = TrackRepository(session)
+    txn_container[DriverRepository] = DriverRepository(session)
 
     return TransactionContext(
         LagomDependencyProvider(txn_container),

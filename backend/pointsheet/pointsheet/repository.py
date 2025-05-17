@@ -28,23 +28,8 @@ class AbstractRepository(Generic[DbModel, T], abc.ABC):
     mapper_class: type[DataMapper[DbModel, T]]
     model_class: type[T]
 
-    def __init__(self, db_session_factory):
-        """
-        Initialize with a session factory function.
-
-        Args:
-            db_session_factory: A function that returns a new database session
-        """
-        self._session_factory = db_session_factory
-
-    @property
-    def _session(self):
-        """Get a session using the factory."""
-        return (
-            self._session_factory()
-            if callable(self._session_factory)
-            else self._session_factory
-        )
+    def __init__(self, session):
+        self._session = session
 
     def add(self, model: T) -> None:
         entity: DbModel = self._map_to_entity(model)

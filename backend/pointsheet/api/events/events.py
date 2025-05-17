@@ -85,9 +85,12 @@ def upload_results(event_id):
 @event_bp.route("/events/<uuid:event_id>/schedule", methods=["POST"])
 @api_auth.login_required
 def add_event_schedule(event_id):
-    cmd = AddEventSchedule(event_id=event_id, **request.json)
-    current_app.application.execute(cmd)
-    return Response(status=204)
+    try:
+        cmd = AddEventSchedule(event_id=event_id, **request.json)
+        current_app.application.execute(cmd)
+        return Response(status=204)
+    except ValueError as e:
+        return {"error": str(e)}, 400
 
 
 @event_bp.route(
@@ -95,9 +98,12 @@ def add_event_schedule(event_id):
 )
 @api_auth.login_required
 def remove_event_schedule(event_id, schedule_id):
-    cmd = RemoveSchedule(event_id=event_id, schedule_id=schedule_id)
-    current_app.application.execute(cmd)
-    return Response(status=204)
+    try:
+        cmd = RemoveSchedule(event_id=event_id, schedule_id=schedule_id)
+        current_app.application.execute(cmd)
+        return Response(status=204)
+    except ValueError as e:
+        return {"error": str(e)}, 400
 
 
 @event_bp.route(

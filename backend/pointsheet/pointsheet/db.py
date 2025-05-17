@@ -1,5 +1,3 @@
-from contextlib import contextmanager
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
@@ -20,16 +18,9 @@ SessionFactory = sessionmaker(bind=engine)
 Session = scoped_session(SessionFactory)
 
 
-# Function to get a new session
-def get_db_session():
-    """Returns a new database session."""
-    return Session()
-
-
-@contextmanager
 def get_session():
     """Context manager for database sessions."""
-    session = get_db_session()
+    session = Session()
     try:
         yield session
         session.commit()

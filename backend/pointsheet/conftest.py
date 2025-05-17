@@ -43,6 +43,15 @@ def db_session(setup_database):
         connection.close()
 
 
+@pytest.fixture(scope="function", autouse=True)
+def patch_session(db_session):
+    with patch(
+        "pointsheet.db.get_session",
+        return_value=db_session,
+    ) as session:
+        yield session
+
+
 @pytest.fixture(scope="module")
 def app():
     app = create_app()
