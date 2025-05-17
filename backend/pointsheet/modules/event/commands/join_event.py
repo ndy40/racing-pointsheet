@@ -23,7 +23,6 @@ def handle_join_event(
     driver = current_app.application.execute(GetDriver(driver_id=cmd.driver_id))
 
     if not driver:
-        print("not found")
         raise DriverNotFound()
 
     event = event_repo.find_by_id(cmd.event_id)

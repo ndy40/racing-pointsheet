@@ -83,6 +83,7 @@ def default_user(db_session):
     new_user = RegisteredUser(username="testuser", password="password1")
     repo = RegisterUserRepository(db_session)
     repo.add(new_user)
+    print("User new ", new_user)
     return new_user
 
 

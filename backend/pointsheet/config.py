@@ -26,7 +26,7 @@ class TestingConfig(Config):
     """Testing configuration."""
 
     TESTING = True
-    DEBUG = True
+    DEBUG = False
     DATABASE = os.path.join(root_dir, "instance", "test_db.sqlite")
     WTF_CSRF_ENABLED = False
 

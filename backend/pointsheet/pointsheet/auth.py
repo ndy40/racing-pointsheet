@@ -37,12 +37,14 @@ def verify_password(username, password):
 
 
 def get_user_id():
-    if user := api_auth.current_user():
-        if isinstance(user, UUID):
-            return user
-        return user
+    for auth_provider in (api_auth, web_auth):
+        if user := auth_provider.current_user():
+            if isinstance(user, UUID):
+                return user
+            elif isinstance(user, dict):
+                return user.get("id")
 
-    return web_auth.current_user()
+    return None
 
 
 def generate_salt():
