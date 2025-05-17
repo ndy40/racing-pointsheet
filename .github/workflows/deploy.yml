@@ -59,16 +59,30 @@ jobs:
           # Create a directory with the version name
           mkdir -p pointsheet-$VERSION
 
-          # Copy necessary files (adjust paths as needed)
+          # Copy only the backend folder
           cp -r backend pointsheet-$VERSION/
-          cp -r docker pointsheet-$VERSION/
-          cp -r bin pointsheet-$VERSION/
 
           # Create a version file
           echo $VERSION > pointsheet-$VERSION/VERSION
 
-          # Create zip file
-          zip -r pointsheet-$VERSION.zip pointsheet-$VERSION
+      - name: Setup environment variables
+        run: |
+          # Decode the base64-encoded environment variables
+          echo "${{ secrets.ENV_VAR }}" | base64 -d > pointsheet-$VERSION/backend/pointsheet/.env
+          # Verify the file was created
+          ls -la pointsheet-$VERSION/backend/pointsheet/.env
+
+      - name: Create zip file
+        run: |
+          # Create zip file excluding specified files and directories
+          zip -r pointsheet-$VERSION.zip pointsheet-$VERSION \
+            -x "pointsheet-$VERSION/*/docker*" \
+            -x "pointsheet-$VERSION/*/docks*" \
+            -x "pointsheet-$VERSION/*/node_modules*" \
+            -x "pointsheet-$VERSION/*/.venv*" \
+            -x "pointsheet-$VERSION/*/venv*" \
+            -x "pointsheet-$VERSION/*/Dockerfile*" \
+            -x "pointsheet-$VERSION/*/docker-compose.yml*"
 
       - name: Setup SSH
         run: |

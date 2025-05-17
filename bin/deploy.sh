@@ -35,10 +35,8 @@ poetry install
 # Update the symlink to point to the new version
 ln -sfn $APP_DIR $CURRENT_LINK
 
-# Update Caddy configuration if needed
-if [ -f "$APP_DIR/docker/caddy/Caddyfile" ]; then
-    sudo cp $APP_DIR/docker/caddy/Caddyfile /etc/caddy/Caddyfile
-fi
+# Caddy configuration is no longer included in the deployment package
+# If you need to update Caddy configuration, do it manually or through another process
 
 # Create or update systemd service files
 cat > /tmp/pointsheet.service << EOF

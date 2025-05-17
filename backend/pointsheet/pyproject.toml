@@ -26,6 +26,7 @@ pytesseract = "^0.3.13"
 opencv-python-headless = "^4.11.0.86"
 flask-cors = "^5.0.0"
 flask-wtf = "^1.2.2"
+gunicorn = "^23.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
