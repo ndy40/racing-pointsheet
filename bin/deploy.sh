@@ -29,7 +29,7 @@ fi
 # Activate virtual environment and install dependencies
 source $DEPLOY_DIR/venv/bin/activate
 cd $APP_DIR/backend/pointsheet
-pip install poetry
+python3 -m pip install poetry
 poetry install
 
 # Update the symlink to point to the new version
