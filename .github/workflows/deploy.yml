@@ -59,8 +59,9 @@ jobs:
           # Create a directory with the version name
           mkdir -p pointsheet-$VERSION
 
-          # Copy only the backend folder
+          # Copy backend and bin folders
           cp -r backend pointsheet-$VERSION/
+          cp -r bin pointsheet-$VERSION/
 
           # Create a version file
           echo $VERSION > pointsheet-$VERSION/VERSION

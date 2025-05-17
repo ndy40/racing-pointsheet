@@ -82,8 +82,40 @@ sudo systemctl daemon-reload
 sudo systemctl restart pointsheet pointsheet-worker
 sudo systemctl restart caddy
 
-# Keep only the 5 most recent versions (adjust as needed)
+# Keep only the 2 most recent versions and their zip files
 cd $DEPLOY_DIR
-ls -t | grep 'pointsheet-' | tail -n +6 | xargs -r rm -rf
+
+# Get the list of all version directories
+ALL_DIRS=$(ls -td pointsheet-*/)
+
+# Keep only the 2 most recent directories
+KEEP_DIRS=$(echo "$ALL_DIRS" | head -n 2)
+
+# Remove all directories except the ones to keep
+for dir in $ALL_DIRS; do
+    if ! echo "$KEEP_DIRS" | grep -q "$dir"; then
+        rm -rf "$dir"
+    fi
+done
+
+# Get the list of all zip files
+ALL_ZIPS=$(ls -t pointsheet-*.zip 2>/dev/null || echo "")
+
+# Keep only the zip files corresponding to the kept directories
+for dir in $KEEP_DIRS; do
+    # Extract version from directory name (remove trailing slash)
+    version=$(basename "$dir" | sed 's/\/$//')
+    # Add this zip file to the list of zips to keep
+    KEEP_ZIPS="$KEEP_ZIPS $version.zip"
+done
+
+# Remove all zip files except the ones to keep
+if [ -n "$ALL_ZIPS" ]; then
+    for zip in $ALL_ZIPS; do
+        if ! echo "$KEEP_ZIPS" | grep -q "$zip"; then
+            rm -f "$zip"
+        fi
+    done
+fi
 
 echo "Deployment of version $VERSION completed successfully"
