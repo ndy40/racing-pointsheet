@@ -6,13 +6,13 @@ info:
 servers:
   - url: "http://localhost:5000"
     description: localhost
-  - url: "http://pointsheet-app.com/api"
+  - url: "http://pointsheet-app.com"
     description: local domain
   - url: "https://pointsheet.ndifreke-ekott.com"
 security:
   - BearerAuth: []
 paths:
-  /auth:
+  /api/auth:
     post:
       operationId: authenticateUser
       description: Authenticate a user using username and password
@@ -50,7 +50,7 @@ paths:
                   value:
                     error: "Unauthorized"
                     message: "Invalid username or password."
-  /auth/register:
+  /api/auth/register:
     post:
       operationId: registerUser
       description: Register a new user
@@ -65,7 +65,7 @@ paths:
       responses:
         204:
           description: User registered successfully
-  /series:
+  /api/series:
     get:
       description: Fetch all series
       operationId: fetchAllSeries
@@ -112,7 +112,7 @@ paths:
                 $ref: "#/components/responses/ResourceCreated"
         400:
           description: Bad request
-  /series/{series_id}:
+  /api/series/{series_id}:
     get:
       description: Get series
       operationId: fetchSeriesById
@@ -149,7 +149,7 @@ paths:
       responses:
         204:
           description: Delete series
-  /series/{series_id}/status:
+  /api/series/{series_id}/status:
     put:
       operationId: updateSeriesStatus
       description: Update the status of Series.
@@ -180,7 +180,7 @@ paths:
           description: Not found
         401:
           description: Forbidden
-  /series/{series_id}/events:
+  /api/series/{series_id}/events:
     post:
       description: Create event for series
       operationId: createEventForSeries
@@ -220,7 +220,7 @@ paths:
           description: Event updated
         404:
           description: Not found
-  /series/{series_id}/events/{event_id}:
+  /api/series/{series_id}/events/{event_id}:
     delete:
       description: Remove event from series
       operationId: removeEventFromSeries
@@ -242,7 +242,7 @@ paths:
           description: Event removed
         404:
           description: Event not found
-  /events:
+  /api/events:
     get:
       operationId: getAllEvents
       description: Fetch all events not closed.
@@ -279,7 +279,7 @@ paths:
         400:
           description: Bad request
 
-  /events/{id}/:
+  /api/events/{id}/:
     delete:
       description: Delete event
       operationId: deleteEventById
@@ -313,7 +313,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Event"
 
-  /events/{id}/schedule:
+  /api/events/{id}/schedule:
     post:
       description: Create schedule for event
       operationId: addSchedule
@@ -336,7 +336,7 @@ paths:
           description: Bad request
         204:
           description: Schedule created
-  /events/{event_id}/schedule/{schedule_id}:
+  /api/events/{event_id}/schedule/{schedule_id}:
     delete:
       operationId: removeEventSchedule
       tags:
@@ -359,7 +359,7 @@ paths:
         204:
           description: Schedule deleted
 
-  /events/{id}/join:
+  /api/events/{id}/join:
     put:
       operationId: joinEvent
       tags:
@@ -375,7 +375,7 @@ paths:
           description: User joined event
         400:
           description: Bad request
-  /events/{id}/leave:
+  /api/events/{id}/leave:
     put:
       operationId: leaveEvent
       parameters:
@@ -390,7 +390,7 @@ paths:
         204:
           description: Removed from event
 
-  /events/{id}/schedule/{schedule_id}/results/file:
+  /api/events/{id}/schedule/{schedule_id}/results/file:
     post:
       description: Upload results file for a given event
       operationId: uploadEventResults
@@ -446,7 +446,7 @@ paths:
           description: Not found
         400:
           description: Bad request
-  /events/{id}/result:
+  /api/events/{id}/result:
     post:
       description: Upload results file for a given event
       operationId: addRaceResult
