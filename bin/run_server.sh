@@ -6,8 +6,7 @@ echo "Loading virtual environment from /opt/deployments/venv..."
 source /opt/deployments/venv/bin/activate
 
 # Get the directory where the script is located
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
+PROJECT_ROOT="/opt/deployments/current"
 ENV_FILE="$PROJECT_ROOT/backend/pointsheet/.env"
 
 # Check if .env file exists
@@ -21,22 +20,6 @@ echo "Loading environment variables from $ENV_FILE"
 set -a
 source "$ENV_FILE"
 set +a
-
-# Verify critical environment variables
-REQUIRED_VARS=("DATABASE" "SECRET_KEY" "BROKER_URL" "RESULT_BACKEND")
-MISSING_VARS=0
-
-for var in "${REQUIRED_VARS[@]}"; do
-    if [ -z "${!var}" ]; then
-        echo "Error: Required environment variable $var is not set in .env file"
-        MISSING_VARS=1
-    fi
-done
-
-if [ $MISSING_VARS -eq 1 ]; then
-    echo "Error: Missing required environment variables. Startup aborted."
-    exit 1
-fi
 
 # Change to the application directory
 cd "$PROJECT_ROOT/backend/pointsheet"
