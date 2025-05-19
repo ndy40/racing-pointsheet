@@ -12,6 +12,7 @@ class Config:
     WTF_CSRF_EXEMPT_ROUTES = ["/api/*"]
     SQLALCHEMY_ECHO = False
     DEBUG = False
+    SENTRY_DSN: str | None = None
 
 
 class DevelopmentConfig(Config):

@@ -3,6 +3,7 @@ import logging
 import os
 from pathlib import Path
 
+import sentry_sdk
 from flask import Flask, render_template, Response, session, redirect
 from flask_wtf.csrf import CSRFProtect
 from flask_cors import CORS
@@ -21,6 +22,13 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 csrf = CSRFProtect()
+
+sentry_sdk.init(
+    dsn=app_config[os.environ.get("APP_ENV", "development")].SENTRY_DSN,
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=True,
+)
 
 
 def create_app(test_config=None):

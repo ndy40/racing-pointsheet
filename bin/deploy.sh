@@ -38,6 +38,11 @@ ln -sfn $APP_DIR $CURRENT_LINK
 # Caddy configuration is no longer included in the deployment package
 # If you need to update Caddy configuration, do it manually or through another process
 
+# Ensure log directory exists
+sudo mkdir -p /var/logs/pointsheets
+sudo chown www-data:www-data /var/logs/pointsheets
+sudo chmod 755 /var/logs/pointsheets
+
 # Create or update systemd service files
 cat > /tmp/pointsheet.service << EOF
 [Unit]
@@ -49,7 +54,7 @@ User=www-data
 WorkingDirectory=$CURRENT_LINK/backend/pointsheet
 Environment="PATH=$DEPLOY_DIR/venv/bin"
 EnvironmentFile=$CURRENT_LINK/backend/pointsheet/.env
-ExecStart=$DEPLOY_DIR/venv/bin/gunicorn --workers=2 --threads=2 --worker-class=gthread --bind=127.0.0.1:5000 "pointsheet:create_app()"
+ExecStart=$DEPLOY_DIR/venv/bin/gunicorn --workers=2 --threads=2 --worker-class=gthread --bind=127.0.0.1:5000 --log-file=/var/logs/pointsheets/pointsheet.log --log-level=info "pointsheet:create_app()"
 Restart=always
 
 [Install]
@@ -66,7 +71,7 @@ User=www-data
 WorkingDirectory=$CURRENT_LINK/backend/pointsheet
 Environment="PATH=$DEPLOY_DIR/venv/bin"
 EnvironmentFile=$CURRENT_LINK/backend/pointsheet/.env
-ExecStart=$DEPLOY_DIR/venv/bin/celery -A pointsheet.celery_worker worker --loglevel=info
+ExecStart=$DEPLOY_DIR/venv/bin/celery -A pointsheet.celery_worker worker --loglevel=info --logfile=/var/logs/pointsheets/pointsheet-worker.log
 Restart=always
 
 [Install]
