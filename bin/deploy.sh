@@ -58,7 +58,7 @@ User=www-data
 WorkingDirectory=$CURRENT_LINK/backend/pointsheet
 Environment="PATH=$DEPLOY_DIR/venv/bin"
 EnvironmentFile=$CURRENT_LINK/backend/pointsheet/.env
-ExecStart=$DEPLOY_DIR/venv/bin/gunicorn --workers=2 --threads=1 --worker-class=gthread --bind=127.0.0.1:5000 --log-file=/var/logs/pointsheets/pointsheet.log --log-level=info "pointsheet:create_app()"
+ExecStart=$DEPLOY_DIR/venv/bin/gunicorn --workers=1 --threads=2 --worker-class=gthread --bind=127.0.0.1:5000 --log-file=/var/logs/pointsheets/pointsheet.log --log-level=info "pointsheet:create_app()"
 Restart=always
 
 [Install]
@@ -83,7 +83,7 @@ WantedBy=multi-user.target
 EOF
 
 # Check if service files exist and compare hashes
-for service in pointsheet pointsheet-worker; do
+for service in pointsheet ; do
     if [ -f "/etc/systemd/system/${service}.service" ]; then
         # Calculate hash of existing service file
         existing_hash=$(md5sum "/etc/systemd/system/${service}.service" | awk '{print $1}')
