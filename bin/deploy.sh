@@ -39,6 +39,42 @@ poetry install
 # Update the symlink to point to the new version
 ln -sfn $APP_DIR $CURRENT_LINK
 
+# Check if environment variables from .env are exported
+echo "Checking environment variables..."
+cd $APP_DIR/backend/pointsheet
+ENV_FILE="$APP_DIR/backend/pointsheet/.env"
+
+if [ ! -f "$ENV_FILE" ]; then
+    echo "Error: .env file not found at $ENV_FILE"
+    exit 1
+fi
+
+# Source the .env file to export variables
+set -a
+source "$ENV_FILE"
+set +a
+
+# Verify critical environment variables
+REQUIRED_VARS=("DATABASE" "SECRET_KEY" "BROKER_URL" "RESULT_BACKEND")
+MISSING_VARS=0
+
+for var in "${REQUIRED_VARS[@]}"; do
+    if [ -z "${!var}" ]; then
+        echo "Error: Required environment variable $var is not set in .env file"
+        MISSING_VARS=1
+    fi
+done
+
+if [ $MISSING_VARS -eq 1 ]; then
+    echo "Error: Missing required environment variables. Deployment aborted."
+    exit 1
+fi
+
+# Run alembic migrations before starting services
+echo "Running database migrations..."
+$DEPLOY_DIR/venv/bin/python -m pointsheet.main migrate
+cd $DEPLOY_DIR
+
 # Caddy configuration is no longer included in the deployment package
 # If you need to update Caddy configuration, do it manually or through another process
 
