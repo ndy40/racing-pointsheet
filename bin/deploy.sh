@@ -26,6 +26,10 @@ if [ -L "$CURRENT_LINK" ]; then
     echo $CURRENT_VERSION > $PREVIOUS_VERSION_FILE
 fi
 
+# Stop services before updating
+echo "Stopping pointsheet.service and pointsheet-worker.service..."
+sudo systemctl stop pointsheet.service pointsheet-worker.service
+
 # Activate virtual environment and install dependencies
 source $DEPLOY_DIR/venv/bin/activate
 cd $APP_DIR/backend/pointsheet
@@ -78,13 +82,32 @@ Restart=always
 WantedBy=multi-user.target
 EOF
 
-# Move service files to systemd directory
-sudo mv /tmp/pointsheet.service /etc/systemd/system/
-sudo mv /tmp/pointsheet-worker.service /etc/systemd/system/
+# Check if service files exist and compare hashes
+for service in pointsheet pointsheet-worker; do
+    if [ -f "/etc/systemd/system/${service}.service" ]; then
+        # Calculate hash of existing service file
+        existing_hash=$(md5sum "/etc/systemd/system/${service}.service" | awk '{print $1}')
+        # Calculate hash of new service file
+        new_hash=$(md5sum "/tmp/${service}.service" | awk '{print $1}')
 
-# Reload systemd, restart services
+        # Compare hashes and only override if different
+        if [ "$existing_hash" != "$new_hash" ]; then
+            echo "Updating ${service}.service (files are different)"
+            sudo mv "/tmp/${service}.service" "/etc/systemd/system/"
+        else
+            echo "Skipping ${service}.service (no changes detected)"
+            rm "/tmp/${service}.service"
+        fi
+    else
+        echo "Installing new ${service}.service"
+        sudo mv "/tmp/${service}.service" "/etc/systemd/system/"
+    fi
+done
+
+# Reload systemd and start services
 sudo systemctl daemon-reload
-sudo systemctl restart pointsheet pointsheet-worker
+echo "Starting pointsheet.service and pointsheet-worker.service..."
+sudo systemctl start pointsheet.service pointsheet-worker.service
 sudo systemctl restart caddy
 
 # Keep only the 2 most recent versions and their zip files
