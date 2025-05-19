@@ -93,8 +93,7 @@ After=network.target
 User=www-data
 WorkingDirectory=$CURRENT_LINK/backend/pointsheet
 Environment="PATH=$DEPLOY_DIR/venv/bin"
-EnvironmentFile=$CURRENT_LINK/backend/pointsheet/.env
-ExecStart=$DEPLOY_DIR/venv/bin/gunicorn --workers=1 --threads=2 --worker-class=gthread --bind=127.0.0.1:5000 --log-file=/var/logs/pointsheets/pointsheet.log --log-level=info "pointsheet:create_app()"
+ExecStart=$CURRENT_LINK/bin/run_server.sh
 Restart=always
 
 [Install]
