@@ -8,6 +8,7 @@ servers:
     description: localhost
   - url: "http://pointsheet-app.com/api"
     description: local domain
+  - url: "https://pointsheet.ndifreke-ekott.com"
 security:
   - BearerAuth: []
 paths:
