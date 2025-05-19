@@ -72,7 +72,7 @@ fi
 
 # Run alembic migrations before starting services
 echo "Running database migrations..."
-$DEPLOY_DIR/venv/bin/python -m pointsheet.main migrate
+$DEPLOY_DIR/venv/bin/python -m alembic upgrade head
 cd $DEPLOY_DIR
 
 # Caddy configuration is no longer included in the deployment package
