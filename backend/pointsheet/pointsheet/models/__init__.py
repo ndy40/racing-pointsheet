@@ -1,4 +1,4 @@
-from .account import Driver
+from .account import User as AccountUser
 from .auth import User
 from .base import BaseModel
 from .custom_types import (
@@ -18,7 +18,7 @@ from .event import (
 __all__ = [
     "BaseModel",
     "BaseCustomTypes",
-    "Driver",
+    "AccountUser",
     "Event",
     "EventDriver",
     "EventSchedule",

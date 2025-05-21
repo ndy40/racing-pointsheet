@@ -8,8 +8,8 @@ from .base import BaseModel
 from .custom_types import EntityIdType
 
 
-class Driver(BaseModel):
-    __tablename__ = "drivers"
+class User(BaseModel):
+    __tablename__ = "users"
 
     id: Mapped[EntityId] = mapped_column(
         EntityIdType,

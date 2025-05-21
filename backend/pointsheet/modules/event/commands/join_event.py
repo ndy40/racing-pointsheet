@@ -18,9 +18,9 @@ class JoinEvent(Command):
 def handle_join_event(
     cmd: JoinEvent, ctx: TransactionContext, event_repo: EventRepository
 ):
-    from modules.account.queries.get_driver import GetDriver
+    from modules.account.queries.get_user import GetUser
 
-    driver = current_app.application.execute(GetDriver(driver_id=cmd.driver_id))
+    driver = current_app.application.execute(GetUser(user_id=cmd.driver_id))
 
     if not driver:
         raise DriverNotFound()

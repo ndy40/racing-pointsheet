@@ -44,9 +44,7 @@ def get_event(event_id):
 @event_bp.route("/events/<uuid:event_id>/join", methods=["PUT"])
 @api_auth.login_required
 def join_event(event_id):
-    print("JOINING EVENT", get_user_id())
     cmd = JoinEvent(event_id=event_id, driver_id=get_user_id())
-    print("CMD ", cmd)
     current_app.application.execute(cmd)
     return Response(status=204)
 

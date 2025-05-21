@@ -17,7 +17,7 @@ class RaceEvent(BaseModel):
     track: Optional[str] = None
 
 
-class Driver(AggregateRoot):
+class User(AggregateRoot):
     name: Optional[str] = None
     events: Optional[List[RaceEvent]] = None
 
@@ -26,6 +26,6 @@ class Driver(AggregateRoot):
             existing_event.event_id == event.event_id for existing_event in self.events
         ):
             raise AlreadySignedUpException(
-                f"Driver is already signed up for event {event.event_id}."
+                f"User is already signed up for event {event.event_id}."
             )
         self.events.append(event)

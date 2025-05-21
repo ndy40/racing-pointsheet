@@ -1,18 +1,18 @@
-from pointsheet.models import Driver
+from pointsheet.models import User
 from pointsheet.repository import DataMapper
 
-from .domain.entity import Driver as DriverModel
+from .domain.entity import User as UserModel
 
 
-class DriverMapper(DataMapper[Driver, DriverModel]):
-    def to_db_entity(self, instance: DriverModel) -> Driver:
-        return Driver(
+class UserMapper(DataMapper[User, UserModel]):
+    def to_db_entity(self, instance: UserModel) -> User:
+        return User(
             id=instance.id,
             name=instance.name,
         )
 
-    def to_domain_model(self, instance: Driver) -> DriverModel:
-        return DriverModel(
+    def to_domain_model(self, instance: User) -> UserModel:
+        return UserModel(
             id=instance.id,
             name=instance.name,
         )

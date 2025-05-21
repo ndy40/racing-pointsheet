@@ -5,7 +5,7 @@ import pytest
 
 from modules.event.domain.value_objects import SeriesStatus, DriverResult
 from pointsheet.domain import EntityId
-from pointsheet.factories.account import DriverFactory
+from pointsheet.factories.account import UserFactory
 from pointsheet.factories.event import SeriesFactory, EventFactory
 from pointsheet.models import Event, Series
 from pointsheet.models.event import RaceResult, EventSchedule, EventDriver
@@ -117,7 +117,7 @@ def test_save_race_result_to_event(patch_session):
     event = EventFactory()
     schedule = EventSchedule(nbr_of_laps=10, duration="1 hour", type="race")
 
-    driver = DriverFactory()
+    driver = UserFactory()
 
     driver_result = DriverResult(
         driver_id=driver.id,

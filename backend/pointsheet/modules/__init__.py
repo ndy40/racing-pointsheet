@@ -7,7 +7,7 @@ from lato import Application, TransactionContext
 from pointsheet.config import config
 from pointsheet.db import get_session
 from .account import account_module
-from .account.repository import DriverRepository
+from .account.repository import UserRepository
 from .auth import auth_module
 from .auth.repository import ActiveUserRepository, RegisterUserRepository
 from .dependency_provider import LagomDependencyProvider
@@ -42,7 +42,7 @@ def on_create_transaction_context():
     txn_container[ActiveUserRepository] = ActiveUserRepository(session)
     txn_container[RegisterUserRepository] = RegisterUserRepository(session)
     txn_container[TrackRepository] = TrackRepository(session)
-    txn_container[DriverRepository] = DriverRepository(session)
+    txn_container[UserRepository] = UserRepository(session)
 
     return TransactionContext(
         LagomDependencyProvider(txn_container),
