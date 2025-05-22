@@ -4,12 +4,12 @@ from factory import LazyFunction, Sequence
 from factory.alchemy import SQLAlchemyModelFactory
 
 from pointsheet.db import Session
-from pointsheet.models.account import User
+from pointsheet.models.account import Driver
 
 
 class UserFactory(SQLAlchemyModelFactory):
     class Meta:
-        model = User
+        model = Driver
         sqlalchemy_session = Session
         sqlalchemy_session_persistence = "commit"
 

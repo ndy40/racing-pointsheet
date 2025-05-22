@@ -1,4 +1,4 @@
-from .account import User as AccountUser
+from .account import Driver as AccountUser
 from .auth import User
 from .base import BaseModel
 from .custom_types import (

@@ -17,7 +17,7 @@ class RaceEvent(BaseModel):
     track: Optional[str] = None
 
 
-class User(AggregateRoot):
+class Driver(AggregateRoot):
     name: Optional[str] = None
     events: Optional[List[RaceEvent]] = None
 
