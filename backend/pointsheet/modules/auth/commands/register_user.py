@@ -29,6 +29,13 @@ class RegisterUser(Command):
 
         raise ValueError("Invalid password provided")
 
+    @field_validator("team")
+    @classmethod
+    def validate_team(cls, team: Optional[str], info):
+        if team is not None and info.data.get("role") != UserRole.admin:
+            raise ValueError("Only admin users can provide team name")
+        return team
+
 
 @auth_module.handler(RegisterUser)
 def handle_register_user(
