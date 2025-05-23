@@ -16,8 +16,9 @@ api_auth = HTTPTokenAuth(scheme="Bearer")
 web_auth = HTTPBasicAuth()
 
 
-class _AuthenticationException(PointSheetException):
+class AuthenticationException(PointSheetException):
     message = "Authentication failed"
+    code = 401
 
 
 @api_auth.verify_token
@@ -26,7 +27,7 @@ def verify_token(token):
         result = TimedSerializer().deserializer(token)
         return result[0]
     except BadSignature:
-        raise _AuthenticationException()
+        raise AuthenticationException()
 
 
 @web_auth.verify_password

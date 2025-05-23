@@ -25,7 +25,7 @@ def test_create_event(client, login):
     assert response.status_code == 201
 
 
-def test_create_event_with_ends_at_past_of_starts_at(client):
+def test_create_event_with_ends_at_past_of_starts_at(client, auth_token):
     payload = {
         "title": "Custom Event",
         "host": str(uuid.uuid4()),
@@ -35,9 +35,7 @@ def test_create_event_with_ends_at_past_of_starts_at(client):
         "ends_at": "2023-11-10T14:00:00Z",
     }
 
-    response = client.post(
-        "/api/events/", json=payload, headers={"Authorization": "Bearer abc"}
-    )
+    response = client.post("/api/events/", json=payload, headers=auth_token)
     assert response.status_code == 400
 
 
