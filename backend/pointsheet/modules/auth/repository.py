@@ -36,7 +36,12 @@ class ActiveUserRepository(AbstractRepository[User, ActiveUser]):
         pass
 
     def find_by_id(self, id: Any) -> T | None:
-        pass
+        stmt = select(User).where(User.id == id)
+        active_user = self._session.execute(stmt).scalar()
+
+        if active_user:
+            return self._map_to_model(active_user)
+        return None
 
 
 class RegisterUserRepository(AbstractRepository[User, RegisteredUser]):

@@ -11,6 +11,7 @@ class ActiveUserMapper(DataMapper[User, ActiveUser]):
             password=instance.password,
             auth_token=instance.auth_token,
             auth_expires_in=instance.auth_expires_in,
+            role=instance.role,
         )
 
     def to_domain_model(self, instance: User) -> ActiveUser:
@@ -20,6 +21,7 @@ class ActiveUserMapper(DataMapper[User, ActiveUser]):
             password=instance.password,
             auth_token=instance.auth_token,
             auth_expires_in=instance.auth_expires_in,
+            role=instance.role,
         )
 
 

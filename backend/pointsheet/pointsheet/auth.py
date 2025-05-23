@@ -37,6 +37,17 @@ def verify_password(username, password):
 
 
 def get_user_id():
+    """
+    Resolves and returns the authenticated user's ID from either API token or web session authentication.
+
+    This function attempts to get the current user ID by checking both API token authentication
+    and web session authentication providers. It handles different user object formats:
+    - UUID objects directly representing the user ID
+    - Dictionary objects containing an 'id' field
+
+    Returns:
+        UUID | None: The unique identifier of the authenticated user if found, None otherwise
+    """
     for auth_provider in (api_auth, web_auth):
         if user := auth_provider.current_user():
             if isinstance(user, UUID):

@@ -16,6 +16,7 @@ class ActiveUser(AggregateRoot):
     password: str = Field(repr=False, exclude=True)
     auth_token: Optional[str] = None
     auth_expires_in: Optional[datetime] = None
+    role: Optional[UserRole] = UserRole.driver
 
     def verify_password(self, password: str):
         """
