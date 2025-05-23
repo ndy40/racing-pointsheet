@@ -10,7 +10,7 @@ from .event import (
     Series,
     Event,
     EventSchedule,
-    EventDriver as EventDriver,
+    Participants,
     RaceResult,
     Track,
 )
@@ -20,7 +20,7 @@ __all__ = [
     "BaseCustomTypes",
     "AccountUser",
     "Event",
-    "EventDriver",
+    "Participants",
     "EventSchedule",
     "EntityIdType",
     "RaceResult",

@@ -521,6 +521,15 @@ components:
           type: string
         password:
           type: string
+        role:
+          type: string
+          enum:
+            - admin
+            - driver
+          default: driver
+        team:
+          type: string
+          description: Team is provided is provided when Role = admin and used to create Team during registration.
       required:
         - username
         - password

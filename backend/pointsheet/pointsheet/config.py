@@ -1,6 +1,6 @@
 import os.path
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -16,13 +16,16 @@ SEVEN_DAYS_IN_SECONDS: int = 60 * 24 * 7
 
 class Config(BaseSettings):
     SECRET_KEY: str
-    APP_ENV: Optional[str] = "dev"
+    APP_ENV: Optional[str] = "development"
     DATABASE: Optional[str]
     AUTH_TOKEN_MAX_AGE: Optional[int] = SEVEN_DAYS_IN_SECONDS
     UPLOAD_FOLDER: Optional[str] = "uploads/"
     BROKER_URL: Optional[str]
     RESULT_BACKEND: Optional[str] = "db+sqlite:///instance/task_result.db.sqlite"
     GOOGLE_API_KEY: Optional[str] = "AIzaSyCQ2glxUjVNTd3FzrpR0v79pIj8UXeNd3w"
+    SENTRY_DSN: Optional[str] = None
+    WTF_CSRF_CHECK_DEFAULT: bool = True
+    WTF_CSRF_EXEMPT_ROUTES: List[str] = ["/api/*"]
 
     model_config = SettingsConfigDict()
 

@@ -57,8 +57,8 @@ class EventSchedule(BaseModel):
     )
 
 
-class EventDriver(BaseModel):
-    __tablename__ = "event_drivers"
+class Participants(BaseModel):
+    __tablename__ = "participants"
     id: Mapped[EntityId] = mapped_column(
         EntityIdType, primary_key=True, default=uuid_default()
     )
@@ -111,8 +111,8 @@ class Event(BaseModel):
     schedule: Mapped[Optional[List[EventSchedule]]] = relationship(
         cascade="all, delete-orphan"
     )
-    drivers: Mapped[Optional[List[EventDriver]]] = relationship(
-        EventDriver, cascade="all, delete-orphan"
+    drivers: Mapped[Optional[List[Participants]]] = relationship(
+        Participants, cascade="all, delete-orphan"
     )
 
     def model_dump(self):

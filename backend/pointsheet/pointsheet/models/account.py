@@ -25,7 +25,7 @@ class Team(BaseModel):
 
 
 class Driver(BaseModel):
-    __tablename__ = "users"
+    __tablename__ = "drivers"
 
     id: Mapped[EntityId] = mapped_column(
         EntityIdType,

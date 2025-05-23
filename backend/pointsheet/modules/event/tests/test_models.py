@@ -8,7 +8,7 @@ from pointsheet.domain import EntityId
 from pointsheet.factories.account import UserFactory
 from pointsheet.factories.event import SeriesFactory, EventFactory
 from pointsheet.models import Event, Series
-from pointsheet.models.event import RaceResult, EventSchedule, EventDriver
+from pointsheet.models.event import RaceResult, EventSchedule, Participants
 
 
 def test_we_can_create_a_series_without_status_set(db_session):
@@ -67,8 +67,8 @@ def test_series_ends_at_cannot_be_in_past_if_starts_at_is_set(db_session):
 def test_add_multiple_race_schedules_to_event(db_session):
     event = EventFactory()
 
-    driver1 = EventDriver(event_id=event.id, name="driver1", id=uuid4())
-    driver2 = EventDriver(event_id=event.id, name="driver2", id=uuid4())
+    driver1 = Participants(event_id=event.id, name="driver1", id=uuid4())
+    driver2 = Participants(event_id=event.id, name="driver2", id=uuid4())
 
     db_session.add(driver1)
     db_session.add(driver2)

@@ -4,7 +4,7 @@ from typing import Any, List
 from lato import Query
 from sqlalchemy import select, or_
 
-from pointsheet.models import Event, Series, EventDriver, Track
+from pointsheet.models import Event, Series, Participants, Track
 from pointsheet.repository import AbstractRepository
 
 from .data_mappers import EventModelMapper, SeriesModelMapper, TrackModelMapper
@@ -57,8 +57,8 @@ class EventRepository(AbstractRepository[Event, EventModel]):
         )
 
         if query.user_id:
-            stmt = stmt.outerjoin(EventDriver).where(
-                or_(EventDriver.id != query.user_id, EventDriver.id.is_(None))
+            stmt = stmt.outerjoin(Participants).where(
+                or_(Participants.id != query.user_id, Participants.id.is_(None))
             )
 
         result = self._session.execute(stmt).scalars()
@@ -72,7 +72,7 @@ class EventRepository(AbstractRepository[Event, EventModel]):
         )
 
         if query.user_id:
-            stmt = stmt.join(EventDriver).where(EventDriver.id == str(query.user_id))
+            stmt = stmt.join(Participants).where(Participants.id == str(query.user_id))
 
         result = self._session.execute(stmt).scalars()
         return [self._map_to_model(item) for item in result]

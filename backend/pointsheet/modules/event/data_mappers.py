@@ -10,7 +10,7 @@ from pointsheet.models import (
     Series,
     EventSchedule,
     RaceResult,
-    EventDriver,
+    Participants,
     Track,
 )
 from pointsheet.repository import DataMapper
@@ -63,7 +63,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             if instance.schedule
             else [],
             drivers=[
-                EventDriver(id=driver.id, name=driver.name, event_id=instance.id)
+                Participants(id=driver.id, name=driver.name, event_id=instance.id)
                 for driver in instance.drivers
             ]
             if instance.drivers

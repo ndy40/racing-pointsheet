@@ -8,7 +8,7 @@ from factory.alchemy import SQLAlchemyModelFactory
 from modules.event.domain.value_objects import SeriesStatus, EventStatus
 from pointsheet.db import Session
 from pointsheet.models import Event, Series
-from pointsheet.models.event import EventDriver
+from pointsheet.models.event import Participants
 
 
 class EventFactory(SQLAlchemyModelFactory):
@@ -43,7 +43,7 @@ class SeriesFactory(SQLAlchemyModelFactory):
 
 class EventDriverFactory(SQLAlchemyModelFactory):
     class Meta:
-        model = EventDriver
+        model = Participants
         sqlalchemy_session_factory = Session
         sqlalchemy_session_persistence = "commit"
 

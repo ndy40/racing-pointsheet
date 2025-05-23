@@ -11,7 +11,7 @@ from pydantic import ValidationError
 
 import views
 from api import api_bp
-from config import config as app_config
+from pointsheet.config import config as app_config
 
 root_dir = os.path.join(Path(__file__).parent.parent)
 
@@ -21,32 +21,29 @@ template_directory = os.path.join(root_dir, "templates")
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-csrf = CSRFProtect()
 
 sentry_sdk.init(
-    dsn=app_config[os.environ.get("APP_ENV", "development")].SENTRY_DSN,
+    dsn=app_config.SENTRY_DSN,
     # Add data like request headers and IP for users,
     # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
-    send_default_pii=True,
-    environment=os.environ.get("APP_ENV", "development"),
+    send_default_pii=False,
+    environment=app_config.APP_ENV,
 )
 
 
 def create_app(test_config=None):
     # Get environment from environment variable, default to development
-    env = os.environ.get("APP_ENV", "development")
-    config_class = app_config.get(env, app_config["default"])
-
     app = Flask(
         __name__,
         static_folder=static_directory,
         template_folder=template_directory,
     )
+    # Load configuration from the appropriate config class
+    app.config.from_object(app_config)
+
+    csrf = CSRFProtect()
     csrf.init_app(app)
     CORS(app)
-
-    # Load configuration from the appropriate config class
-    app.config.from_object(config_class)
 
     try:
         os.makedirs(app.instance_path)
@@ -62,6 +59,7 @@ def create_app(test_config=None):
     @app.route(
         "/api",
     )
+    @csrf.exempt
     def api():
         return render_template("docs.html")
 
