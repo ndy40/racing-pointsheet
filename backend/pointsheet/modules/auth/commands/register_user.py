@@ -1,9 +1,10 @@
 from typing import Optional
 
 from lato import Command, TransactionContext
+
 from modules.auth import auth_module
 from modules.auth.domain import UserRole
-from modules.auth.events.user_registered import UserRegistered
+from modules.auth.events.user_registered import UserRegistered, UserRegisteredWithTeam
 from modules.auth.exceptions import UserAlreadyExists
 from modules.auth.repository import ActiveUserRepository, RegisterUserRepository
 from pydantic import Field, field_validator
@@ -14,6 +15,7 @@ class RegisterUser(Command):
     password: str
     username: str = Field(max_length=50)
     role: Optional[UserRole] = Field(default=UserRole.driver)
+    team: Optional[str] = None
 
     @field_validator("password", mode="before")
     @classmethod
@@ -40,4 +42,9 @@ def handle_register_user(
         raise UserAlreadyExists()
 
     repo.create_user(cmd)
+
+    if cmd.team:
+        ctx.publish(UserRegisteredWithTeam(user_id=cmd.id, team_name=cmd.team))
+        return
+
     ctx.publish(UserRegistered(user_id=cmd.id))
