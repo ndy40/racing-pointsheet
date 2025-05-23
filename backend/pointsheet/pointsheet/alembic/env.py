@@ -61,7 +61,13 @@ def render_item(type_, obj, autogen_context):
 
     if type_ == "type" and isinstance(obj, BaseCustomTypes):
         autogen_context.imports.add("import pointsheet")
-        return f"{obj.__module__}.%s" % obj.__class__.__name__
+
+        clazz_name = f"{obj.__module__}.%s" % obj.__class__.__name__
+
+        if isinstance(obj, pointsheet.models.custom_types.PydanticJsonType):
+            clazz_name = "sa.JSON()"
+
+        return clazz_name
 
     # default rendering for other objects
     return False
