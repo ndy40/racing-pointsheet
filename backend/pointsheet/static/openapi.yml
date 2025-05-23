@@ -35,13 +35,9 @@ paths:
                     enum:
                       - driver
                       - admin
-                  auth_expires_in:
-                    type: string
-                    format: date-time
                 required:
                   - username
                   - role
-                  - auth_expires_in
         401:
           description: Unauthorized - Invalid or expired token
           content:
