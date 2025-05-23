@@ -13,6 +13,54 @@ security:
   - BearerAuth: []
 paths:
   /api/auth:
+    get:
+      operationId: getCurrentUser
+      description: Get the current logged in user based on the token
+      tags:
+        - Authentication
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Current logged in user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  role:
+                    type: string
+                    enum:
+                      - driver
+                      - admin
+                  auth_expires_in:
+                    type: string
+                    format: date-time
+                required:
+                  - username
+                  - role
+                  - auth_expires_in
+        401:
+          description: Unauthorized - Invalid or expired token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+                required:
+                  - error
+                  - message
+              examples:
+                invalidToken:
+                  value:
+                    error: "Unauthorized"
+                    message: "Invalid or expired token."
     post:
       operationId: authenticateUser
       description: Authenticate a user using username and password
