@@ -4,7 +4,7 @@ from uuid import uuid4
 import pytest
 
 from modules.event.domain.value_objects import SeriesStatus, DriverResult
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 from pointsheet.factories.account import UserFactory
 from pointsheet.factories.event import SeriesFactory, EventFactory
 from pointsheet.models import Event, Series

@@ -3,7 +3,7 @@ from typing import Optional, List
 
 from pydantic import BaseModel, PositiveInt, field_serializer, NonNegativeInt
 
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 
 ScheduleId = int
 

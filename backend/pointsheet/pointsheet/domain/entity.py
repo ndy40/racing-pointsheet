@@ -2,8 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from pointsheet.domain import EntityId
-from pointsheet.models.base import uuid_default
+from pointsheet.domain.types import EntityId, uuid_default
 
 
 class AggregateRoot(BaseModel):

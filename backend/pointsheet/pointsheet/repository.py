@@ -4,7 +4,7 @@ from typing import Any, Generic, List, TypeVar
 
 from sqlalchemy import select
 
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 from pointsheet.models import BaseModel
 
 DbModel = TypeVar("S", bound=BaseModel)

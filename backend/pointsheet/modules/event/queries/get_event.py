@@ -2,7 +2,7 @@ from lato import Query
 
 from modules.event import event_module
 from modules.event.repository import EventRepository
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 
 
 class GetEvent(Query):

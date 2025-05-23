@@ -4,12 +4,12 @@ from sqlalchemy import select
 
 from modules.account.data_mappers import DriverMapper, TeamMapper
 from modules.account.domain.entity import Driver, Team
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 from pointsheet.models.account import Driver as DriverEntity, Team as TeamEntity
 from pointsheet.repository import AbstractRepository
 
 
-class UserRepository(AbstractRepository[DriverEntity, Driver]):
+class DriverRepository(AbstractRepository[DriverEntity, Driver]):
     mapper_class = DriverMapper
     model_class = Driver
 

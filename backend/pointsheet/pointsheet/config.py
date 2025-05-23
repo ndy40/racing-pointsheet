@@ -24,9 +24,10 @@ class Config(BaseSettings):
     RESULT_BACKEND: Optional[str] = "db+sqlite:///instance/task_result.db.sqlite"
     GOOGLE_API_KEY: Optional[str] = "AIzaSyCQ2glxUjVNTd3FzrpR0v79pIj8UXeNd3w"
     SENTRY_DSN: Optional[str] = None
-    WTF_CSRF_CHECK_DEFAULT: bool = True
+    WTF_CSRF_CHECK_DEFAULT: bool = False
     WTF_CSRF_EXEMPT_ROUTES: List[str] = ["/api/*"]
-
+    DEBUG: bool = True
+    SQLALCHEMY_ECHO: bool = True
     model_config = SettingsConfigDict()
 
     @property

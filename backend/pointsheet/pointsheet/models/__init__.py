@@ -1,4 +1,4 @@
-from .account import Driver as AccountUser
+from .account import Driver as AccountUser, Team, TeamMember
 from .auth import User
 from .base import BaseModel
 from .custom_types import (
@@ -6,26 +6,22 @@ from .custom_types import (
     EntityIdType,
     SeriesStatusType,
 )
-from .event import (
-    Series,
-    Event,
-    EventSchedule,
-    Participants,
-    RaceResult,
-    Track,
-)
+from .event import Series, Event, EventSchedule, Participants, RaceResult, Track
+
 
 __all__ = [
+    "AccountUser",
+    "Team",
+    "TeamMember",
+    "User",
     "BaseModel",
     "BaseCustomTypes",
-    "AccountUser",
-    "Event",
-    "Participants",
-    "EventSchedule",
     "EntityIdType",
-    "RaceResult",
-    "Series",
     "SeriesStatusType",
+    "Series",
+    "Event",
+    "EventSchedule",
+    "Participants",
+    "RaceResult",
     "Track",
-    "User",
 ]

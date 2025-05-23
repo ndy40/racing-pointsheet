@@ -9,7 +9,7 @@ from modules.auth.exceptions import EventNotFoundException
 from modules.event import event_module
 from modules.event.repository import EventRepository
 from modules.event.tasks import extract_race_result_from_file
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 from pointsheet.storage import FileStore
 
 

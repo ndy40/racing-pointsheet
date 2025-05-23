@@ -10,7 +10,7 @@ from modules.event.domain.entity import Schedule
 from modules.event.domain.value_objects import ScheduleType
 from modules.event.events import EventScheduleAdded
 from modules.event.repository import EventRepository
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 from pointsheet.domain.exceptions.base import PointSheetValidationError
 
 

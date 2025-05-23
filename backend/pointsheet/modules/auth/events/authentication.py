@@ -1,6 +1,6 @@
 from lato import Event
 
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 
 
 class UserAuthenticated(Event):

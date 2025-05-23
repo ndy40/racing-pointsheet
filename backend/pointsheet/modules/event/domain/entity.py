@@ -15,8 +15,8 @@ from modules.event.domain.value_objects import (
     SeriesStatus,
     DriverResult,
 )
-from pointsheet.domain import EntityId
 from pointsheet.domain.entity import AggregateRoot
+from pointsheet.domain.types import EntityId
 
 
 class StartEndDateMixin:

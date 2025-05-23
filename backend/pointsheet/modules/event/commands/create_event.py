@@ -8,7 +8,7 @@ from modules.event import event_module
 from modules.event.domain.entity import Event
 from modules.event.domain.value_objects import EventStatus
 from modules.event.repository import EventRepository
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 
 
 class CreateEvent(Command):

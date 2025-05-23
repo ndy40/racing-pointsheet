@@ -14,4 +14,4 @@ RUN pip install poetry && poetry install
 COPY ./pointsheet/ /app
 
 RUN pip install gunicorn
-CMD ["gunicorn", "--workers=4", "--threads=2", "--worker-class=gthread", "--bind=0.0.0.0:5000", "pointsheet:create_app()"]
+CMD ["python", "main.py", "run-server"]

@@ -2,7 +2,7 @@ from lato import Query, TransactionContext
 
 from modules.account import account_module
 from modules.account.repository import TeamRepository
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 
 
 class GetTeamQuery(Query):

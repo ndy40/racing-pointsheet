@@ -12,9 +12,9 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from modules.event.domain.value_objects import SeriesStatus, ScheduleType, DriverResult
-from pointsheet.domain.entity import EntityId
+from pointsheet.domain.types import EntityId
 from pointsheet.models import BaseModel, SeriesStatusType
-from pointsheet.models.base import uuid_default
+from pointsheet.domain.types import uuid_default
 from pointsheet.models.custom_types import (
     EntityIdType,
     EventStatusType,

@@ -4,7 +4,7 @@ from sqlalchemy import select
 
 from modules.auth.data_mapper import ActiveUserMapper, RegisterUserMapper
 from modules.auth.domain import ActiveUser, RegisteredUser
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 from pointsheet.models import User
 from pointsheet.repository import AbstractRepository, T
 

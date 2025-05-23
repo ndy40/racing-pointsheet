@@ -1,4 +1,4 @@
-from lato import Command
+from lato import Command, TransactionContext
 
 from modules.account import account_module
 from modules.account.domain.exceptions import (
@@ -7,8 +7,7 @@ from modules.account.domain.exceptions import (
 )
 from modules.account.events import DriverJoinedTeam
 from modules.account.repository import TeamRepository
-from pointsheet.domain import EntityId
-from pointsheet.events import EventBus
+from pointsheet.domain.types import EntityId
 
 
 class AddTeamMemberCommand(Command):
@@ -20,7 +19,7 @@ class AddTeamMemberCommand(Command):
 
 @account_module.handler(AddTeamMemberCommand)
 def handle_add_team_member(
-    command: AddTeamMemberCommand, repo: TeamRepository, event_bus: EventBus
+    command: AddTeamMemberCommand, repo: TeamRepository, ctx: TransactionContext
 ):
     team = repo.find_by_id(command.team_id)
 
@@ -33,7 +32,7 @@ def handle_add_team_member(
     if team.is_member(command.driver_id):
         raise AlreadyTeamMemberException()
 
-    event_bus.publish(
+    ctx.publish(
         DriverJoinedTeam(
             team_id=command.team_id,
             driver_id=command.driver_id,

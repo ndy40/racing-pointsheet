@@ -4,7 +4,7 @@ from modules.account import account_module
 from modules.account.domain.entity import Team
 from modules.account.events import TeamCreated
 from modules.account.repository import TeamRepository
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 from typing import Optional
 
 

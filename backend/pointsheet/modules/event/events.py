@@ -1,7 +1,7 @@
 from lato import Event
 
 from modules.event.domain.value_objects import SeriesStatus
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 
 
 class SeriesCreated(Event): ...

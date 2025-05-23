@@ -8,9 +8,9 @@ from modules.account.domain.exceptions import (
     AlreadyTeamMemberException,
     AlreadyInTeamException,
 )
-from modules.account.domain.value_objects import TeamMember
-from pointsheet.domain import EntityId
+from pointsheet.domain.value_objects import TeamMember
 from pointsheet.domain.entity import AggregateRoot
+from pointsheet.domain.types import EntityId
 
 
 class RaceEvent(BaseModel):

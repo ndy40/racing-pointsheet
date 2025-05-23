@@ -1,8 +1,8 @@
 from lato import Query
 
 from modules.account import account_module
-from modules.account.repository import UserRepository
-from pointsheet.domain import EntityId
+from modules.account.repository import DriverRepository
+from pointsheet.domain.types import EntityId
 
 
 class GetUser(Query):
@@ -10,6 +10,6 @@ class GetUser(Query):
 
 
 @account_module.handler(GetUser)
-def get_user(cmd: GetUser, repo: UserRepository):
+def get_user(cmd: GetUser, repo: DriverRepository):
     user = repo.find_by_id(cmd.user_id)
     return user

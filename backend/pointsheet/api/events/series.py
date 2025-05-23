@@ -13,7 +13,7 @@ from modules.event.commands.update_series_event import (
 from modules.event.commands.update_series_status import UpdateSeriesStatus
 from modules.event.domain.entity import Event, Series
 from pointsheet.auth import api_auth
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 from modules.event.queries.get_all_series import GetAllSeries
 from modules.event.queries.get_series_by_id import GetSeriesById
 from pointsheet.domain.responses import ResourceCreated

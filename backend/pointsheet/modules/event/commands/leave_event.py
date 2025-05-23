@@ -4,7 +4,7 @@ from modules.event import event_module
 from modules.auth.exceptions import EventNotFoundException
 from modules.event.events import DriverLeftEvent
 from modules.event.repository import EventRepository
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 
 
 class LeaveEvent(Command):

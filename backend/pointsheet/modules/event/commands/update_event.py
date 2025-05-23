@@ -6,7 +6,7 @@ from modules.event import event_module
 from modules.event.repository import EventRepository
 from modules.auth.exceptions import EventNotFoundException
 from modules.event.domain.value_objects import EventStatus
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 
 
 class UpdateEventModel(Command):

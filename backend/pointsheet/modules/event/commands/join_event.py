@@ -6,7 +6,7 @@ from modules.event import event_module
 from modules.event.exceptions import DriverNotFound
 from modules.event.events import DriverJoinedEvent
 from modules.event.repository import EventRepository
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 
 
 class JoinEvent(Command):

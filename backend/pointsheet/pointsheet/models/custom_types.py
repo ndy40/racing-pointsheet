@@ -12,7 +12,7 @@ from modules.event.domain.value_objects import (
     SeriesStatus,
     ScheduleType,
 )
-from pointsheet.domain.entity import EntityId
+from pointsheet.domain.types import EntityId
 
 
 class BaseCustomTypes(TypeDecorator): ...

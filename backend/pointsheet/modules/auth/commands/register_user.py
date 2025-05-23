@@ -1,3 +1,4 @@
+from logging import Logger
 from typing import Optional
 
 from lato import Command, TransactionContext
@@ -32,19 +33,27 @@ class RegisterUser(Command):
 @auth_module.handler(RegisterUser)
 def handle_register_user(
     cmd: RegisterUser,
-    ctx: TransactionContext,
     repo: RegisterUserRepository,
     active_repo: ActiveUserRepository,
+    logging: Logger,
+    ctx: TransactionContext,
 ):
     active_user = active_repo.find_by_username(username=cmd.username)
 
     if active_user:
         raise UserAlreadyExists()
 
+    logging.debug(f"Registering user {cmd.id}")
     repo.create_user(cmd)
+    logging.debug(f"User {cmd.id} registered")
 
-    if cmd.team:
-        ctx.publish(UserRegisteredWithTeam(user_id=cmd.id, team_name=cmd.team))
-        return
+    event = (
+        UserRegisteredWithTeam(
+            user_id=cmd.id, team_name=cmd.team, username=cmd.username
+        )
+        if cmd.team
+        else UserRegistered(user_id=cmd.id, username=cmd.username)
+    )
 
-    ctx.publish(UserRegistered(user_id=cmd.id))
+    logging.debug(f"Publishing event {repr(event)}")
+    ctx.publish(event)

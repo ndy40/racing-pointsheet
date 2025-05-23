@@ -5,7 +5,7 @@ from sqlalchemy import String, Boolean, DateTime, Text
 from sqlalchemy.orm import Mapped, mapped_column, validates
 
 from modules.auth.value_objects import UserRole
-from pointsheet.domain import EntityId
+from ..domain.entity import EntityId
 from .base import BaseModel
 from pointsheet.models.custom_types import UserRoleType, EntityIdType
 

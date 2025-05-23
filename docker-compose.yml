@@ -13,16 +13,16 @@ services:
     env_file:
       - backend/pointsheet/.env
 
-  background_tasks:
-    image: pointsheet:latest
-    extends:
-      service: backend
-    depends_on:
-      - backend
-    environment:
-      GOOGLE_APPLICATION_CREDENTIALS: /app/auth.json
-    command: |
-      celery -A pointsheet.celery_worker worker --loglevel=info
+  #  background_tasks:
+  #    image: pointsheet:latest
+  #    extends:
+  #      service: backend
+  #    depends_on:
+  #      - backend
+  #    environment:
+  #      GOOGLE_APPLICATION_CREDENTIALS: /app/auth.json
+  #    command: |
+  #      celery -A pointsheet.celery_worker worker --loglevel=info
 
   nginx_proxy:
     image: nginx:1.27-alpine

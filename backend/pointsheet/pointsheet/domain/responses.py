@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 
 
 class ResourceCreated(BaseModel):

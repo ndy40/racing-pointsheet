@@ -11,7 +11,7 @@ from .data_mappers import EventModelMapper, SeriesModelMapper, TrackModelMapper
 from .domain.entity import Event as EventModel
 from .domain.entity import Series as SeriesModel
 from .domain.entity import Track as TrackModel
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 from .domain.value_objects import EventStatus
 
 

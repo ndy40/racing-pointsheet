@@ -7,7 +7,7 @@ from modules.event.commands.update_series_event import UpdateSeriesEvent
 from modules.event.exceptions import SeriesNotFoundException
 from modules.event.events import SeriesStarted, SeriesClosed, SeriesStatusNotStarted
 from modules.event.repository import SeriesRepository
-from pointsheet.domain import EntityId
+from pointsheet.domain.types import EntityId
 
 
 class _SeriesStatus(str, Enum):

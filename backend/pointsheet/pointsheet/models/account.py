@@ -3,8 +3,8 @@ from typing import Optional, List
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from modules.account.domain.value_objects import TeamMember
-from pointsheet.domain import EntityId
+from pointsheet.domain.value_objects import TeamMember
+from pointsheet.domain.types import EntityId
 from .base import BaseModel
 from .custom_types import EntityIdType, PydanticJsonType
 

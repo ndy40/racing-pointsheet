@@ -1,11 +1,13 @@
-from datetime import datetime
+import warnings
+from pointsheet.domain.value_objects import TeamMember as _TeamMember
 
-from pydantic import BaseModel
+# For backward compatibility
+TeamMember = _TeamMember
 
-from pointsheet.domain import EntityId
-
-
-class TeamMember(BaseModel):
-    driver_id: EntityId
-    role: str  # e.g., "member"
-    joined_at: datetime
+# Add a deprecation warning
+warnings.warn(
+    "Importing TeamMember from modules.account.domain.value_objects is deprecated. "
+    "Import from pointsheet.domain.value_objects instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)

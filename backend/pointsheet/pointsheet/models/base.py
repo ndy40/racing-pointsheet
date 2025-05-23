@@ -1,6 +1,6 @@
-import uuid
-
+import warnings
 from sqlalchemy.orm import DeclarativeBase
+from pointsheet.domain.types import uuid_default as _uuid_default
 
 
 class BaseModel(DeclarativeBase):
@@ -8,4 +8,10 @@ class BaseModel(DeclarativeBase):
 
 
 def uuid_default():
-    return str(uuid.uuid4())
+    warnings.warn(
+        "Importing uuid_default from pointsheet.models.base is deprecated. "
+        "Import from pointsheet.domain.types instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return _uuid_default()
