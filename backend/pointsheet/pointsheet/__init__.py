@@ -30,6 +30,9 @@ sentry_sdk.init(
     environment=app_config.APP_ENV,
 )
 
+if not os.path.exists(app_config.UPLOAD_FOLDER):
+    os.makedirs(app_config.UPLOAD_FOLDER)
+
 
 def create_app(test_config=None):
     # Get environment from environment variable, default to development
