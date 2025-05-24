@@ -162,7 +162,7 @@ cython_debug/
 .idea/
 !/backend/pointsheet/.env.local
 .DS_Store
-*/uploads/**
+!*/uploads/**
 /backend/pointsheet/uploads/
 /backend/pointsheet/auth.json
 .env.prod
