@@ -24,18 +24,38 @@ class FileStore(abc.ABC):
 
 
 class LocalFileStore(FileStore):
-    def save_file(self, file_path: str, file_content: bytes) -> None:
-        """Save a file with the given path and content."""
+    def save_file(
+        self, file_path: str, file_content: bytes, rename: bool = False
+    ) -> str:
+        """Save a file with the given path and content.
+
+        Args:
+            file_path: The path where the file should be saved
+            file_content: The binary content of the file
+            rename: If True, generate a UUID for the filename while preserving extension
+
+        Returns:
+            str: The actual path where the file was saved
+        """
+        import uuid
+
         allowed_extensions = {"jpeg", "png", "csv", "pdf", "jpg"}
         sanitized_name = secure_filename(file_path)
         extension = os.path.splitext(sanitized_name)[1].lower().lstrip(".")
+
         if extension not in allowed_extensions:
             raise ValueError(f"File extension '{extension}' is not supported.")
 
-        with open(file_path, "wb") as file:
+        if rename:
+            new_filename = f"{uuid.uuid4()}.{extension}"
+            final_path = os.path.join(self.base_path, new_filename)
+        else:
+            final_path = os.path.join(self.base_path, sanitized_name)
+
+        with open(final_path, "wb") as file:
             file.write(file_content)
 
-        return file_path
+        return final_path
 
     def fetch_file(self, file_path: str) -> bytes:
         """Fetch the content of a file with the given path."""

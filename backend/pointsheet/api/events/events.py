@@ -44,7 +44,7 @@ def get_event(event_id):
 @event_bp.route("/events/<uuid:event_id>/join", methods=["PUT"])
 @api_auth.login_required
 def join_event(event_id):
-    cmd = JoinEvent(event_id=event_id, driver_id=get_user_id())
+    cmd = JoinEvent(event_id=event_id, driver_id=get_user_id().id)
     current_app.application.execute(cmd)
     return Response(status=204)
 
@@ -52,7 +52,7 @@ def join_event(event_id):
 @event_bp.route("/events/<uuid:event_id>/leave", methods=["PUT"])
 @api_auth.login_required
 def leave_event(event_id):
-    cmd = LeaveEvent(event_id=event_id, driver_id=get_user_id())
+    cmd = LeaveEvent(event_id=event_id, driver_id=get_user_id().id)
     current_app.application.execute(cmd)
     return Response(status=204)
 

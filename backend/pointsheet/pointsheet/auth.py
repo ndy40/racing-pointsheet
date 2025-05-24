@@ -10,7 +10,7 @@ from itsdangerous import BadSignature, Serializer, URLSafeTimedSerializer
 
 from pointsheet.config import config
 from pointsheet.domain.exceptions.base import PointSheetException
-
+from pointsheet.domain.types import UserId
 
 api_auth = HTTPTokenAuth(scheme="Bearer")
 web_auth = HTTPBasicAuth()
@@ -54,7 +54,7 @@ def get_user_id():
             if isinstance(user, UUID):
                 return user
             elif isinstance(user, dict):
-                return user.get("id")
+                return UserId(user.get("id"))
 
     return None
 

@@ -264,6 +264,38 @@ paths:
           description: Event updated
         404:
           description: Not found
+  /api/series/{series_id}/cover-image:
+    post:
+      description: Upload cover image for a series
+      operationId: uploadSeriesCoverImage
+      tags:
+        - Series
+      parameters:
+        - in: path
+          name: series_id
+          schema:
+            type: uuid
+          required: true
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        204:
+          description: Cover image uploaded successfully
+        400:
+          description: Bad request
+        415:
+          description: Unsupported Media Type
+        404:
+          description: Series not found
   /api/series/{series_id}/events/{event_id}:
     delete:
       description: Remove event from series
@@ -600,6 +632,9 @@ components:
             - open
             - started
             - closed
+        cover_image:
+          type: string
+          description: Optional cover image for the series
         events:
           type: array
           items:
@@ -642,7 +677,6 @@ components:
         ends_at:
           type: datetime
           example: 2025-01-01
-
     SeriesStatus:
       type: string
       enum:

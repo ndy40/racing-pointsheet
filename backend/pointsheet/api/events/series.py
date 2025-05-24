@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from flask import Blueprint, Response, current_app, request
+from flask import Blueprint, Response, current_app, request, jsonify
 
 from modules.event.commands.create_series import CreateSeries
 from modules.event.commands.create_series_event import CreateEventForSeries
@@ -11,12 +11,14 @@ from modules.event.commands.update_series_event import (
     UpdateSeriesEvent,
 )
 from modules.event.commands.update_series_status import UpdateSeriesStatus
+from modules.event.commands.upload_series_cover_image import UploadSeriesCoverImage
 from modules.event.domain.entity import Event, Series
 from pointsheet.auth import api_auth
 from pointsheet.domain.types import EntityId
 from modules.event.queries.get_all_series import GetAllSeries
 from modules.event.queries.get_series_by_id import GetSeriesById
 from pointsheet.domain.responses import ResourceCreated
+from utils.file_validation import validate_file, secure_filename
 
 
 series_bp = Blueprint("event", __name__)
@@ -97,6 +99,32 @@ def update_event_for_series(series_id: EntityId):
         return Response(status=HTTPStatus.NO_CONTENT)
     except ValueError as e:
         return {"error": str(e)}, HTTPStatus.BAD_REQUEST
+
+
+@series_bp.route("/series/<uuid:series_id>/cover-image", methods=["POST"])
+@api_auth.login_required
+def upload_series_cover_image(series_id):
+    try:
+        uploaded_file = request.files.get("file")
+        allowed_extensions = {"jpg", "jpeg", "png"}
+
+        # Validate the file
+        is_valid, error_message = validate_file(uploaded_file, allowed_extensions)
+        if not is_valid:
+            return jsonify({"error": error_message}), HTTPStatus.BAD_REQUEST
+
+        # Generate a secure filename
+        secure_filename(uploaded_file.filename)
+
+        # Create and execute the command
+        cmd = UploadSeriesCoverImage(series_id=series_id, file=uploaded_file)
+        current_app.application.execute(cmd)
+
+        return Response(status=HTTPStatus.NO_CONTENT)
+    except ValueError as e:
+        return {"error": str(e)}, HTTPStatus.BAD_REQUEST
+    except Exception as e:
+        return {"error": str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @series_bp.route("/series/<uuid:series_id>/events/<uuid:event_id>/", methods=["DELETE"])

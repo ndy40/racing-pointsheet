@@ -6,8 +6,8 @@ from typing import Callable
 from lagom import Container
 from lato import Application, TransactionContext
 
-from pointsheet.config import config
 from pointsheet.db import get_session
+from pointsheet.domain.types import UserId
 from .account import account_module
 from .account.repository import DriverRepository, TeamRepository
 from .auth import auth_module
@@ -16,7 +16,7 @@ from .dependency_provider import LagomDependencyProvider
 from .event import event_module
 from pointsheet.auth import get_user_id
 from .event.repository import EventRepository, SeriesRepository, TrackRepository
-from pointsheet.domain.types import UserId, FileStore, Config
+
 
 app_container = Container()
 dp = LagomDependencyProvider(app_container)
@@ -57,14 +57,13 @@ def on_create_transaction_context():
     txn_container[TrackRepository] = TrackRepository(session)
     txn_container[TeamRepository] = TeamRepository(session)
     txn_container[DriverRepository] = DriverRepository(session)
+    txn_container[UserId] = get_user_id()
 
     # Create the transaction context with the dependency provider
     txn_context = TransactionContext(LagomDependencyProvider(txn_container))
 
     # Set the dependencies using the set_dependency method
-    txn_context.set_dependency(UserId, get_user_id())
-    txn_context.set_dependency(FileStore, config.file_store)
-    txn_context.set_dependency(Config, config)
+    # txn_context.set_dependencies(user_id=get_user_id())
 
     return txn_context
 
@@ -75,9 +74,6 @@ def on_enter_transaction_context(ctx: TransactionContext):
     transaction_id = uuid.uuid4()
     logger = logger.getChild(f"transaction-{transaction_id}")
     ctx.dependency_provider.update(transaction_id=transaction_id, publish=ctx.publish)
-    ctx.set_dependency(UserId, get_user_id())
-    ctx.set_dependency(FileStore, config.file_store)
-    ctx.set_dependency(Config, config)
     logger.debug("<<< Begin transaction")
 
 

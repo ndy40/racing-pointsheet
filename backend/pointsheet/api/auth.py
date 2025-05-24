@@ -30,7 +30,7 @@ def authenticate():
 @api_auth.login_required
 def get_current_user():
     # Get the current user's ID using get_user_id()
-    user_id = get_user_id()
+    user_id = get_user_id().id
 
     if not user_id:
         return {

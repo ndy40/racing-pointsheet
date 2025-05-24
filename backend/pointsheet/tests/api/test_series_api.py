@@ -1,8 +1,10 @@
 import uuid
+import io
 from contextlib import nullcontext
 from http import HTTPStatus
 
 from fastjsonschema import validate
+from werkzeug.datastructures import FileStorage
 
 from modules.event.domain.value_objects import EventStatus, SeriesStatus
 from pointsheet.factories.event import SeriesFactory
@@ -106,3 +108,44 @@ def test_series_startus_cannot_be_started_after_close(client, db_session, auth_t
         headers=auth_token,
     )
     assert resp.status_code == HTTPStatus.BAD_REQUEST
+
+
+def test_series_creation_with_cover_image_upload(
+    client, start_end_date_future, auth_token, db_session
+):
+    """Test creating a series and then uploading a cover image for it."""
+    # Step 1: Create a series
+    start_date, end_date = start_end_date_future
+    payload = {
+        "title": "Series with Cover Image",
+        "status": "started",
+        "starts_at": start_date.isoformat(),
+        "ends_at": end_date.isoformat(),
+    }
+    create_resp = client.post("/api/series", json=payload, headers=auth_token)
+    assert create_resp.status_code == HTTPStatus.CREATED
+    series_id = create_resp.json["resource"]
+
+    # Step 2: Upload a cover image for the series
+    # Create a test image file
+    test_image_data = b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x02\x00\x00\x00\x90wS\xde\x00\x00\x00\x0cIDAT\x08\xd7c\xf8\xff\xff?\x00\x05\xfe\x02\xfe\xdc\xccY\xe7\x00\x00\x00\x00IEND\xaeB`\x82"
+    test_image = io.BytesIO(test_image_data)
+    file = FileStorage(
+        stream=test_image,
+        filename="test_image.png",
+        content_type="image/png",
+    )
+
+    # Upload the image
+    upload_resp = client.post(
+        f"/api/series/{series_id}/cover-image",
+        data={"file": file},
+        headers=auth_token,
+        content_type="multipart/form-data",
+    )
+    assert upload_resp.status_code == HTTPStatus.NO_CONTENT
+
+    # Step 3: Verify the cover image is correctly associated with the series
+    fetch_resp = client.get(f"/api/series/{series_id}", headers=auth_token)
+    assert fetch_resp.status_code == HTTPStatus.OK
+    assert fetch_resp.json["cover_image"] is not None

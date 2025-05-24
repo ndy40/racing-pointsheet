@@ -213,6 +213,7 @@ class Series(AggregateRoot):
     events: Optional[List[Event]] = None
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
+    cover_image: Optional[str] = None
 
     def add_event(self, event: Event):
         self._check_event_is_within_date(event)

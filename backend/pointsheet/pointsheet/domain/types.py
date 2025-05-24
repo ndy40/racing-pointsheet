@@ -1,12 +1,18 @@
 import uuid
-from typing import NewType
 
 EntityId = uuid.UUID
 
-# Define new types for dependency injection
-UserId = NewType("UserId", str)
-FileStore = NewType("FileStore", str)
-Config = NewType("Config", object)
+
+class UserId:
+    def __init__(self, id: EntityId):
+        self._id = id
+
+    def __str__(self):
+        return self._id
+
+    @property
+    def id(self):
+        return self._id
 
 
 def uuid_default():
