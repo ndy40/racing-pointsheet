@@ -149,6 +149,7 @@ class Series(BaseModel):
     starts_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     ends_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     cover_image: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     def model_dump(self):
         events = [event.model_dump() for event in self.events] if self.events else []
@@ -159,6 +160,7 @@ class Series(BaseModel):
             "starts_at": self.starts_at.isoformat() if self.starts_at else None,
             "ends_at": self.ends_at.isoformat() if self.ends_at else None,
             "cover_image": self.cover_image,
+            "description": self.description,
             "events": events,
         }
 

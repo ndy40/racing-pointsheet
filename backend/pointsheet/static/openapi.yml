@@ -635,6 +635,9 @@ components:
         cover_image:
           type: string
           description: Optional cover image for the series
+        description:
+          type: string
+          description: Optional description of the series
         events:
           type: array
           items:
@@ -658,6 +661,9 @@ components:
         cover_image:
           type: str
           example: https://domain.com/image.jpg
+        description:
+          type: string
+          example: "This is a description of the series"
         event_count:
           type: string
           example: 0

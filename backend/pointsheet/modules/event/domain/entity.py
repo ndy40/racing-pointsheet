@@ -224,6 +224,7 @@ class Series(AggregateRoot):
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
     cover_image: Optional[str] = None
+    description: Optional[str] = None
 
     @computed_field
     @property

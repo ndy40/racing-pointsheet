@@ -22,6 +22,7 @@ def test_create_series(client, start_end_date_future, auth_token):
     payload = {
         "title": "Home 1",
         "status": "started",
+        "description": "This is a test series description",
         "starts_at": start_date.isoformat(),
         "ends_at": end_date.isoformat(),
     }
@@ -36,6 +37,7 @@ def test_create_series_defaults_to_not_started_status(
     start_date, end_date = start_end_date_future
     payload = {
         "title": "Home 1",
+        "description": "This is a test series with default status",
         "starts_at": start_date.isoformat(),
         "ends_at": end_date.isoformat(),
     }
@@ -119,6 +121,7 @@ def test_series_creation_with_cover_image_upload(
     payload = {
         "title": "Series with Cover Image",
         "status": "started",
+        "description": "This is a series with a cover image",
         "starts_at": start_date.isoformat(),
         "ends_at": end_date.isoformat(),
     }

@@ -115,6 +115,7 @@ class SeriesModelMapper(DataMapper[Series, SeriesModel]):
             ends_at=instance.ends_at,
             status=instance.status,
             cover_image=instance.cover_image,
+            description=instance.description,
             events=[self.event_mapper.to_db_entity(event) for event in instance.events]
             if instance.events
             else [],
@@ -128,6 +129,7 @@ class SeriesModelMapper(DataMapper[Series, SeriesModel]):
             starts_at=instance.starts_at,
             status=instance.status,
             cover_image=instance.cover_image,
+            description=instance.description,
             events=[
                 self.event_mapper.to_domain_model(event) for event in instance.events
             ]
