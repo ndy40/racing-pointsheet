@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import List, Optional, Self, Dict
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, model_validator, computed_field
 
 from modules.event.exceptions import (
     InvalidEventDateForSeries,
@@ -224,6 +224,11 @@ class Series(AggregateRoot):
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
     cover_image: Optional[str] = None
+
+    @computed_field
+    @property
+    def event_count(self) -> int:
+        return len(self.events) if self.events else 0
 
     def add_event(self, event: Event):
         self._check_event_is_within_date(event)

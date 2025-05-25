@@ -105,7 +105,7 @@ def update_event_for_series(series_id: EntityId):
 @api_auth.login_required
 def upload_series_cover_image(series_id):
     try:
-        uploaded_file = request.files.get("file")
+        uploaded_file = request.files.get("image")
         allowed_extensions = {"jpg", "jpeg", "png"}
 
         # Validate the file

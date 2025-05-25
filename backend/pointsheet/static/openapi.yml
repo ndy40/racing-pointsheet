@@ -655,6 +655,9 @@ components:
           enum:
             - open
             - closed
+        cover_image:
+          type: str
+          example: https://domain.com/image.jpg
         event_count:
           type: string
           example: 0
