@@ -48,5 +48,13 @@ def handle_upload_series_cover_image(
         raise SeriesNotFoundException()
 
     # Update the series with the cover image path
-    series.cover_image = file_location
+    # If using S3 and CloudFront is configured, use CloudFront domain for the URL
+    if config.APP_ENV != "development" and config.CLOUDFRONT_DOMAIN:
+        # Ensure CloudFront domain has proper format (ends with /)
+        cloudfront_domain = config.CLOUDFRONT_DOMAIN
+        if not cloudfront_domain.endswith("/"):
+            cloudfront_domain += "/"
+        series.cover_image = f"{cloudfront_domain}{file_location}"
+    else:
+        series.cover_image = f"{config.DOMAIN}/{file_location}"
     repo.update(series)

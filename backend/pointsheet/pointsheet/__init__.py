@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 import sentry_sdk
-from flask import Flask, render_template, Response, session, redirect
+from flask import Flask, render_template, Response, session, redirect, abort
 from flask_wtf.csrf import CSRFProtect
 from flask_cors import CORS
 from pydantic import ValidationError
@@ -29,9 +29,6 @@ sentry_sdk.init(
     send_default_pii=False,
     environment=app_config.APP_ENV,
 )
-
-if not os.path.exists(app_config.UPLOAD_FOLDER):
-    os.makedirs(app_config.UPLOAD_FOLDER)
 
 
 def create_app(test_config=None):
@@ -65,6 +62,41 @@ def create_app(test_config=None):
     @csrf.exempt
     def api():
         return render_template("docs.html")
+
+    @app.route("/uploads/<path:filename>")
+    @csrf.exempt
+    def serve_uploaded_file(filename):
+        """
+        Serve files from the upload folder.
+
+        Args:
+            filename: The name of the file to serve
+
+        Returns:
+            The file content with the appropriate MIME type
+        """
+        try:
+            # Get the file content using the file_store
+            file_content = app_config.file_store.fetch_file(filename)
+
+            # Determine the MIME type based on the file extension
+            extension = os.path.splitext(filename)[1].lower().lstrip(".")
+            content_types = {
+                "jpeg": "image/jpeg",
+                "jpg": "image/jpeg",
+                "png": "image/png",
+                "csv": "text/csv",
+                "pdf": "application/pdf",
+            }
+            content_type = content_types.get(extension, "application/octet-stream")
+
+            # Create a response with the file content and MIME type
+            return Response(file_content, mimetype=content_type)
+        except FileNotFoundError:
+            abort(404, description=f"File {filename} not found")
+        except Exception as e:
+            logger.exception(f"Error serving file {filename}: {str(e)}")
+            abort(500, description=f"Error serving file: {str(e)}")
 
     from pointsheet.domain.exceptions.base import PointSheetException
 
