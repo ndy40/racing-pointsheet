@@ -2,6 +2,7 @@ import uuid
 import io
 from contextlib import nullcontext
 from http import HTTPStatus
+from datetime import datetime, timedelta
 
 from fastjsonschema import validate
 from werkzeug.datastructures import FileStorage
@@ -152,3 +153,47 @@ def test_series_creation_with_cover_image_upload(
     fetch_resp = client.get(f"/api/series/{series_id}", headers=auth_token)
     assert fetch_resp.status_code == HTTPStatus.OK
     assert fetch_resp.json["cover_image"] is not None
+
+
+def test_patch_series(client, db_session, auth_token):
+    """Test updating a series using the PATCH endpoint."""
+    # Create a series using the factory
+    series = SeriesFactory(
+        title="Original Title",
+        description="Original Description",
+        status=SeriesStatus.not_started,
+    )
+    db_session.commit()
+
+    # New data for updating the series
+    new_title = "Updated Title"
+    new_description = "Updated Description"
+    new_start_date = datetime.now() + timedelta(days=10)
+    new_end_date = datetime.now() + timedelta(days=20)
+
+    # Prepare the payload for the PATCH request
+    update_payload = {
+        "title": new_title,
+        "description": new_description,
+        "starts_at": new_start_date.isoformat(),
+        "ends_at": new_end_date.isoformat(),
+    }
+
+    # Send the PATCH request
+    patch_resp = client.patch(
+        f"/api/series/{series.id}", json=update_payload, headers=auth_token
+    )
+
+    # Verify the response
+    assert patch_resp.status_code == HTTPStatus.OK
+    validate(resource_created, patch_resp.json)
+    assert patch_resp.json["resource"] == str(series.id)
+
+    # Fetch the updated series to verify changes
+    fetch_resp = client.get(f"/api/series/{series.id}", headers=auth_token)
+    assert fetch_resp.status_code == HTTPStatus.OK
+
+    # Verify the series was updated correctly
+    updated_series = fetch_resp.json
+    assert updated_series["title"] == new_title, fetch_resp.json
+    assert updated_series["description"] == new_description

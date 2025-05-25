@@ -27,7 +27,7 @@ def update_series(cmd: UpdateSeries, ctx: TransactionContext, repo: SeriesReposi
         raise SeriesNotFoundException()
 
     # Convert datetime objects to UTC timezone if they have no timezone info
-    data = cmd.model_dump(exclude={"series_id"}, exclude_none=True)
+    data = cmd.model_dump(exclude={"series_id", "id"}, exclude_none=True)
 
     if data.get("starts_at") and data["starts_at"].tzinfo is None:
         data["starts_at"] = data["starts_at"].replace(tzinfo=timezone.utc)
