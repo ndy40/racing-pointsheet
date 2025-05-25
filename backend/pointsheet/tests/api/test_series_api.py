@@ -139,7 +139,7 @@ def test_series_creation_with_cover_image_upload(
     # Upload the image
     upload_resp = client.post(
         f"/api/series/{series_id}/cover-image",
-        data={"file": file},
+        data={"image": file},
         headers=auth_token,
         content_type="multipart/form-data",
     )
