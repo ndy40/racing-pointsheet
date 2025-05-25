@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 
 from sqlalchemy import (
@@ -164,13 +164,33 @@ class Series(BaseModel):
 
     @validates("ends_at")
     def validate_ends_at(self, key, value):
-        if self.starts_at and (not value or self.starts_at > value):
-            raise ValueError("End date must be further in the future or empty")
+        if self.starts_at:
+            # Ensure starts_at has timezone info
+            starts_at = self.starts_at
+            if starts_at.tzinfo is None:
+                starts_at = starts_at.replace(tzinfo=timezone.utc)
+
+            if value:
+                # Ensure value has timezone info
+                if value.tzinfo is None:
+                    value = value.replace(tzinfo=timezone.utc)
+
+                if starts_at > value:
+                    raise ValueError("End date must be further in the future or empty")
+
         return value
 
     @validates("starts_at")
     def validate_starts_at(self, key, value):
         if value:
-            if value > datetime.now():
+            # Ensure value has timezone info
+            if value.tzinfo is None:
+                # If value is naive, assume it's in UTC
+                value = value.replace(tzinfo=timezone.utc)
+
+            # Get current time in UTC
+            now = datetime.now(timezone.utc)
+
+            if value > now:
                 return value
             raise ValueError("start date much be in the future. ")

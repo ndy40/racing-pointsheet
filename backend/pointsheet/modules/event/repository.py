@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, List
 
 from lato import Query
@@ -52,7 +52,10 @@ class EventRepository(AbstractRepository[Event, EventModel]):
     def get_available_events(self, query: Query = None):
         stmt = (
             select(Event)
-            .where(Event.starts_at > datetime.now(), Event.status == EventStatus.open)
+            .where(
+                Event.starts_at > datetime.now(timezone.utc),
+                Event.status == EventStatus.open,
+            )
             .order_by(Event.starts_at)
         )
 

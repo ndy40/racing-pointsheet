@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional, Self, Dict
 
 from pydantic import BaseModel, model_validator
@@ -95,7 +95,17 @@ class Event(AggregateRoot):
         if self.ends_at and not self.starts_at:
             raise ValueError("Start date much be set if end date is set")
         elif self.starts_at and self.ends_at:
-            if self.ends_at < self.starts_at:
+            # Ensure dates have timezone info
+            starts_at = self.starts_at
+            ends_at = self.ends_at
+
+            if starts_at.tzinfo is None:
+                starts_at = starts_at.replace(tzinfo=timezone.utc)
+
+            if ends_at.tzinfo is None:
+                ends_at = ends_at.replace(tzinfo=timezone.utc)
+
+            if ends_at < starts_at:
                 raise ValueError("End date cannot be less than start date.")
         elif self.starts_at and not self.ends_at:
             raise ValueError("Event should have an end date")
@@ -266,13 +276,33 @@ class Series(AggregateRoot):
             raise ValueError("Event cannot be None")
 
         if self.starts_at and self.ends_at:
-            if event.starts_at and not (
-                self.starts_at <= event.starts_at <= self.ends_at
-            ):
-                is_valid = False
+            # Ensure series dates have timezone info
+            series_starts_at = self.starts_at
+            series_ends_at = self.ends_at
 
-            if event.ends_at and not (self.ends_at >= event.ends_at >= self.starts_at):
-                is_valid = False
+            if series_starts_at.tzinfo is None:
+                series_starts_at = series_starts_at.replace(tzinfo=timezone.utc)
+
+            if series_ends_at.tzinfo is None:
+                series_ends_at = series_ends_at.replace(tzinfo=timezone.utc)
+
+            if event.starts_at:
+                # Ensure event start date has timezone info
+                event_starts_at = event.starts_at
+                if event_starts_at.tzinfo is None:
+                    event_starts_at = event_starts_at.replace(tzinfo=timezone.utc)
+
+                if not (series_starts_at <= event_starts_at <= series_ends_at):
+                    is_valid = False
+
+            if event.ends_at:
+                # Ensure event end date has timezone info
+                event_ends_at = event.ends_at
+                if event_ends_at.tzinfo is None:
+                    event_ends_at = event_ends_at.replace(tzinfo=timezone.utc)
+
+                if not (series_ends_at >= event_ends_at >= series_starts_at):
+                    is_valid = False
 
         if not is_valid:
             raise InvalidEventDateForSeries()
