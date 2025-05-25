@@ -179,6 +179,33 @@ paths:
           description: Not found
         401:
           description: Forbidden
+    patch:
+      description: Update series information
+      operationId: updateSeries
+      parameters:
+        - in: path
+          name: series_id
+          required: true
+          schema:
+            type: string
+      tags:
+        - Series
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSeriesRequest"
+      responses:
+        200:
+          description: Series updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/ResourceCreated"
+        400:
+          description: Bad request
+        404:
+          description: Series not found
     delete:
       description: Delete series
       operationId: deleteSeries
@@ -686,6 +713,24 @@ components:
         ends_at:
           type: datetime
           example: 2025-01-01
+
+    UpdateSeriesRequest:
+      type: object
+      description: Request to update series information (title, description, dates, cover image)
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        starts_at:
+          type: datetime
+          example: 2025-01-01
+        ends_at:
+          type: datetime
+          example: 2025-01-01
+        cover_image:
+          type: string
+          description: URL or path to the cover image
     SeriesStatus:
       type: string
       enum:

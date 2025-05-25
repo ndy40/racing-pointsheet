@@ -6,6 +6,7 @@ from modules.event.commands.create_series import CreateSeries
 from modules.event.commands.create_series_event import CreateEventForSeries
 from modules.event.commands.delete_series import DeleteSeries
 from modules.event.commands.delete_series_event import DeleteSeriesEvent
+from modules.event.commands.update_series import UpdateSeries
 from modules.event.commands.update_series_event import (
     UpdateEventModel,
     UpdateSeriesEvent,
@@ -75,6 +76,17 @@ def fetch_series_by_id(series_id):
         return series.model_dump()
 
     return Response(status=HTTPStatus.NOT_FOUND)
+
+
+@series_bp.route("/series/<uuid:series_id>", methods=["PATCH"])
+@api_auth.login_required
+def update_series(series_id):
+    try:
+        cmd = UpdateSeries(series_id=series_id, **request.json)
+        current_app.application.execute(cmd)
+        return ResourceCreated(resource=str(series_id)).model_dump(), HTTPStatus.OK
+    except ValueError as e:
+        return {"error": str(e)}, HTTPStatus.BAD_REQUEST
 
 
 @series_bp.route("/series/<uuid:series_id>/events", methods=["POST"])
