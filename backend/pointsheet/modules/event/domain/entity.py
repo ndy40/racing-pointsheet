@@ -78,6 +78,15 @@ class Track(BaseModel):
     country: str
     length: str
 
+    def model_dump(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "layout": self.layout,
+            "country": self.country,
+            "length": self.length
+        }
+
 
 class Event(AggregateRoot):
     title: str

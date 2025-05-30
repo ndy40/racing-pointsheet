@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Any, List
+from typing import Any, List, Optional
 
 from lato import Query
 from sqlalchemy import select, or_
@@ -116,5 +116,22 @@ class TrackRepository(AbstractRepository[Track, TrackModel]):
         result = self._session.execute(stmt).scalars()
         return [self._map_to_model(item) for item in result]
 
+    def find_by_id(self, id: int) -> TrackModel | None:
+        stmt = select(Track).where(Track.id == id)
+        result = self._session.execute(stmt).scalar()
+
+        if result:
+            return self._map_to_model(result)
+        return None
+
+
+
+
     def delete(self, id: Any or EntityId) -> None:
         pass
+
+
+    def exists(self, id: int) -> bool:
+        stmt = select(Track).where(Track.id == id)
+        result = self._session.execute(stmt).scalar()
+        return result is not None

@@ -594,6 +594,48 @@ paths:
           description: Not found
         400:
           description: Bad request
+
+  /api/tracks:
+    get:
+      operationId: getAllTracks
+      description: Fetch all tracks.
+      tags:
+        - Tracks
+      responses:
+        200:
+          description: List of tracks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Track"
+        401:
+          description: Forbidden
+
+  /api/tracks/{id}:
+    get:
+      description: Get track by ID
+      operationId: getTrackById
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      tags:
+        - Tracks
+      responses:
+        200:
+          description: Track
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Track"
+        404:
+          description: Not found
+        401:
+          description: Forbidden
 components:
   securitySchemes:
     BearerAuth:
@@ -943,6 +985,30 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DriverResult"
+
+    Track:
+      type: object
+      required:
+        - id
+        - name
+        - layout
+        - country
+        - length
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          description: Name of the track
+        layout:
+          type: string
+          description: Specific layout of the track
+        country:
+          type: string
+          description: Country where the track is located
+        length:
+          type: string
+          description: Length of the track in kilometers
   responses:
     ListOfResults:
       type: array
