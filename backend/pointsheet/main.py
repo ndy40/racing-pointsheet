@@ -65,7 +65,9 @@ def load_tracks_command():
 def load_tracks():
     csv_path = os.path.join(os.path.dirname(__file__), "data", "tracks.csv")
 
-    with get_session() as session:
+    session = next(get_session())
+
+    with session.begin():
         with open(csv_path, "r") as file:
             csv_reader = csv.DictReader(file)
             for row in csv_reader:
