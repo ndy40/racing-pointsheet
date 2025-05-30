@@ -19,7 +19,7 @@ paths:
       tags:
         - Authentication
       security:
-        - BearerAuth: []
+        - BearerAuth: [ ]
       responses:
         200:
           description: Current logged in user
@@ -62,7 +62,7 @@ paths:
       description: Authenticate a user using username and password
       tags:
         - Authentication
-      security: []
+      security: [ ]
       requestBody:
         content:
           application/json:
@@ -100,7 +100,7 @@ paths:
       description: Register a new user
       tags:
         - Authentication
-      security: []
+      security: [ ]
       requestBody:
         content:
           application/json:
@@ -116,16 +116,21 @@ paths:
       tags:
         - Series
       security:
-        BearerAuth: []
+        BearerAuth: [ ]
       parameters:
         - in: query
           name: status
           schema:
-            type: string
-            enum:
-              - started
-              - closed
-              - not_started
+            type: array
+            items:
+              type: string
+              enum:
+                - started
+                - closed
+                - not_started
+          style: form
+          explode: true
+          description: Filter series by one or more status values
       responses:
         200:
           description: List of series
@@ -450,7 +455,7 @@ paths:
           schema:
             type: string
       security:
-        - BearerAuth: []
+        - BearerAuth: [ ]
       requestBody:
         content:
           application/json:
@@ -612,6 +617,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/ListOfResults"
+          description: Get event result
         404:
           description: Not found
         400:
@@ -762,7 +768,8 @@ components:
         status:
           type: string
           enum:
-            - open
+            - not_started
+            - started
             - closed
         cover_image:
           type: str

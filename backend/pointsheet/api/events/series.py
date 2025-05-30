@@ -14,6 +14,7 @@ from modules.event.commands.update_series_event import (
 from modules.event.commands.update_series_status import UpdateSeriesStatus
 from modules.event.commands.upload_series_cover_image import UploadSeriesCoverImage
 from modules.event.domain.entity import Event, Series
+from modules.event.domain.value_objects import SeriesStatus
 from pointsheet.auth import api_auth
 from pointsheet.domain.types import EntityId
 from modules.event.queries.get_all_series import GetAllSeries
@@ -28,7 +29,14 @@ series_bp = Blueprint("series", __name__)
 @series_bp.route("/series", methods=["GET"])
 @api_auth.login_required
 def fetch_all_series():
-    cmd = GetAllSeries(**request.args.to_dict())
+    args = request.args.to_dict(flat=False)
+
+    # Handle multiple status values
+    if 'status' in args and len(args['status']) > 0:
+        status_values = args['status']
+        args['status'] = [SeriesStatus(status) for status in status_values]
+
+    cmd = GetAllSeries(**args)
     result = current_app.application.execute(cmd)
     return [item.model_dump() for item in result]
 

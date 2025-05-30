@@ -9,7 +9,7 @@ from modules.event.repository import SeriesRepository
 
 
 class GetAllSeries(Query):
-    status: Optional[SeriesStatus] = None
+    status: Optional[List[SeriesStatus]] = None
 
 
 @event_module.handler(GetAllSeries)

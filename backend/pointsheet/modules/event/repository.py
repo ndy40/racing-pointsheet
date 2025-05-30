@@ -89,7 +89,13 @@ class SeriesRepository(AbstractRepository[Series, SeriesModel]):
         stmt = select(Series).order_by(Series.id)
 
         if value := getattr(criteria, "status"):
-            stmt = stmt.where(Series.status == value.value)
+            if isinstance(value, list):
+                # Filter by multiple statuses
+                status_values = [status.value for status in value]
+                stmt = stmt.where(Series.status.in_(status_values))
+            else:
+                # Backward compatibility for single status
+                stmt = stmt.where(Series.status == value.value)
 
         result = self._session.execute(stmt).scalars()
         return [self._map_to_model(item) for item in result]
