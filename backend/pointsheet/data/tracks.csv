@@ -1,71 +1,71 @@
-name,layout,length,country
-Barcelona GP Circuit,Full Circuit,4.655,Spain
-Barcelona GP Circuit,National Circuit,3.067,Spain
-Barcelona GP Circuit,Club Circuit,1.850,Spain
-Brands Hatch,Grand Prix Circuit,3.908,United Kingdom
-Brands Hatch,Indy Circuit,1.929,United Kingdom
-Circuit de Spa-Francorchamps,Full Circuit,7.004,Belgium
-Eaglerock Speedway,Tri-Oval,2.500,United States
-Eaglerock Speedway,Club Circuit,2.090,United States
-Eaglerock Speedway,Road Course,4.907,United States
-Grand Oak Raceway,Full Circuit,4.060,United States
-Grand Oak Raceway,Club Circuit,2.118,United States
-Hackney Circuit,International Circuit,4.730,United Kingdom
-Hackney Circuit,National Circuit,3.379,United Kingdom
-Hackney Circuit,Club Circuit,1.492,United Kingdom
-Homestead Miami,Road Course,3.630,United States
-Homestead Miami,Club Circuit,1.507,United States
-Hockenheim,Full Circuit,4.574,Germany
-Hockenheim,National Circuit,2.638,Germany
-Hockenheim,Short Circuit,2.281,Germany
-Indianapolis Motor Speedway,Road Course,4.166,United States
-Indianapolis Motor Speedway,Oval,4.023,United States
-Kyalami,Grand Prix Circuit,4.529,South Africa
-Le Mans,Circuit de la Sarthe,13.626,France
-Le Mans,Bugatti Circuit,4.185,France
-Lime Rock Park,Full Circuit,2.414,United States
-Lime Rock Park,Classic Circuit,2.414,United States
-Lime Rock Park,Chicane Circuit,2.462,United States
-Lime Rock Park,Club Circuit,1.530,United States
-Mid-Ohio,Full Circuit,3.634,United States
-Mid-Ohio,Short Circuit,2.258,United States
-Mid-Ohio,Club Circuit,2.081,United States
-Maple Valley,Full Circuit,4.426,United States
-Maple Valley,Short Circuit,3.076,United States
-Maple Valley,Club Circuit,2.091,United States
-Mount Panorama,Full Circuit,6.213,Australia
-Mugello,Full Circuit,5.245,Italy
-Mugello,Club Circuit,2.558,Italy
-Nürburgring,GP Circuit,5.148,Germany
-Nürburgring,Sprint Circuit,3.629,Germany
-Nürburgring,Nordschleife,20.832,Germany
-Nürburgring,Combined,25.378,Germany
-Road America,Full Circuit,6.515,United States
-Silverstone,Grand Prix Circuit,5.891,United Kingdom
-Silverstone,National Circuit,2.638,United Kingdom
-Silverstone,International Circuit,2.979,United Kingdom
-Suzuka,Full Circuit,5.807,Japan
-Suzuka,East Circuit,2.243,Japan
-Suzuka,West Circuit,3.475,Japan
-Virginia International Raceway,Full Course,5.263,United States
-Virginia International Raceway,North Course,3.270,United States
-Virginia International Raceway,South Course,2.670,United States
-Virginia International Raceway,Patriot Course,1.651,United States
-Watkins Glen,Grand Prix Circuit,5.552,United States
-Watkins Glen,Short Circuit,3.377,United States
-Watkins Glen,Club Circuit,2.454,United States
-WeatherTech Raceway Laguna Seca,Full Circuit,3.602,United States
-Yas Marina Circuit,Full Circuit,5.554,United Arab Emirates
-Yas Marina Circuit,North Corkscrew,4.713,United Arab Emirates
-Yas Marina Circuit,South Circuit,4.425,United Arab Emirates
-Circuit of The Americas,Grand Prix Circuit,5.513,United States
-Circuit of The Americas,National Circuit,3.426,United States
-Circuit of The Americas,Club Circuit,2.376,United States
-Summit Point,Full Circuit,3.212,United States
-Summit Point,Short Circuit,1.754,United States
-Summit Point,Jefferson Circuit,2.200,United States
-Daytona International Speedway,Road Course,5.729,United States
-Daytona International Speedway,Oval,4.023,United States
-Motorsport Arena Oschersleben,Full Circuit,3.667,Germany
-Motorsport Arena Oschersleben,National Circuit,2.464,Germany
-Motorsport Arena Oschersleben,Club Circuit,1.711,Germany
+id,name,layout,length,country
+1,"Barcelona GP Circuit","Full Circuit",4.655,"Spain"
+2,"Barcelona GP Circuit","National Circuit",3.067,"Spain"
+3,"Barcelona GP Circuit","Club Circuit",1.850,"Spain"
+4,"Brands Hatch","Grand Prix Circuit",3.908,"United Kingdom"
+5,"Brands Hatch","Indy Circuit",1.929,"United Kingdom"
+6,"Circuit de Spa-Francorchamps","Full Circuit",7.004,"Belgium"
+7,"Eaglerock Speedway","Tri-Oval",2.500,"United States"
+8,"Eaglerock Speedway","Club Circuit",2.090,"United States"
+9,"Eaglerock Speedway","Road Course",4.907,"United States"
+10,"Grand Oak Raceway","Full Circuit",4.060,"United States"
+11,"Grand Oak Raceway","Club Circuit",2.118,"United States"
+12,"Hackney Circuit","International Circuit",4.730,"United Kingdom"
+13,"Hackney Circuit","National Circuit",3.379,"United Kingdom"
+14,"Hackney Circuit","Club Circuit",1.492,"United Kingdom"
+15,"Homestead Miami","Road Course",3.630,"United States"
+16,"Homestead Miami","Club Circuit",1.507,"United States"
+17,"Hockenheim","Full Circuit",4.574,"Germany"
+18,"Hockenheim","National Circuit",2.638,"Germany"
+19,"Hockenheim","Short Circuit",2.281,"Germany"
+20,"Indianapolis Motor Speedway","Road Course",4.166,"United States"
+21,"Indianapolis Motor Speedway","Oval",4.023,"United States"
+22,"Kyalami","Grand Prix Circuit",4.529,"South Africa"
+23,"Le Mans","Circuit de la Sarthe",13.626,"France"
+24,"Le Mans","Bugatti Circuit",4.185,"France"
+25,"Lime Rock Park","Full Circuit",2.414,"United States"
+26,"Lime Rock Park","Classic Circuit",2.414,"United States"
+27,"Lime Rock Park","Chicane Circuit",2.462,"United States"
+28,"Lime Rock Park","Club Circuit",1.530,"United States"
+29,"Mid-Ohio","Full Circuit",3.634,"United States"
+30,"Mid-Ohio","Short Circuit",2.258,"United States"
+31,"Mid-Ohio","Club Circuit",2.081,"United States"
+32,"Maple Valley","Full Circuit",4.426,"United States"
+33,"Maple Valley","Short Circuit",3.076,"United States"
+34,"Maple Valley","Club Circuit",2.091,"United States"
+35,"Mount Panorama","Full Circuit",6.213,"Australia"
+36,"Mugello","Full Circuit",5.245,"Italy"
+37,"Mugello","Club Circuit",2.558,"Italy"
+38,"Nürburgring","GP Circuit",5.148,"Germany"
+39,"Nürburgring","Sprint Circuit",3.629,"Germany"
+40,"Nürburgring","Nordschleife",20.832,"Germany"
+41,"Nürburgring","Combined",25.378,"Germany"
+42,"Road America","Full Circuit",6.515,"United States"
+43,"Silverstone","Grand Prix Circuit",5.891,"United Kingdom"
+44,"Silverstone","National Circuit",2.638,"United Kingdom"
+45,"Silverstone","International Circuit",2.979,"United Kingdom"
+46,"Suzuka","Full Circuit",5.807,"Japan"
+47,"Suzuka","East Circuit",2.243,"Japan"
+48,"Suzuka","West Circuit",3.475,"Japan"
+49,"Virginia International Raceway","Full Course",5.263,"United States"
+50,"Virginia International Raceway","North Course",3.270,"United States"
+51,"Virginia International Raceway","South Course",2.670,"United States"
+52,"Virginia International Raceway","Patriot Course",1.651,"United States"
+53,"Watkins Glen","Grand Prix Circuit",5.552,"United States"
+54,"Watkins Glen","Short Circuit",3.377,"United States"
+55,"Watkins Glen","Club Circuit",2.454,"United States"
+56,"WeatherTech Raceway Laguna Seca","Full Circuit",3.602,"United States"
+57,"Yas Marina Circuit","Full Circuit",5.554,"United Arab Emirates"
+58,"Yas Marina Circuit","North Corkscrew",4.713,"United Arab Emirates"
+59,"Yas Marina Circuit","South Circuit",4.425,"United Arab Emirates"
+60,"Circuit of The Americas","Grand Prix Circuit",5.513,"United States"
+61,"Circuit of The Americas","National Circuit",3.426,"United States"
+62,"Circuit of The Americas","Club Circuit",2.376,"United States"
+63,"Summit Point","Full Circuit",3.212,"United States"
+64,"Summit Point","Short Circuit",1.754,"United States"
+65,"Summit Point","Jefferson Circuit",2.200,"United States"
+66,"Daytona International Speedway","Road Course",5.729,"United States"
+67,"Daytona International Speedway","Oval",4.023,"United States"
+68,"Motorsport Arena Oschersleben","Full Circuit",3.667,"Germany"
+69,"Motorsport Arena Oschersleben","National Circuit",2.464,"Germany"
+70,"Motorsport Arena Oschersleben","Club Circuit",1.711,"Germany"
