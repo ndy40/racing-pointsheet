@@ -22,7 +22,7 @@ from pointsheet.domain.responses import ResourceCreated
 from utils.file_validation import validate_file, secure_filename
 
 
-series_bp = Blueprint("event", __name__)
+series_bp = Blueprint("series", __name__)
 
 
 @series_bp.route("/series", methods=["GET"])

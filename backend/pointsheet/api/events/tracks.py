@@ -4,7 +4,7 @@ from modules.event.queries.get_all_tracks import GetAllTracks
 from modules.event.queries.get_track_by_id import GetTrackById
 from pointsheet.auth import api_auth
 
-tracks_bp = Blueprint("tracks", __name__)
+tracks_bp = Blueprint("tracks", __name__, url_prefix="/tracks")
 
 
 @tracks_bp.route("/", methods=["GET"])
@@ -16,7 +16,6 @@ def get_tracks():
     Returns:
         A JSON array of all tracks.
     """
-    print(request.args)
     query = GetAllTracks(**request.args.to_dict())
     tracks = current_app.application.execute(query)
     return [track.model_dump() for track in tracks] if tracks else []
