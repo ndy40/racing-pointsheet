@@ -601,6 +601,21 @@ paths:
       description: Fetch all tracks.
       tags:
         - Tracks
+      parameters:
+        - in: query
+          name: order_by
+          schema:
+            type: string
+            enum:
+              - id
+              - name
+        - in: query
+          name: direction
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
       responses:
         200:
           description: List of tracks

@@ -111,8 +111,25 @@ class TrackRepository(AbstractRepository[Track, TrackModel]):
     mapper_class = TrackModelMapper
     model_class = TrackModel
 
-    def all(self) -> List[TrackModel]:
-        stmt = select(Track).order_by(Track.id)
+    def all(self, order: Query = None) -> List[TrackModel]:
+        stmt = select(Track)
+
+        if order:
+            match (order.order_by.value, order.direction.value):
+                case ("id", "asc"):
+                    stmt = stmt.order_by(Track.id)
+                case ("id", "desc"):
+                    stmt = stmt.order_by(Track.id.desc())
+                case ("name", "asc"):
+                    stmt = stmt.order_by(Track.name)
+                case ("name", "desc"):
+                    stmt = stmt.order_by(Track.name.desc())
+                case _:
+                    pass
+
+        else:
+            stmt = stmt.order_by(Track.id)
+
         result = self._session.execute(stmt).scalars()
         return [self._map_to_model(item) for item in result]
 
@@ -123,8 +140,6 @@ class TrackRepository(AbstractRepository[Track, TrackModel]):
         if result:
             return self._map_to_model(result)
         return None
-
-
 
 
     def delete(self, id: Any or EntityId) -> None:

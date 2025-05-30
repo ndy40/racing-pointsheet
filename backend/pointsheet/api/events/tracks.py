@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, Response, jsonify
+from flask import Blueprint, current_app, Response, jsonify, request
 
 from modules.event.queries.get_all_tracks import GetAllTracks
 from modules.event.queries.get_track_by_id import GetTrackById
@@ -16,7 +16,8 @@ def get_tracks():
     Returns:
         A JSON array of all tracks.
     """
-    query = GetAllTracks()
+    print(request.args)
+    query = GetAllTracks(**request.args.to_dict())
     tracks = current_app.application.execute(query)
     return [track.model_dump() for track in tracks] if tracks else []
 
