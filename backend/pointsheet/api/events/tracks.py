@@ -7,7 +7,7 @@ from pointsheet.auth import api_auth
 tracks_bp = Blueprint("tracks", __name__, url_prefix="/tracks")
 
 
-@tracks_bp.route("/", methods=["GET"])
+@tracks_bp.route("", methods=["GET"])
 @api_auth.login_required
 def get_tracks():
     """
