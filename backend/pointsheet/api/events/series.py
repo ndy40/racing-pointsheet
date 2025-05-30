@@ -139,6 +139,18 @@ def upload_series_cover_image(series_id):
         return {"error": str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
+@series_bp.route("/series/<uuid:series_id>/events", methods=["GET"])
+@api_auth.login_required
+def fetch_series_events(series_id):
+    cmd = GetSeriesById(id=series_id)
+    series: Series = current_app.application.execute(cmd)
+
+    if series and series.events:
+        return [event.model_dump() for event in series.events]
+
+    return []
+
+
 @series_bp.route("/series/<uuid:series_id>/events/<uuid:event_id>/", methods=["DELETE"])
 @api_auth.login_required
 def delete_series_event(series_id, event_id):

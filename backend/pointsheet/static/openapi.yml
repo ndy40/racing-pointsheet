@@ -252,6 +252,28 @@ paths:
         401:
           description: Forbidden
   /api/series/{series_id}/events:
+    get:
+      description: Get all events for a series
+      operationId: getSeriesEvents
+      parameters:
+        - in: path
+          name: series_id
+          required: true
+          schema:
+            type: uuid
+      tags:
+        - Series
+      responses:
+        200:
+          description: List of events for the series
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+        401:
+          description: Unauthorized
     post:
       description: Create event for series
       operationId: createEventForSeries

@@ -101,6 +101,32 @@ def test_delete_event_from_series(client, db_session, auth_token):
     assert resp.status_code == HTTPStatus.NO_CONTENT, resp.json
 
 
+def test_fetch_events_for_series(client, db_session, auth_token):
+    # Create events with known IDs
+    event1_id = uuid.uuid4()
+    event2_id = uuid.uuid4()
+
+    # Create events
+    event1 = Event(id=event1_id, status=EventStatus.open, host=uuid.uuid4(), title="Event 1")
+    event2 = Event(id=event2_id, status=EventStatus.open, host=uuid.uuid4(), title="Event 2")
+
+    # Create a series with the events
+    series = SeriesFactory(status=SeriesStatus.started, events=[event1, event2])
+    db_session.commit()
+
+    # Call the endpoint
+    resp = client.get(f"/api/series/{series.id}/events", headers=auth_token)
+
+    # Verify the response
+    assert resp.status_code == HTTPStatus.OK
+    assert len(resp.json) == 2
+
+    # Verify the events are in the response
+    event_ids = [event["id"] for event in resp.json]
+    assert str(event1_id) in event_ids
+    assert str(event2_id) in event_ids
+
+
 def test_series_startus_cannot_be_started_after_close(client, db_session, auth_token):
     series = SeriesFactory(status=SeriesStatus.closed)
     db_session.commit()
