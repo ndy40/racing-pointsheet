@@ -4,7 +4,7 @@ from modules.event.queries.get_all_tracks import GetAllTracks
 from modules.event.queries.get_track_by_id import GetTrackById
 from pointsheet.auth import api_auth
 
-tracks_bp = Blueprint("tracks", __name__, url_prefix="/tracks")
+tracks_bp = Blueprint("tracks", __name__)
 
 
 @tracks_bp.route("/", methods=["GET"])
