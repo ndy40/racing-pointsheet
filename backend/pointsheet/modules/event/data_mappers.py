@@ -3,6 +3,7 @@ from modules.event.domain.entity import (
     Schedule,
     RaceResult as RaceResultEntity,
     Track as TrackModel,
+    Car as CarModel,
 )
 from modules.event.domain.entity import Series as SeriesModel, Driver as DriverModel
 from pointsheet.models import (
@@ -12,6 +13,7 @@ from pointsheet.models import (
     RaceResult,
     Participants,
     Track,
+    Car,
 )
 from pointsheet.repository import DataMapper
 
@@ -40,7 +42,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
     result_mapper = ResultMapper()
 
     def to_db_entity(self, instance: EventModel) -> Event:
-        return Event(
+        event = Event(
             id=instance.id,
             title=instance.title,
             starts_at=instance.starts_at,
@@ -70,6 +72,18 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             else [],
         )
 
+        # Add cars to the event if they exist
+        if instance.cars:
+            for car in instance.cars:
+                db_car = Car(
+                    game=car.game,
+                    model=car.model,
+                    year=car.year
+                )
+                event.cars.append(db_car)
+
+        return event
+
     def to_domain_model(self, instance: Event) -> EventModel:
         event = EventModel(
             title=instance.title,
@@ -98,6 +112,17 @@ class EventModelMapper(DataMapper[Event, EventModel]):
                             schedule.result
                             and self.result_mapper.to_domain_model(schedule.result)
                         ),
+                    )
+                )
+
+        # Add cars to the domain model if they exist
+        if instance.cars:
+            for car in instance.cars:
+                event.add_car(
+                    CarModel(
+                        game=car.game,
+                        model=car.model,
+                        year=car.year
                     )
                 )
 
@@ -155,4 +180,22 @@ class TrackModelMapper(DataMapper[Track, TrackModel]):
             layout=instance.layout,
             country=instance.country,
             length=instance.length,
+        )
+
+
+class CarModelMapper(DataMapper[Car, CarModel]):
+    def to_db_entity(self, instance: CarModel) -> Car:
+        return Car(
+            id=instance.id if hasattr(instance, 'id') else None,
+            game=instance.game,
+            model=instance.model,
+            year=instance.year,
+        )
+
+    def to_domain_model(self, instance: Car) -> CarModel:
+        return CarModel(
+            id=instance.id,
+            game=instance.game,
+            model=instance.model,
+            year=instance.year,
         )

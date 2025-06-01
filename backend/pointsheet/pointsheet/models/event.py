@@ -8,6 +8,8 @@ from sqlalchemy import (
     Integer,
     UniqueConstraint,
     Text,
+    Table,
+    Column,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
@@ -20,6 +22,14 @@ from pointsheet.models.custom_types import (
     EventStatusType,
     ScheduleTypeType,
     PydanticJsonType,
+)
+
+# Define the event_cars association table
+event_cars = Table(
+    "event_cars",
+    BaseModel.metadata,
+    Column("event_id", EntityIdType, ForeignKey("events.id", ondelete="CASCADE"), primary_key=True),
+    Column("car_id", Integer, ForeignKey("cars.id", ondelete="CASCADE"), primary_key=True),
 )
 
 
@@ -89,6 +99,19 @@ class Track(BaseModel):
         return name
 
 
+class Car(BaseModel):
+    __tablename__ = "cars"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    game: Mapped[str] = mapped_column(String(255))
+    model: Mapped[str] = mapped_column(String(255))
+    year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    events: Mapped[List["Event"]] = relationship(
+        "Event", 
+        secondary="event_cars",
+        back_populates="cars"
+    )
+
+
 class Event(BaseModel):
     __tablename__ = "events"
     id: Mapped[EntityId] = mapped_column(
@@ -114,8 +137,22 @@ class Event(BaseModel):
     drivers: Mapped[Optional[List[Participants]]] = relationship(
         Participants, cascade="all, delete-orphan"
     )
+    cars: Mapped[Optional[List[Car]]] = relationship(
+        "Car", 
+        secondary=event_cars,
+        back_populates="events"
+    )
 
     def model_dump(self):
+        cars_data = []
+        if self.cars:
+            for car in self.cars:
+                cars_data.append({
+                    "game": car.game,
+                    "model": car.model,
+                    "year": car.year
+                })
+
         return {
             "id": str(self.id),
             "title": self.title,
@@ -124,6 +161,7 @@ class Event(BaseModel):
             "starts_at": self.starts_at.isoformat() if self.starts_at else None,
             "ends_at": self.ends_at.isoformat() if self.ends_at else None,
             "host": str(self.host) if self.host else None,
+            "cars": cars_data
         }
 
     @validates("starts_at", "ends_at", include_removes=False)

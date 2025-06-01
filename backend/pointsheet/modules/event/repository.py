@@ -4,13 +4,14 @@ from typing import Any, List, Optional
 from lato import Query
 from sqlalchemy import select, or_
 
-from pointsheet.models import Event, Series, Participants, Track
+from pointsheet.models import Event, Series, Participants, Track, Car
 from pointsheet.repository import AbstractRepository
 
-from .data_mappers import EventModelMapper, SeriesModelMapper, TrackModelMapper
+from .data_mappers import EventModelMapper, SeriesModelMapper, TrackModelMapper, CarModelMapper
 from .domain.entity import Event as EventModel
 from .domain.entity import Series as SeriesModel
 from .domain.entity import Track as TrackModel
+from .domain.entity import Car as CarModel
 from pointsheet.domain.types import EntityId
 from .domain.value_objects import EventStatus
 
@@ -154,5 +155,42 @@ class TrackRepository(AbstractRepository[Track, TrackModel]):
 
     def exists(self, id: int) -> bool:
         stmt = select(Track).where(Track.id == id)
+        result = self._session.execute(stmt).scalar()
+        return result is not None
+
+
+class CarRepository(AbstractRepository[Car, CarModel]):
+    mapper_class = CarModelMapper
+    model_class = CarModel
+
+    def all(self, query: Query = None) -> List[CarModel]:
+        stmt = select(Car)
+
+        # Filter by game if provided
+        if query and hasattr(query, 'game') and query.game:
+            stmt = stmt.where(Car.game == query.game)
+
+        # Order by id by default
+        stmt = stmt.order_by(Car.id)
+
+        result = self._session.execute(stmt).scalars()
+        return [self._map_to_model(item) for item in result]
+
+    def find_by_id(self, id: int) -> CarModel | None:
+        stmt = select(Car).where(Car.id == id)
+        result = self._session.execute(stmt).scalar()
+
+        if result:
+            return self._map_to_model(result)
+        return None
+
+    def delete(self, id: Any) -> None:
+        entity_to_delete = self._session.get(Car, id)
+        if entity_to_delete:
+            self._session.delete(entity_to_delete)
+            self._session.commit()
+
+    def exists(self, id: int) -> bool:
+        stmt = select(Car).where(Car.id == id)
         result = self._session.execute(stmt).scalar()
         return result is not None

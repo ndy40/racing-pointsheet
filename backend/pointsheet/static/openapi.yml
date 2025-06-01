@@ -679,6 +679,31 @@ paths:
           description: Not found
         401:
           description: Forbidden
+
+  /api/cars:
+    get:
+      operationId: getAllCars
+      description: Fetch all cars with optional filtering by game.
+      tags:
+        - Cars
+      parameters:
+        - in: query
+          name: game
+          schema:
+            type: string
+          description: Filter cars by game (e.g., Forza Motorsport, ACC, iRacing)
+          required: false
+      responses:
+        200:
+          description: List of cars
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Car"
+        401:
+          description: Forbidden
 components:
   securitySchemes:
     BearerAuth:
@@ -867,6 +892,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Schedule"
+        cars:
+          description: List of cars available for this event.
+          type: array
+          items:
+            $ref: "#/components/schemas/Car"
     CreateEvent:
       type: object
       required:
@@ -892,6 +922,11 @@ components:
             - in_progress
         rules:
           type: string
+        cars:
+          description: List of cars available for this event.
+          type: array
+          items:
+            $ref: "#/components/schemas/Car"
     UpdateEvent:
       type: object
       required:
@@ -1029,6 +1064,24 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DriverResult"
+
+    Car:
+      type: object
+      required:
+        - game
+        - model
+      properties:
+        id:
+          type: integer
+        game:
+          type: string
+          description: The game the car is associated with (e.g., Forza Motorsport, ACC, iRacing)
+        model:
+          type: string
+          description: Name of the car model
+        year:
+          type: integer
+          description: Optional year of the car
 
     Track:
       type: object
