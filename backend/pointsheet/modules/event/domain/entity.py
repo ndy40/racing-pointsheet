@@ -91,21 +91,6 @@ class Car(BaseModel):
     year: Optional[str] = None
 
 
-class Car(BaseModel):
-    id: int
-    game: str
-    model: str
-    year: Optional[int] = None
-
-    def model_dump(self):
-        return {
-            "id": self.id,
-            "game": self.game,
-            "model": self.model,
-            "year": self.year
-        }
-
-
 class Event(AggregateRoot):
     title: str
     host: EntityId

@@ -54,7 +54,6 @@ class GameModelMapper(DataMapper[Game, GameModel]):
         )
 
 
-
 class CarModelMapper(DataMapper[Car, CarModel]):
     def to_db_entity(self, instance: CarModel) -> Car:
         game = self.game_mapper.to_db_entity(instance.game)
