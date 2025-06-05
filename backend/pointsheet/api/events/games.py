@@ -8,7 +8,7 @@ from pointsheet.auth import api_auth
 games_bp = Blueprint("games", __name__, url_prefix="/games")
 
 
-@games_bp.route("/", methods=["GET"])
+@games_bp.route("", methods=["GET"])
 @api_auth.login_required
 def get_games():
     """
