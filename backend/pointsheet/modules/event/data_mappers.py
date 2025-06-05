@@ -56,22 +56,17 @@ class GameModelMapper(DataMapper[Game, GameModel]):
 
 
 class CarModelMapper(DataMapper[Car, CarModel]):
-    game_mapper = GameModelMapper()
-
     def to_db_entity(self, instance: CarModel) -> Car:
         game = self.game_mapper.to_db_entity(instance.game)
         return Car(
             id=instance.id if hasattr(instance, 'id') else None,
-            game=game,
             model=instance.model,
             year=instance.year,
         )
 
     def to_domain_model(self, instance: Car) -> CarModel:
-        game = self.game_mapper.to_domain_model(instance.game)
         return CarModel(
             id=instance.id,
-            game=game,
             model=instance.model,
             year=instance.year,
         )

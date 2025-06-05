@@ -112,7 +112,7 @@ class Car(BaseModel):
     game_id: Mapped[int] = mapped_column(Integer, ForeignKey("games.id"))
     game: Mapped["Game"] = relationship("Game", back_populates="cars")
     model: Mapped[str] = mapped_column(String(255))
-    year: Mapped[Optional[str]] = mapped_column(Integer, nullable=True)
+    year: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
     events: Mapped[List["Event"]] = relationship(
         "Event", 
         secondary="event_cars",

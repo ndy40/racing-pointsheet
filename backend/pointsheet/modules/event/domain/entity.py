@@ -87,7 +87,6 @@ class Game(BaseModel):
 
 class Car(BaseModel):
     id: int
-    game: Game
     model: str
     year: Optional[str] = None
 
