@@ -6,7 +6,7 @@ from pointsheet.auth import api_auth
 cars_bp = Blueprint("cars", __name__, url_prefix="/cars")
 
 
-@cars_bp.route("/", methods=["GET"])
+@cars_bp.route("", methods=["GET"])
 @api_auth.login_required
 def get_cars():
     """
