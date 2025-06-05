@@ -89,19 +89,16 @@ class Track(BaseModel):
         }
 
 
+class Game(BaseModel):
+    id: int
+    name: str
+
+
 class Car(BaseModel):
     id: int
-    game: str
+    game: Game
     model: str
-    year: Optional[int] = None
-
-    def model_dump(self):
-        return {
-            "id": self.id,
-            "game": self.game,
-            "model": self.model,
-            "year": self.year
-        }
+    year: Optional[str] = None
 
 
 class Event(AggregateRoot):

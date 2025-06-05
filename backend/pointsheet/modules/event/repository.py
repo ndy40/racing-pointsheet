@@ -1,10 +1,10 @@
 from datetime import datetime, timezone
-from typing import Any, List, Optional
+from typing import Any, List
 
 from lato import Query
 from sqlalchemy import select, or_
 
-from pointsheet.models import Event, Series, Participants, Track, Car
+from pointsheet.models import Event, Series, Participants, Track, Car, Game
 from pointsheet.repository import AbstractRepository
 
 from .data_mappers import EventModelMapper, SeriesModelMapper, TrackModelMapper, CarModelMapper
@@ -164,11 +164,15 @@ class CarRepository(AbstractRepository[Car, CarModel]):
     model_class = CarModel
 
     def all(self, query: Query = None) -> List[CarModel]:
-        stmt = select(Car)
+        stmt = select(Car).join(Game)
 
         # Filter by game if provided
         if query and hasattr(query, 'game') and query.game:
-            stmt = stmt.where(Car.game == query.game)
+            # Check if game is an integer (id) or string (name)
+            if isinstance(query.game, int):
+                stmt = stmt.where(Game.id == query.game)
+            else:
+                stmt = stmt.where(Game.name == query.game)
 
         # Order by id by default
         stmt = stmt.order_by(Car.id)

@@ -6,7 +6,7 @@ from .custom_types import (
     EntityIdType,
     SeriesStatusType,
 )
-from .event import Series, Event, EventSchedule, Participants, RaceResult, Track, Car
+from .event import Series, Event, EventSchedule, Participants, RaceResult, Track, Car, Game
 
 
 __all__ = [
@@ -23,5 +23,6 @@ __all__ = [
     "Participants",
     "RaceResult",
     "Track",
+    'Game',
     "Car",
 ]

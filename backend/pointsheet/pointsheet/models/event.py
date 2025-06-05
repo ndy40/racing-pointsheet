@@ -99,12 +99,20 @@ class Track(BaseModel):
         return name
 
 
+class Game(BaseModel):
+    __tablename__ = "games"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(255), unique=True)
+    cars: Mapped[List["Car"]] = relationship("Car", back_populates="game")
+
+
 class Car(BaseModel):
     __tablename__ = "cars"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    game: Mapped[str] = mapped_column(String(255))
+    game_id: Mapped[int] = mapped_column(Integer, ForeignKey("games.id"))
+    game: Mapped["Game"] = relationship("Game", back_populates="cars")
     model: Mapped[str] = mapped_column(String(255))
-    year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    year: Mapped[Optional[str]] = mapped_column(Integer, nullable=True)
     events: Mapped[List["Event"]] = relationship(
         "Event", 
         secondary="event_cars",
@@ -148,7 +156,10 @@ class Event(BaseModel):
         if self.cars:
             for car in self.cars:
                 cars_data.append({
-                    "game": car.game,
+                    "game": {
+                        "id": car.game.id,
+                        "name": car.game.name
+                    },
                     "model": car.model,
                     "year": car.year
                 })

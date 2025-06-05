@@ -10,7 +10,7 @@ RUN apt update -y && apt install -y libgl1 tesseract-ocr && python -m venv $VIRT
 ENV PATH=$VIRTUAL_ENV/bin:$PATH
 
 COPY ./pointsheet/pyproject.toml ./pointsheet/poetry.lock /app/
-RUN pip install poetry && poetry install
+RUN pip install poetry  &&  poetry install
 COPY ./pointsheet/ /app
 
 RUN pip install gunicorn
