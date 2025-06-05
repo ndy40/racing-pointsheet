@@ -15,8 +15,7 @@ from .auth.repository import ActiveUserRepository, RegisterUserRepository
 from .dependency_provider import LagomDependencyProvider
 from .event import event_module
 from pointsheet.auth import get_user_id
-from .event.repository import EventRepository, SeriesRepository, TrackRepository
-
+from .event.repository import EventRepository, SeriesRepository, TrackRepository, GameRepository, CarRepository
 
 app_container = Container()
 dp = LagomDependencyProvider(app_container)
@@ -57,6 +56,8 @@ def on_create_transaction_context():
     txn_container[TrackRepository] = TrackRepository(session)
     txn_container[TeamRepository] = TeamRepository(session)
     txn_container[DriverRepository] = DriverRepository(session)
+    txn_container[GameRepository] = GameRepository(session)
+    txn_container[CarRepository] = CarRepository(session)
     txn_container[UserId] = get_user_id()
 
     # Create the transaction context with the dependency provider

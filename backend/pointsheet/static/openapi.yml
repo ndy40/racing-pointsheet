@@ -679,6 +679,99 @@ paths:
           description: Not found
         401:
           description: Forbidden
+
+  /api/games:
+    get:
+      operationId: getAllGames
+      description: Fetch all games.
+      tags:
+        - Games
+      responses:
+        200:
+          description: List of games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Game"
+        401:
+          description: Forbidden
+
+  /api/games/{id}:
+    get:
+      description: Get game by ID
+      operationId: getGameById
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      tags:
+        - Games
+      responses:
+        200:
+          description: Game
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+        404:
+          description: Not found
+        401:
+          description: Forbidden
+
+  /api/games/{id}/cars:
+    get:
+      description: Get all cars for a specific game
+      operationId: getGameCars
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      tags:
+        - Games
+      responses:
+        200:
+          description: List of cars for the specified game
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Car"
+        404:
+          description: Game not found
+        401:
+          description: Forbidden
+
+  /api/cars:
+    get:
+      operationId: getAllCars
+      description: Fetch all cars with optional filtering by game.
+      tags:
+        - Cars
+      parameters:
+        - in: query
+          name: game
+          schema:
+            type: string
+          description: Filter cars by game (e.g., Forza Motorsport, ACC, iRacing)
+          required: false
+      responses:
+        200:
+          description: List of cars
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Car"
+        401:
+          description: Forbidden
 components:
   securitySchemes:
     BearerAuth:
@@ -867,6 +960,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Schedule"
+        cars:
+          description: List of cars available for this event.
+          type: array
+          items:
+            $ref: "#/components/schemas/Car"
     CreateEvent:
       type: object
       required:
@@ -892,6 +990,11 @@ components:
             - in_progress
         rules:
           type: string
+        cars:
+          description: List of cars available for this event.
+          type: array
+          items:
+            $ref: "#/components/schemas/Car"
     UpdateEvent:
       type: object
       required:
@@ -1029,6 +1132,37 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DriverResult"
+
+    Game:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the game
+        name:
+          type: string
+          description: Name of the game (e.g., Forza Motorsport, ACC, iRacing)
+
+    Car:
+      type: object
+      required:
+        - game
+        - model
+      properties:
+        id:
+          type: integer
+        game:
+          $ref: "#/components/schemas/Game"
+          description: The game the car is associated with
+        model:
+          type: string
+          description: Name of the car model
+        year:
+          type: integer
+          description: Optional year of the car
 
     Track:
       type: object

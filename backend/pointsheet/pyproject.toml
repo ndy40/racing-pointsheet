@@ -39,6 +39,7 @@ sqlalchemy-utils = "^0.41.2"
 pytest-env = "^1.1.5"
 jsonschema = "^4.23.0"
 fastjsonschema = "*"
+bs4 = "^0.0.2"
 
 [tool.pytest.ini_options]
 minversion = "6.0"

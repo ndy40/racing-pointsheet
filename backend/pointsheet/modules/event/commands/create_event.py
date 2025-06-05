@@ -1,11 +1,11 @@
 from datetime import datetime
-from typing import Optional, Self
+from typing import Optional, Self, List
 
 from lato import Command
 from pydantic import ValidationError, model_validator, field_validator
 
 from modules.event import event_module
-from modules.event.domain.entity import Event
+from modules.event.domain.entity import Event, Car
 from modules.event.domain.value_objects import EventStatus
 from modules.event.repository import EventRepository
 from pointsheet.domain.types import EntityId
@@ -19,6 +19,7 @@ class CreateEvent(Command):
     rules: Optional[str] = None
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
+    cars: Optional[List[Car]] = None
 
     @field_validator("status", mode="before")
     @classmethod

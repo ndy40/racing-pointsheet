@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from typing import List, Optional, Self, Dict
 
+from numpy import integer
 from pydantic import BaseModel, model_validator, computed_field
 
 from modules.event.exceptions import (
@@ -78,14 +79,16 @@ class Track(BaseModel):
     country: str
     length: str
 
-    def model_dump(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "layout": self.layout,
-            "country": self.country,
-            "length": self.length
-        }
+
+class Game(BaseModel):
+    id: int
+    name: str
+
+
+class Car(BaseModel):
+    id: int
+    model: str
+    year: Optional[str] = None
 
 
 class Event(AggregateRoot):
@@ -98,6 +101,7 @@ class Event(AggregateRoot):
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
     drivers: Optional[List[Driver]] = None
+    cars: Optional[List[Car]] = None
 
     @model_validator(mode="after")
     def check_start_and_end_date(self) -> Self:
@@ -224,6 +228,16 @@ class Event(AggregateRoot):
 
     def is_participating(self, driver_id: EntityId) -> bool:
         return self.find_driver_by_id_or_name(driver_id) is not None
+
+    def add_car(self, car: Car) -> None:
+        if not self.cars:
+            self.cars = []
+
+        self.cars.append(car)
+
+    def remove_car(self, car_model: str) -> None:
+        if self.cars:
+            self.cars = [car for car in self.cars if car.model != car_model]
 
 
 class Series(AggregateRoot):
