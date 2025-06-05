@@ -168,13 +168,13 @@ class CarRepository(AbstractRepository[Car, CarModel]):
         stmt = select(Car).join(Game)
 
         # Filter by game if provided
-        if query and hasattr(query, 'game') and query.game:
+        if query and hasattr(query, 'game_id') and query.game_id:
             # Check if game is an integer (id) or string (name)
-            if isinstance(query.game, int):
-                stmt = stmt.where(Game.id == query.game)
+            if isinstance(query.game_id, int):
+                stmt = stmt.where(Game.id == query.game_id)
             else:
                 stmt = stmt.where(Game.name == query.game)
-
+        print(str(query))
         # Order by id by default
         stmt = stmt.order_by(Car.id)
 
