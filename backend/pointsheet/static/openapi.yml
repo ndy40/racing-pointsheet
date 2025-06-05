@@ -680,6 +680,74 @@ paths:
         401:
           description: Forbidden
 
+  /api/games:
+    get:
+      operationId: getAllGames
+      description: Fetch all games.
+      tags:
+        - Games
+      responses:
+        200:
+          description: List of games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Game"
+        401:
+          description: Forbidden
+
+  /api/games/{id}:
+    get:
+      description: Get game by ID
+      operationId: getGameById
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      tags:
+        - Games
+      responses:
+        200:
+          description: Game
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+        404:
+          description: Not found
+        401:
+          description: Forbidden
+
+  /api/games/{id}/cars:
+    get:
+      description: Get all cars for a specific game
+      operationId: getGameCars
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      tags:
+        - Games
+      responses:
+        200:
+          description: List of cars for the specified game
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Car"
+        404:
+          description: Game not found
+        401:
+          description: Forbidden
+
   /api/cars:
     get:
       operationId: getAllCars
@@ -1065,6 +1133,19 @@ components:
           items:
             $ref: "#/components/schemas/DriverResult"
 
+    Game:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the game
+        name:
+          type: string
+          description: Name of the game (e.g., Forza Motorsport, ACC, iRacing)
+
     Car:
       type: object
       required:
@@ -1074,8 +1155,8 @@ components:
         id:
           type: integer
         game:
-          type: string
-          description: The game the car is associated with (e.g., Forza Motorsport, ACC, iRacing)
+          $ref: "#/components/schemas/Game"
+          description: The game the car is associated with
         model:
           type: string
           description: Name of the car model

@@ -7,11 +7,12 @@ from sqlalchemy import select, or_
 from pointsheet.models import Event, Series, Participants, Track, Car, Game
 from pointsheet.repository import AbstractRepository
 
-from .data_mappers import EventModelMapper, SeriesModelMapper, TrackModelMapper, CarModelMapper
+from .data_mappers import EventModelMapper, SeriesModelMapper, TrackModelMapper, CarModelMapper, GameModelMapper
 from .domain.entity import Event as EventModel
 from .domain.entity import Series as SeriesModel
 from .domain.entity import Track as TrackModel
 from .domain.entity import Car as CarModel
+from .domain.entity import Game as GameModel
 from pointsheet.domain.types import EntityId
 from .domain.value_objects import EventStatus
 
@@ -196,5 +197,38 @@ class CarRepository(AbstractRepository[Car, CarModel]):
 
     def exists(self, id: int) -> bool:
         stmt = select(Car).where(Car.id == id)
+        result = self._session.execute(stmt).scalar()
+        return result is not None
+
+
+class GameRepository(AbstractRepository[Game, GameModel]):
+    mapper_class = GameModelMapper
+    model_class = GameModel
+
+    def all(self, query: Query = None) -> List[GameModel]:
+        stmt = select(Game)
+
+        # Order by id by default
+        stmt = stmt.order_by(Game.id)
+
+        result = self._session.execute(stmt).scalars()
+        return [self._map_to_model(item) for item in result]
+
+    def find_by_id(self, id: int) -> GameModel | None:
+        stmt = select(Game).where(Game.id == id)
+        result = self._session.execute(stmt).scalar()
+
+        if result:
+            return self._map_to_model(result)
+        return None
+
+    def delete(self, id: Any) -> None:
+        entity_to_delete = self._session.get(Game, id)
+        if entity_to_delete:
+            self._session.delete(entity_to_delete)
+            self._session.commit()
+
+    def exists(self, id: int) -> bool:
+        stmt = select(Game).where(Game.id == id)
         result = self._session.execute(stmt).scalar()
         return result is not None
