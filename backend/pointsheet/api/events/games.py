@@ -61,7 +61,7 @@ def get_game_cars(game_id):
     page = request.args.get('page', 1, type=int)
     page_size = request.args.get('page_size', 20, type=int)
 
-    query = GetCars(game_id=game_id, page=page, page_size=page_size)
+    query = GetCars(game_id=game_id, page=page, page_size=page_size, search=request.args.get('search'))
     result = current_app.application.execute(query)
 
     # The result is now always a PaginatedResponse

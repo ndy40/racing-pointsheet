@@ -746,6 +746,11 @@ paths:
             default: 20
           required: false
           description: Number of items per page
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Search to search by car model
       tags:
         - Games
       responses:

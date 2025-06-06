@@ -165,31 +165,49 @@ class CarRepository(AbstractRepository[Car, CarModel]):
     mapper_class = CarModelMapper
     model_class = CarModel
 
-    def all(self, query: Query = None) -> Union[List[CarModel], PaginatedResponse[CarModel]]:
-        stmt = select(Car).join(Game)
+    def _build_base_query(self) -> Any:
+        """Build the base query for cars with game join."""
+        return select(Car).join(Game)
 
-        # Filter by game if provided
+    def _apply_game_filter(self, stmt: Any, query: Query = None) -> Any:
+        """Apply game filter to the query if provided."""
         if query and hasattr(query, 'game_id') and query.game_id:
             # Check if game is an integer (id) or string (name)
             if isinstance(query.game_id, int):
-                stmt = stmt.where(Game.id == query.game_id)
+                return stmt.where(Game.id == query.game_id)
             else:
-                stmt = stmt.where(Game.name == query.game)
+                return stmt.where(Game.name == query.game)
+        return stmt
 
-        # Order by id by default
-        stmt = stmt.order_by(Car.id)
+    def _get_car_ids_from_search(self, search_term: str) -> List[int]:
+        """Get car IDs that match the search term using FTS5."""
+        from sqlalchemy import text
+        try:
+            # For content tables, join FTS5 results with the content table
+            fts_stmt = select(text("cars.id")).select_from(
+                text("car_fts").join(text("cars"), text("car_fts.rowid = cars.id"))
+            ).where(text("car_fts MATCH :search")).params(search=search_term)
 
-        # Get total count for pagination
-        count_stmt = select(func.count()).select_from(Car).join(Game)
-        if query and hasattr(query, 'game_id') and query.game_id:
-            if isinstance(query.game_id, int):
-                count_stmt = count_stmt.where(Game.id == query.game_id)
+            return self._session.execute(fts_stmt).scalars().all()
+        except Exception as e:
+            # Log the error and return empty list to trigger fallback
+            print(f"FTS5 search failed: {e}")
+            return []
+
+    def _apply_search_filter(self, stmt: Any, query: Query = None) -> Any:
+        """Apply search filter to the query if provided."""
+        if query and hasattr(query, 'search') and query.search:
+            car_ids = self._get_car_ids_from_search(query.search)
+            if car_ids:
+                return stmt.where(Car.id.in_(car_ids))
             else:
-                count_stmt = count_stmt.where(Game.name == query.game)
+                # Fallback to LIKE search if no FTS matches or if FTS is not available
+                search_term = f"%{query.search}%"
+                return stmt.where(Car.model.ilike(search_term))
+        return stmt
 
-        total = self._session.execute(count_stmt).scalar() or 0
-
-        # Apply pagination
+    def _get_pagination_params(self, query: Query = None) -> tuple[int, int]:
+        """Extract pagination parameters from the query."""
         page = 1
         page_size = 20
 
@@ -199,11 +217,43 @@ class CarRepository(AbstractRepository[Car, CarModel]):
             if hasattr(query, 'page_size'):
                 page_size = max(1, query.page_size)  # Ensure page_size is at least 1
 
-        stmt = stmt.offset((page - 1) * page_size).limit(page_size)
+        return page, page_size
 
+    def _apply_pagination(self, stmt: Any, page: int, page_size: int) -> Any:
+        """Apply pagination to the query."""
+        return stmt.offset((page - 1) * page_size).limit(page_size)
+
+    def _count_total_records(self, query: Query = None) -> int:
+        """Count total records for pagination."""
+        count_stmt = select(func.count()).select_from(Car).join(Game)
+        count_stmt = self._apply_game_filter(count_stmt, query)
+        count_stmt = self._apply_search_filter(count_stmt, query)
+        return self._session.execute(count_stmt).scalar() or 0
+
+    def all(self, query: Query = None) -> Union[List[CarModel], PaginatedResponse[CarModel]]:
+        """Get all cars with optional filtering, searching, and pagination."""
+        # Build base query
+        stmt = self._build_base_query()
+
+        # Apply filters
+        stmt = self._apply_game_filter(stmt, query)
+        stmt = self._apply_search_filter(stmt, query)
+
+        # Order by id by default
+        stmt = stmt.order_by(Car.id)
+
+        # Get total count for pagination
+        total = self._count_total_records(query)
+
+        # Apply pagination
+        page, page_size = self._get_pagination_params(query)
+        stmt = self._apply_pagination(stmt, page, page_size)
+
+        # Execute query and map results
         result = self._session.execute(stmt).scalars()
         items = [self._map_to_model(item) for item in result]
 
+        # Create and return paginated response
         return PaginatedResponse.create(
             items=items,
             total=total,
