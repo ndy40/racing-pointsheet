@@ -1,11 +1,12 @@
 from datetime import datetime, timezone
-from typing import Any, List
+from typing import Any, List, Union
 
 from lato import Query
-from sqlalchemy import select, or_
+from sqlalchemy import select, or_, func
 
 from pointsheet.models import Event, Series, Participants, Track, Car, Game
 from pointsheet.repository import AbstractRepository
+from pointsheet.domain.responses import PaginatedResponse
 
 from .data_mappers import EventModelMapper, SeriesModelMapper, TrackModelMapper, CarModelMapper, GameModelMapper
 from .domain.entity import Event as EventModel
@@ -164,7 +165,7 @@ class CarRepository(AbstractRepository[Car, CarModel]):
     mapper_class = CarModelMapper
     model_class = CarModel
 
-    def all(self, query: Query = None) -> List[CarModel]:
+    def all(self, query: Query = None) -> Union[List[CarModel], PaginatedResponse[CarModel]]:
         stmt = select(Car).join(Game)
 
         # Filter by game if provided
@@ -174,12 +175,41 @@ class CarRepository(AbstractRepository[Car, CarModel]):
                 stmt = stmt.where(Game.id == query.game_id)
             else:
                 stmt = stmt.where(Game.name == query.game)
-        print(str(query))
+
         # Order by id by default
         stmt = stmt.order_by(Car.id)
 
+        # Get total count for pagination
+        count_stmt = select(func.count()).select_from(Car).join(Game)
+        if query and hasattr(query, 'game_id') and query.game_id:
+            if isinstance(query.game_id, int):
+                count_stmt = count_stmt.where(Game.id == query.game_id)
+            else:
+                count_stmt = count_stmt.where(Game.name == query.game)
+
+        total = self._session.execute(count_stmt).scalar() or 0
+
+        # Apply pagination
+        page = 1
+        page_size = 20
+
+        if query:
+            if hasattr(query, 'page'):
+                page = max(1, query.page)  # Ensure page is at least 1
+            if hasattr(query, 'page_size'):
+                page_size = max(1, query.page_size)  # Ensure page_size is at least 1
+
+        stmt = stmt.offset((page - 1) * page_size).limit(page_size)
+
         result = self._session.execute(stmt).scalars()
-        return [self._map_to_model(item) for item in result]
+        items = [self._map_to_model(item) for item in result]
+
+        return PaginatedResponse.create(
+            items=items,
+            total=total,
+            page=page,
+            page_size=page_size
+        )
 
     def find_by_id(self, id: int) -> CarModel | None:
         stmt = select(Car).where(Car.id == id)
