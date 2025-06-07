@@ -96,6 +96,7 @@ class Event(AggregateRoot):
     host: EntityId
     track: Optional[str] = "-"
     status: Optional[EventStatus] = EventStatus.open
+    series: Optional[EntityId] = None
     rules: Optional[str] = None
     schedule: Optional[List[Schedule]] = None
     starts_at: Optional[datetime] = None

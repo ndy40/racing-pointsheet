@@ -126,7 +126,7 @@ class Event(BaseModel):
         EntityIdType, primary_key=True, default=uuid_default()
     )
     title: Mapped[str]
-    series: Mapped[Optional[str]] = mapped_column(
+    series: Mapped[Optional[EntityId]] = mapped_column(
         ForeignKey(
             "series.id",
             ondelete="cascade",

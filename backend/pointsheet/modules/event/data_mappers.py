@@ -80,6 +80,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             title=instance.title,
             starts_at=instance.starts_at,
             ends_at=instance.ends_at,
+            series=instance.series,
             host=instance.host,
             status=instance.status,
             schedule=[
