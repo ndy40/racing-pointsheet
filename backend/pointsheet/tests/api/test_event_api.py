@@ -19,7 +19,7 @@ def test_create_event(client, login):
     }
 
     response = client.post(
-        "/api/events/", json=payload, headers={"Authorization": f"Bearer {token}"}
+        "/api/events", json=payload, headers={"Authorization": f"Bearer {token}"}
     )
     validate(resource_created, response.json)
     assert response.status_code == 201
@@ -35,7 +35,7 @@ def test_create_event_with_ends_at_past_of_starts_at(client, auth_token):
         "ends_at": "2023-11-10T14:00:00Z",
     }
 
-    response = client.post("/api/events/", json=payload, headers=auth_token)
+    response = client.post("/api/events", json=payload, headers=auth_token)
     assert response.status_code == 400
 
 
@@ -43,7 +43,7 @@ def test_create_and_fetch_event_by_id(client, auth_token):
     event = EventFactory()
 
     # Fetch the event by ID
-    fetch_response = client.get(f"/api/events/{str(event.id)}/", headers=auth_token)
+    fetch_response = client.get(f"/api/events/{str(event.id)}", headers=auth_token)
     assert fetch_response.status_code == 200, event.id
     # validate(event_schema, fetch_response.json)
 
@@ -55,7 +55,7 @@ def test_creating_event_without_host_fails(client, auth_token):
         "status": EventStatus.open.value,
     }
 
-    response = client.post("/api/events/", json=payload, headers=auth_token)
+    response = client.post("/api/events", json=payload, headers=auth_token)
     assert response.status_code == 400
 
 
@@ -69,7 +69,7 @@ def test_create_event_with_ends_at_exceeds_one_month_of_starts_at(client, auth_t
         "ends_at": "2023-12-15T15:00:00Z",  # 35 days later
     }
 
-    response = client.post("/api/events/", json=payload, headers=auth_token)
+    response = client.post("/api/events", json=payload, headers=auth_token)
     assert response.status_code == 400
 
 

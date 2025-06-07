@@ -1,4 +1,5 @@
 from flask import Blueprint, request, current_app, Response, jsonify
+from pydantic import ValidationError
 
 from modules.event.commands.add_event_schedule import AddEventSchedule
 from modules.event.commands.add_race_result import AddEventResult
@@ -19,10 +20,13 @@ event_bp = Blueprint("events", __name__, url_prefix="/events")
 @event_bp.route("", methods=["POST"])
 @api_auth.login_required
 def events():
-    cmd = CreateEvent(**request.json)
-    current_app.application.execute(cmd)
-    event = current_app.application.execute(GetEvent(event_id=cmd.id))
-    return ResourceCreated(resource=str(event.id)).model_dump(), 201
+    try:
+        cmd = CreateEvent(**request.json)
+        current_app.application.execute(cmd)
+        event = current_app.application.execute(GetEvent(event_id=cmd.id))
+        return ResourceCreated(resource=str(event.id)).model_dump(), 201
+    except (ValueError, ValidationError) as e:
+        return {"error": str(e)}, 400
 
 
 @event_bp.route("", methods=["GET"])

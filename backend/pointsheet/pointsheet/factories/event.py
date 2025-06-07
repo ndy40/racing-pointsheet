@@ -21,6 +21,7 @@ class EventFactory(SQLAlchemyModelFactory):
     title = factory.Sequence(lambda n: "Event %d" % n)
     host = uuid.uuid4()
     status = EventStatus.open
+    series = None
     starts_at = None
     ends_at = None
     track = None
