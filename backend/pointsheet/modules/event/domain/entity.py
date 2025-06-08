@@ -96,6 +96,7 @@ class Event(AggregateRoot):
     host: EntityId
     track: Optional[str] = "-"
     status: Optional[EventStatus] = EventStatus.open
+    series: Optional[EntityId] = None
     rules: Optional[str] = None
     schedule: Optional[List[Schedule]] = None
     starts_at: Optional[datetime] = None
@@ -272,15 +273,18 @@ class Series(AggregateRoot):
         self.events.sort(key=lambda e: e.starts_at or datetime.max)
 
     def update_event(self, id: EntityId, event: Dict):
+        if not self.events:
+            self.events = []
+            return
+
         try:
             old_event = next(filter(lambda x: x.id == id, self.events))
             updated_event = old_event.model_copy(update=event)
             self.events.remove(old_event)
             self.events.append(updated_event)
+            self.events.sort(key=lambda e: e.starts_at or datetime.max)
         except StopIteration:
-            ...
-
-        self.events.sort(key=lambda e: e.starts_at or datetime.max)
+            pass
 
     def remove_event(self, event_id: EntityId):
         try:

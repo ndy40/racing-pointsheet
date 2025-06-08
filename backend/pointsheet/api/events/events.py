@@ -1,4 +1,5 @@
 from flask import Blueprint, request, current_app, Response, jsonify
+from pydantic import ValidationError
 
 from modules.event.commands.add_event_schedule import AddEventSchedule
 from modules.event.commands.add_race_result import AddEventResult
@@ -13,19 +14,22 @@ from modules.event.queries.get_events import GetEvents
 from pointsheet.auth import api_auth, get_user_id
 from pointsheet.domain.responses import ResourceCreated
 
-event_bp = Blueprint("events", __name__)
+event_bp = Blueprint("events", __name__, url_prefix="/events")
 
 
-@event_bp.route("/events/", methods=["POST"])
+@event_bp.route("", methods=["POST"])
 @api_auth.login_required
 def events():
-    cmd = CreateEvent(**request.json)
-    current_app.application.execute(cmd)
-    event = current_app.application.execute(GetEvent(event_id=cmd.id))
-    return ResourceCreated(resource=str(event.id)).model_dump(), 201
+    try:
+        cmd = CreateEvent(**request.json)
+        current_app.application.execute(cmd)
+        event = current_app.application.execute(GetEvent(event_id=cmd.id))
+        return ResourceCreated(resource=str(event.id)).model_dump(), 201
+    except (ValueError, ValidationError) as e:
+        return {"error": str(e)}, 400
 
 
-@event_bp.route("/events/", methods=["GET"])
+@event_bp.route("", methods=["GET"])
 @api_auth.login_required
 def get_events():
     cmd = GetEvents()
@@ -33,7 +37,7 @@ def get_events():
     return [evt.model_dump() for evt in all_events] if all_events else []
 
 
-@event_bp.route("/events/<uuid:event_id>/", methods=["GET"])
+@event_bp.route("/<uuid:event_id>", methods=["GET"])
 @api_auth.login_required
 def get_event(event_id):
     query = GetEvent(event_id=event_id)
@@ -41,7 +45,7 @@ def get_event(event_id):
     return (event.model_dump(), 200) if event else Response(status=404)
 
 
-@event_bp.route("/events/<uuid:event_id>/join", methods=["PUT"])
+@event_bp.route("/<uuid:event_id>/join", methods=["PUT"])
 @api_auth.login_required
 def join_event(event_id):
     cmd = JoinEvent(event_id=event_id, driver_id=get_user_id().id)
@@ -49,7 +53,7 @@ def join_event(event_id):
     return Response(status=204)
 
 
-@event_bp.route("/events/<uuid:event_id>/leave", methods=["PUT"])
+@event_bp.route("/<uuid:event_id>/leave", methods=["PUT"])
 @api_auth.login_required
 def leave_event(event_id):
     cmd = LeaveEvent(event_id=event_id, driver_id=get_user_id().id)
@@ -58,7 +62,7 @@ def leave_event(event_id):
 
 
 @event_bp.route(
-    "/events/<uuid:event_id>/results",
+    "/<uuid:event_id>/results",
     methods=["POST"],
 )
 @api_auth.login_required
@@ -82,7 +86,7 @@ def upload_results(event_id):
     return Response(status=204)
 
 
-@event_bp.route("/events/<uuid:event_id>/schedule", methods=["POST"])
+@event_bp.route("/<uuid:event_id>/schedule", methods=["POST"])
 @api_auth.login_required
 def add_event_schedule(event_id):
     try:
@@ -94,7 +98,7 @@ def add_event_schedule(event_id):
 
 
 @event_bp.route(
-    "/events/<uuid:event_id>/schedule/<int:schedule_id>", methods=["DELETE"]
+    "/<uuid:event_id>/schedule/<int:schedule_id>", methods=["DELETE"]
 )
 @api_auth.login_required
 def remove_event_schedule(event_id, schedule_id):
@@ -107,7 +111,7 @@ def remove_event_schedule(event_id, schedule_id):
 
 
 @event_bp.route(
-    "/events/<uuid:event_id>/schedule/<int:schedule_id>/results", methods=["POST"]
+    "/<uuid:event_id>/schedule/<int:schedule_id>/results", methods=["POST"]
 )
 @api_auth.login_required
 def upload_result(event_id, schedule_id):
@@ -134,7 +138,7 @@ def upload_result(event_id, schedule_id):
     return Response(status=204)
 
 
-@event_bp.route("/events/<uuid:event_id>/result", methods=["POST"])
+@event_bp.route("/<uuid:event_id>/result", methods=["POST"])
 @api_auth.login_required
 def add_race_result(event_id):
     cmd = AddEventResult(event_id=event_id, **request.json)
