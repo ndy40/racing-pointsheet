@@ -9,7 +9,6 @@ from flask_wtf.csrf import CSRFProtect
 from flask_cors import CORS
 from pydantic import ValidationError
 
-import views
 from api import api_bp
 from pointsheet.config import config as app_config
 
@@ -53,14 +52,9 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route("/")
-    def index():
-        if session.get("token"):
-            return redirect("/home")
-        return redirect("/auth")
 
     @app.route(
-        "/api",
+        "/",
     )
     @csrf.exempt
     def api():
@@ -188,6 +182,5 @@ def create_app(test_config=None):
 
     app.register_blueprint(api_bp)
     csrf.exempt(api_bp)
-    app.register_blueprint(views.views_bp)
 
     return app
