@@ -100,22 +100,22 @@ Restart=always
 WantedBy=multi-user.target
 EOF
 
-cat > /tmp/pointsheet-worker.service << EOF
-[Unit]
-Description=Pointsheet Celery Worker
-After=network.target
-
-[Service]
-User=www-data
-WorkingDirectory=$CURRENT_LINK/backend/pointsheet
-Environment="PATH=$DEPLOY_DIR/venv/bin"
-EnvironmentFile=$CURRENT_LINK/backend/pointsheet/.env
-ExecStart=$DEPLOY_DIR/venv/bin/celery -A pointsheet.celery_worker worker --loglevel=info --logfile=/var/logs/pointsheets/pointsheet-worker.log
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOF
+#cat > /tmp/pointsheet-worker.service << EOF
+#[Unit]
+#Description=Pointsheet Celery Worker
+#After=network.target
+#
+#[Service]
+#User=www-data
+#WorkingDirectory=$CURRENT_LINK/backend/pointsheet
+#Environment="PATH=$DEPLOY_DIR/venv/bin"
+#EnvironmentFile=$CURRENT_LINK/backend/pointsheet/.env
+#ExecStart=$DEPLOY_DIR/venv/bin/celery -A pointsheet.celery_worker worker --loglevel=info --logfile=/var/logs/pointsheets/pointsheet-worker.log
+#Restart=always
+#
+#[Install]
+#WantedBy=multi-user.target
+#EOF
 
 # Check if service files exist and compare hashes
 for service in pointsheet ; do
