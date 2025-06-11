@@ -9,10 +9,11 @@ from modules.event.commands.leave_event import LeaveEvent
 from modules.event.commands.remove_schedule import RemoveSchedule
 from modules.event.commands.save_race_result import SaveEventResults
 from modules.event.commands.save_uploaded_result import UploadRaceResult
+from modules.event.commands.update_event import UpdateEventModel
 from modules.event.queries.get_event import GetEvent
 from modules.event.queries.get_events import GetEvents
 from pointsheet.auth import api_auth, get_user_id
-from pointsheet.domain.responses import ResourceCreated
+from pointsheet.domain.responses import ResourceCreated, ResourceUpdated
 
 event_bp = Blueprint("events", __name__, url_prefix="/events")
 
@@ -144,3 +145,19 @@ def add_race_result(event_id):
     cmd = AddEventResult(event_id=event_id, **request.json)
     current_app.application.execute(cmd)
     return Response(status=204)
+
+
+@event_bp.route("/<uuid:event_id>", methods=["PATCH"])
+@api_auth.login_required
+def update_event(event_id):
+    try:
+        # Create the command with the event_id and request data
+        cmd = UpdateEventModel(event_id=event_id, **request.json)
+
+        # Execute the command
+        current_app.application.execute(cmd)
+
+        # Return the resource updated response with the event ID
+        return ResourceUpdated(resource=str(event_id)).model_dump(), 200
+    except (ValueError, ValidationError) as e:
+        return {"error": str(e)}, 400

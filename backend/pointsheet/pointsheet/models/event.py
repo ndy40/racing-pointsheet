@@ -9,7 +9,7 @@ from sqlalchemy import (
     UniqueConstraint,
     Text,
     Table,
-    Column,
+    Column, Boolean,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
@@ -134,7 +134,7 @@ class Event(BaseModel):
         ),
         nullable=True,
     )
-    track: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    track: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     starts_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     ends_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     host: Mapped[EntityId] = mapped_column(EntityIdType)
@@ -150,6 +150,8 @@ class Event(BaseModel):
         secondary=event_cars,
         back_populates="events"
     )
+    max_participants: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    is_multi_class: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
 
     def model_dump(self):
         cars_data = []

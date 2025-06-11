@@ -94,7 +94,7 @@ class Car(BaseModel):
 class Event(AggregateRoot):
     title: str
     host: EntityId
-    track: Optional[str] = "-"
+    track: Optional[int] = None
     status: Optional[EventStatus] = EventStatus.open
     series: Optional[EntityId] = None
     rules: Optional[str] = None
@@ -103,6 +103,13 @@ class Event(AggregateRoot):
     ends_at: Optional[datetime] = None
     drivers: Optional[List[Driver]] = None
     cars: Optional[List[Car]] = None
+    max_participants: Optional[int] = None
+    is_multi_class: Optional[bool] = None
+
+    @computed_field
+    @property
+    def current_participants(self) -> int:
+        return len(self.drivers) if self.drivers else 0
 
     @model_validator(mode="after")
     def check_start_and_end_date(self) -> Self:

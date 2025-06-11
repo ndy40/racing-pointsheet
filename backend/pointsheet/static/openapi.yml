@@ -407,7 +407,7 @@ paths:
         400:
           description: Bad request
 
-  /api/events/{id}/:
+  /api/events/{id}:
     delete:
       description: Delete event
       operationId: deleteEventById
@@ -440,6 +440,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Event"
+    patch:
+      description: Update event
+      operationId: updateEvent
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+      tags:
+        - Events
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEvent"
+      responses:
+        200:
+          description: Event updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/ResourceUpdated"
+        400:
+          description: Bad request
+        404:
+          description: Event not found
 
   /api/events/{id}/schedule:
     post:
@@ -980,6 +1010,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Car"
+        max_participants:
+          description: The maximum number of allowed participants to this event.
+          type: integer
+        current_participants:
+          description: The number of drivers signed up to this race.
+          type: integer
+        is_multi_class:
+          description: Flag to mark this event as multi-class racing event.
+          type: boolean
     CreateEvent:
       type: object
       required:
@@ -1012,14 +1051,7 @@ components:
             $ref: "#/components/schemas/Car"
     UpdateEvent:
       type: object
-      required:
-        - id
-        - title
-        - status
-        - host
       properties:
-        id:
-          type: uuid
         title:
           type: string
         starts_at:
@@ -1038,6 +1070,19 @@ components:
           type: string
         rules:
           type: string
+        track:
+          type: integer
+        max_participants:
+          type: integer
+          description: The maximum number of allowed participants to this event.
+        cars:
+          description: List of cars available for this event.
+          type: array
+          items:
+            $ref: "#/components/schemas/Car"
+        is_multi_class:
+          description: Flag indicating if this event is a multi-class racing event.
+          type: boolean
 
     Schedule:
       type: object
@@ -1169,9 +1214,6 @@ components:
       properties:
         id:
           type: integer
-        game:
-          $ref: "#/components/schemas/Game"
-          description: The game the car is associated with
         model:
           type: string
           description: Name of the car model
@@ -1240,6 +1282,12 @@ components:
       items:
         $ref: "#/components/schemas/RaceResult"
     ResourceCreated:
+      type: object
+      properties:
+        resource:
+          type: string
+          example: uuid or id
+    ResourceUpdated:
       type: object
       properties:
         resource:

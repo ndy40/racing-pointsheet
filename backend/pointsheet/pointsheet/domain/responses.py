@@ -73,3 +73,6 @@ class PaginatedResponse(BaseModel, Generic[T]):
 
 class ResourceCreated(BaseModel):
     resource: str | EntityId
+
+class ResourceUpdated(BaseModel):
+    resource: str | EntityId

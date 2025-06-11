@@ -83,6 +83,8 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             series=instance.series,
             host=instance.host,
             status=instance.status,
+            max_participants=instance.max_participants,
+            is_multi_class=instance.is_multi_class,
             schedule=[
                 EventSchedule(
                     type=schedule.type,
@@ -122,6 +124,8 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             starts_at=instance.starts_at,
             ends_at=instance.ends_at,
             status=instance.status,
+            max_participants=instance.max_participants,
+            is_multi_class=instance.is_multi_class,
             drivers=[
                 DriverModel(id=driver.id, name=driver.name)
                 for driver in instance.drivers
