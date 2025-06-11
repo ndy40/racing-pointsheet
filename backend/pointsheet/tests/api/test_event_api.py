@@ -3,26 +3,29 @@ import uuid
 from fastjsonschema import validate
 
 from pointsheet.factories.account import UserFactory
-from pointsheet.factories.event import EventFactory, EventDriverFactory
+from pointsheet.factories.event import EventFactory, EventDriverFactory, TrackFactory
 from .schemas.common import resource_created
 from modules.event.domain.value_objects import EventStatus
 
 
-def test_create_event(client, login):
+def test_create_event(client, login, db_session):
     token = login["token"]
+
+    track = TrackFactory()
+    db_session.commit()
 
     payload = {
         "title": "Test Event",
         "host": str(uuid.uuid4()),
-        "track": "Test Track",
+        "track": track.id,
         "status": EventStatus.open.value,
     }
 
     response = client.post(
         "/api/events", json=payload, headers={"Authorization": f"Bearer {token}"}
     )
+    assert response.status_code == 201, response.json
     validate(resource_created, response.json)
-    assert response.status_code == 201
 
 
 def test_create_event_with_ends_at_past_of_starts_at(client, auth_token):

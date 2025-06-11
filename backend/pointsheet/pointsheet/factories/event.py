@@ -8,7 +8,7 @@ from factory.alchemy import SQLAlchemyModelFactory
 from modules.event.domain.value_objects import SeriesStatus, EventStatus
 from pointsheet.db import Session
 from pointsheet.models import Event, Series
-from pointsheet.models.event import Participants
+from pointsheet.models.event import Participants, Track
 
 
 class EventFactory(SQLAlchemyModelFactory):
@@ -51,3 +51,14 @@ class EventDriverFactory(SQLAlchemyModelFactory):
     id = factory.LazyFunction(uuid.uuid4)
     name = factory.Sequence(lambda n: "EventDriver %d" % n)
     event_id = None
+
+
+class TrackFactory(SQLAlchemyModelFactory):
+    class Meta:
+        model = Track
+        sqlalchemy_session_factory = Session
+    id: int = factory.Sequence(lambda n: n)
+    name: str = factory.Sequence(lambda n: "Track %d" % n)
+    layout: str = 'full'
+    country: str = 'spain'
+    length: str = '100'

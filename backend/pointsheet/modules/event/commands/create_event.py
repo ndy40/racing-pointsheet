@@ -14,7 +14,7 @@ from pointsheet.domain.types import EntityId
 class CreateEvent(Command):
     title: str
     host: EntityId
-    track: Optional[str] = None
+    track: Optional[int] = None
     status: Optional[EventStatus] = None
     rules: Optional[str] = None
     starts_at: Optional[datetime] = None
