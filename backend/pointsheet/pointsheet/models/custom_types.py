@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy import CHAR, Dialect, String, TypeDecorator, JSON
 from sqlalchemy.sql.type_api import _T
 
-from modules.auth.value_objects import UserRole
+from pointsheet.domain.entity import UserRole
 from modules.event.domain.value_objects import (
     EventStatus,
     SeriesStatus,

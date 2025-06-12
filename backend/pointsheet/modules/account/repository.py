@@ -13,6 +13,11 @@ class DriverRepository(AbstractRepository[DriverEntity, Driver]):
     mapper_class = DriverMapper
     model_class = Driver
 
+    def all(self) -> list[Driver]:
+        stmt = select(DriverEntity)
+        result = self._session.execute(stmt).scalars()
+        return [self._map_to_model(item) for item in result]
+
     def find_by_id(self, id: Any) -> Driver | None:
         stmt = select(DriverEntity).where(DriverEntity.id == id)
         result = self._session.execute(stmt).scalar()

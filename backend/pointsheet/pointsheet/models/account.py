@@ -6,7 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column
 from pointsheet.domain.value_objects import TeamMember
 from pointsheet.domain.types import EntityId
 from .base import BaseModel
-from .custom_types import EntityIdType, PydanticJsonType
+from .custom_types import EntityIdType, PydanticJsonType, UserRoleType
+from ..domain.entity import UserRole
 
 
 class Team(BaseModel):
@@ -33,3 +34,4 @@ class Driver(BaseModel):
     )
     name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     team_id: Mapped[Optional[EntityId]] = mapped_column(EntityIdType, nullable=True)
+    role: Mapped[Optional[str]] = mapped_column(UserRoleType, default=UserRole.driver)

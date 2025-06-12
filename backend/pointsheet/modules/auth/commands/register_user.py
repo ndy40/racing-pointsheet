@@ -4,7 +4,7 @@ from typing import Optional
 from lato import Command, TransactionContext
 
 from modules.auth import auth_module
-from modules.auth.domain import UserRole
+from pointsheet.domain.entity import UserRole
 from modules.auth.events.user_registered import UserRegistered, UserRegisteredWithTeam
 from modules.auth.exceptions import UserAlreadyExists
 from modules.auth.repository import ActiveUserRepository, RegisterUserRepository
@@ -56,10 +56,10 @@ def handle_register_user(
 
     event = (
         UserRegisteredWithTeam(
-            user_id=cmd.id, team_name=cmd.team, username=cmd.username
+            user_id=cmd.id, team_name=cmd.team, username=cmd.username, role=cmd.role
         )
         if cmd.team
-        else UserRegistered(user_id=cmd.id, username=cmd.username)
+        else UserRegistered(user_id=cmd.id, username=cmd.username, role=cmd.role)
     )
 
     logging.debug(f"Publishing event {repr(event)}")

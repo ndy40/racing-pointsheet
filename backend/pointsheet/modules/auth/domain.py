@@ -7,8 +7,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from pointsheet.auth import TimedSerializer
 from pointsheet.config import config
 from .exceptions import InvalidPassword
-from pointsheet.domain.entity import AggregateRoot
-from .value_objects import UserRole
+from pointsheet.domain.entity import AggregateRoot, UserRole
 
 
 class ActiveUser(AggregateRoot):

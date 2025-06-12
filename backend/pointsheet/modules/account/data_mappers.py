@@ -10,6 +10,7 @@ class DriverMapper(DataMapper[DriverEntity, Driver]):
             id=instance.id,
             name=instance.name,
             team_id=instance.team_id,
+            role=instance.role,
         )
 
     def to_domain_model(self, instance: DriverEntity) -> Driver:
@@ -17,6 +18,7 @@ class DriverMapper(DataMapper[DriverEntity, Driver]):
             id=instance.id,
             name=instance.name,
             team_id=instance.team_id,
+            role=instance.role
         )
 
 

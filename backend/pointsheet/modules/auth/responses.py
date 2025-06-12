@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from modules.auth.value_objects import UserRole
+from pointsheet.domain.entity import UserRole
 
 
 class CurrentUserResponse(BaseModel):

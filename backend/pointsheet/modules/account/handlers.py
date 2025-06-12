@@ -40,7 +40,7 @@ def handle_driver_left_team(
 
 @account_module.handler(UserRegistered)
 def handle_registered_user(event: UserRegistered, repo: DriverRepository):
-    user = Driver(id=event.user_id, name=event.username)
+    user = Driver(id=event.user_id, name=event.username, role=event.role)
     repo.add(user)
 
 

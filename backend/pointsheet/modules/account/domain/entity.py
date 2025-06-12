@@ -9,7 +9,7 @@ from modules.account.domain.exceptions import (
     AlreadyInTeamException,
 )
 from pointsheet.domain.value_objects import TeamMember
-from pointsheet.domain.entity import AggregateRoot
+from pointsheet.domain.entity import AggregateRoot, UserRole
 from pointsheet.domain.types import EntityId
 
 
@@ -54,6 +54,7 @@ class Driver(AggregateRoot):
     name: Optional[str] = None
     events: Optional[List[RaceEvent]] = None
     team_id: Optional[EntityId] = None  # Reference to team
+    role: Optional[UserRole] = None
 
     def join_event(self, event: RaceEvent):
         if any(
