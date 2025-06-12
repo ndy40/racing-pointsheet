@@ -8,8 +8,7 @@ from alembic.config import Config
 from dotenv import load_dotenv
 
 from pointsheet.db import get_session
-from pointsheet.models.event import Track
-
+from pointsheet.models.event import Track, Car, Game
 
 debug = False
 
@@ -73,6 +72,34 @@ def load_tracks():
             for row in csv_reader:
                 track = Track(**row)
                 session.add(track)
+
+
+@app.command("load-games")
+def load_games():
+    csv_path = os.path.join(os.path.dirname(__file__), "data", "games.csv")
+    session = next(get_session())
+
+    with session.begin():
+        with open(csv_path, "r") as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                game = Game(**row)
+                session.add(game)
+
+
+@app.command("load-cars")
+def load_cars():
+    csv_path = os.path.join(os.path.dirname(__file__), "data", "forza_cars.csv")
+    session = next(get_session())
+
+    with session.begin():
+        with open(csv_path, "r") as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                car = Car(**row)
+                session.add(car)
+
+
 
 
 if __name__ == "__main__":
