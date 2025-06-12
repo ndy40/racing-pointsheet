@@ -138,6 +138,7 @@ paths:
                 required:
                   - error
                   - message
+
   /api/series:
     get:
       description: Fetch all series
