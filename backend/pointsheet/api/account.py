@@ -6,10 +6,10 @@ from pointsheet.auth import api_auth
 from modules.account.queries.get_all_drivers import GetAllDrivers
 from modules.account.responses import DriverResponse, DriversResponse
 
-account_bp = Blueprint("account", __name__)
+account_bp = Blueprint("account", __name__, url_prefix='accounts')
 
 
-@account_bp.route("/account/drivers", methods=["GET"])
+@account_bp.route("/drivers", methods=["GET"])
 @api_auth.login_required
 def get_all_drivers():
     # Execute the query to get all drivers
