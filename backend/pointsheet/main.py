@@ -56,11 +56,12 @@ def seed_data():
         getattr(module, "run")()
 
 
-@app.command("load-tracks")
-def load_tracks_command():
-    load_tracks()
+@app.group(chain=True)
+def seed_data():
+    pass
 
 
+@seed_data.command("load-tracks", help="Load tracks from CSV file")
 def load_tracks():
     csv_path = os.path.join(os.path.dirname(__file__), "data", "tracks.csv")
 
@@ -74,7 +75,7 @@ def load_tracks():
                 session.add(track)
 
 
-@app.command("load-games")
+@seed_data.command("load-games", help="Load games from CSV file")
 def load_games():
     csv_path = os.path.join(os.path.dirname(__file__), "data", "games.csv")
     session = next(get_session())
@@ -87,7 +88,7 @@ def load_games():
                 session.add(game)
 
 
-@app.command("load-cars")
+@seed_data.command("load-cars", help="Load cars from CSV file")
 def load_cars():
     csv_path = os.path.join(os.path.dirname(__file__), "data", "forza_cars.csv")
     session = next(get_session())
@@ -98,8 +99,6 @@ def load_cars():
             for row in csv_reader:
                 car = Car(**row)
                 session.add(car)
-
-
 
 
 if __name__ == "__main__":
