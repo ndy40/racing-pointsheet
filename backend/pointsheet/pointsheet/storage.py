@@ -48,7 +48,7 @@ class LocalFileStore(FileStore):
         """
         import uuid
 
-        allowed_extensions = {"jpeg", "png", "csv", "pdf", "jpg"}
+        allowed_extensions = {"jpeg", "png", "csv", "pdf", "jpg", "webp"}
         sanitized_name = secure_filename(file_path)
         extension = os.path.splitext(sanitized_name)[1].lower().lstrip(".")
 

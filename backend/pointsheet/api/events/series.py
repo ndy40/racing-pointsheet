@@ -137,7 +137,7 @@ def update_event_for_series(series_id: EntityId):
 def upload_series_cover_image(series_id):
     try:
         uploaded_file = request.files.get("image")
-        allowed_extensions = {"jpg", "jpeg", "png"}
+        allowed_extensions = {"jpg", "jpeg", "png", "webp"}
 
         # Validate the file
         is_valid, error_message = validate_file(uploaded_file, allowed_extensions)
