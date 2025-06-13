@@ -6,6 +6,7 @@ import click
 from alembic import command
 from alembic.config import Config
 from dotenv import load_dotenv
+from sqlalchemy import text
 
 from pointsheet.db import get_session
 from pointsheet.models.event import Track, Car, Game
@@ -27,7 +28,7 @@ def app():
     pass
 
 
-@app.command()
+@app.command(help="migrate database to latest revision")
 @click.option("--rev", default="head")
 def migrate(rev):
     command.upgrade(alembic_cfg, rev)
@@ -56,7 +57,7 @@ def seed_data():
         getattr(module, "run")()
 
 
-@app.group(chain=True)
+@app.group()
 def seed_data():
     pass
 
@@ -99,6 +100,64 @@ def load_cars():
             for row in csv_reader:
                 car = Car(**row)
                 session.add(car)
+
+@app.command("create-car-fts", help="Create and populate car full-text search index")
+def create_car_full_text_search_index():
+    session = next(get_session())
+    with session.begin():
+        session.execute(text("""
+            DROP TABLE IF EXISTS car_fts;
+        """))
+
+        session.execute(text("""
+            DROP TRIGGER IF EXISTS car_ai;
+        """))
+
+        session.execute(text("""
+            DROP TRIGGER IF EXISTS car_ad;
+        """))
+
+        session.execute(text("""
+            DROP TRIGGER IF EXISTS car_au;
+        """))
+
+        session.execute(text("""
+            CREATE VIRTUAL TABLE car_fts USING fts5(
+                model, 
+                year,
+                content='car',
+                content_rowid='id'
+            );
+        """))
+
+        session.execute(text("""
+            INSERT INTO car_fts(rowid, model, year)
+            SELECT id, model, year
+            FROM cars;
+        """))
+
+        session.execute(text("""
+            CREATE TRIGGER car_ai AFTER INSERT ON cars BEGIN
+                INSERT INTO car_fts(rowid, model, year)
+                VALUES (new.id, new.model, new.year);
+            END;
+        """))
+
+        session.execute(text("""
+            CREATE TRIGGER car_ad AFTER DELETE ON cars BEGIN
+                DELETE FROM car_fts WHERE rowid = old.id;
+            END;
+        """))
+
+        session.execute(text("""
+            CREATE TRIGGER car_au AFTER UPDATE ON cars BEGIN
+                UPDATE car_fts SET 
+                    model = new.model,
+                    year = new.year
+                WHERE rowid = old.id;
+            END;
+        """))
+
 
 
 if __name__ == "__main__":
