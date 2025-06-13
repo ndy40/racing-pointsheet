@@ -38,3 +38,11 @@ class DuplicatePositionInRaceResult(PointSheetException):
 class DuplicateDriverInRaceResult(PointSheetException):
     message = "Duplicate driver in race result"
     code = 400
+
+class HostNotFound(PointSheetException):
+    message = "Host not found"
+    code = 404
+
+class NoCarFound(PointSheetException):
+    message = "Car not found"
+    code = 404

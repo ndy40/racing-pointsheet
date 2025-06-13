@@ -1084,11 +1084,18 @@ components:
             - in_progress
         rules:
           type: string
+        series:
+          type: string
+          description: Series uuid
+        track:
+          type: int
+          description: Track Id
         cars:
           description: List of cars available for this event.
           type: array
           items:
-            $ref: "#/components/schemas/Car"
+            type: integer
+            description: Integer ids of cars
     UpdateEvent:
       type: object
       properties:

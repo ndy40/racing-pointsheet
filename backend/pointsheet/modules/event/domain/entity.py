@@ -89,6 +89,7 @@ class Car(BaseModel):
     id: int
     model: str
     year: Optional[str] = None
+    game_id: int
 
 
 class Event(AggregateRoot):

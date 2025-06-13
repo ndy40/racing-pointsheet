@@ -269,6 +269,11 @@ class CarRepository(AbstractRepository[Car, CarModel]):
             return self._map_to_model(result)
         return None
 
+    def find_by_ids(self, ids: List[int]) -> List[CarModel]:
+        stmt = select(Car).where(Car.id.in_(ids))
+        result = self._session.execute(stmt).scalars()
+        return [self._map_to_model(item) for item in result]
+
     def delete(self, id: Any) -> None:
         entity_to_delete = self._session.get(Car, id)
         if entity_to_delete:

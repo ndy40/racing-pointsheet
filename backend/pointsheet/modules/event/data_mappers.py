@@ -56,9 +56,9 @@ class GameModelMapper(DataMapper[Game, GameModel]):
 
 class CarModelMapper(DataMapper[Car, CarModel]):
     def to_db_entity(self, instance: CarModel) -> Car:
-        game = self.game_mapper.to_db_entity(instance.game)
         return Car(
             id=instance.id if hasattr(instance, 'id') else None,
+            game_id=instance.game_id,
             model=instance.model,
             year=instance.year,
         )
@@ -68,6 +68,7 @@ class CarModelMapper(DataMapper[Car, CarModel]):
             id=instance.id,
             model=instance.model,
             year=instance.year,
+            game_id=instance.game_id,
         )
 
 class EventModelMapper(DataMapper[Event, EventModel]):
@@ -83,6 +84,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             series=instance.series,
             host=instance.host,
             status=instance.status,
+            track=instance.track,
             max_participants=instance.max_participants,
             is_multi_class=instance.is_multi_class,
             schedule=[
@@ -111,9 +113,9 @@ class EventModelMapper(DataMapper[Event, EventModel]):
         # Add cars to the event if they exist
         if instance.cars:
             for car in instance.cars:
-                db_car = self.car_mapper.to_db_entity(car)
+                db_car = Car(id=car.id)
+                db_car._sa_instance_state.key = (Car, car.id)
                 event.cars.append(db_car)
-
         return event
 
     def to_domain_model(self, instance: Event) -> EventModel:
@@ -123,6 +125,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             host=instance.host,
             starts_at=instance.starts_at,
             ends_at=instance.ends_at,
+            track=instance.track,
             status=instance.status,
             max_participants=instance.max_participants,
             is_multi_class=instance.is_multi_class,

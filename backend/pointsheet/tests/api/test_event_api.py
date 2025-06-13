@@ -11,12 +11,13 @@ from modules.event.domain.value_objects import EventStatus
 def test_create_event(client, login, db_session):
     token = login["token"]
 
+    user = UserFactory()
     track = TrackFactory()
     db_session.commit()
 
     payload = {
         "title": "Test Event",
-        "host": str(uuid.uuid4()),
+        "host": str(user.id),
         "track": track.id,
         "status": EventStatus.open.value,
     }
@@ -28,11 +29,15 @@ def test_create_event(client, login, db_session):
     validate(resource_created, response.json)
 
 
-def test_create_event_with_ends_at_past_of_starts_at(client, auth_token):
+def test_create_event_with_ends_at_past_of_starts_at(client, auth_token, db_session):
+    user = UserFactory()
+    track = TrackFactory()
+    db_session.commit()
+
     payload = {
         "title": "Custom Event",
-        "host": str(uuid.uuid4()),
-        "track": "Custom Track",
+        "host": str(user.id),
+        "track": track.id,
         "status": EventStatus.open.value,
         "starts_at": "2023-11-10T15:00:00Z",
         "ends_at": "2023-11-10T14:00:00Z",
@@ -62,11 +67,15 @@ def test_creating_event_without_host_fails(client, auth_token):
     assert response.status_code == 400
 
 
-def test_create_event_with_ends_at_exceeds_one_month_of_starts_at(client, auth_token):
+def test_create_event_with_ends_at_exceeds_one_month_of_starts_at(client, auth_token, db_session):
+    user = UserFactory()
+    track = TrackFactory()
+    db_session.commit()
+
     payload = {
         "title": "Long Duration Event",
-        "host": str(uuid.uuid4()),
-        "track": "Special Track",
+        "host": str(user.id),
+        "track": track.id,
         "status": EventStatus.open,
         "starts_at": "2023-11-10T15:00:00Z",
         "ends_at": "2023-12-15T15:00:00Z",  # 35 days later
