@@ -10,6 +10,7 @@ from modules.event.commands.remove_schedule import RemoveSchedule
 from modules.event.commands.save_race_result import SaveEventResults
 from modules.event.commands.save_uploaded_result import UploadRaceResult
 from modules.event.commands.update_event import UpdateEventModel
+from modules.event.commands.delete_event import DeleteEvent
 from modules.event.queries.get_event import GetEvent
 from modules.event.queries.get_events import GetEvents
 from pointsheet.auth import api_auth, get_user_id
@@ -159,5 +160,16 @@ def update_event(event_id):
 
         # Return the resource updated response with the event ID
         return ResourceUpdated(resource=str(event_id)).model_dump(), 200
+    except (ValueError, ValidationError) as e:
+        return {"error": str(e)}, 400
+
+
+@event_bp.route("/<uuid:event_id>", methods=["DELETE"])
+@api_auth.login_required
+def delete_event(event_id):
+    try:
+        cmd = DeleteEvent(event_id=event_id)
+        current_app.application.execute(cmd)
+        return Response(status=204)
     except (ValueError, ValidationError) as e:
         return {"error": str(e)}, 400

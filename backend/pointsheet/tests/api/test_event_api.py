@@ -223,3 +223,30 @@ def test_add_duplicate_qualification_schedule_fails(client, auth_token, db_sessi
     )
 
     assert response.status_code == 400, response.json
+
+
+def test_delete_event_succeeds(client, auth_token, db_session):
+    # Create an event
+    event = EventFactory(session=db_session)
+    db_session.commit()
+
+    # Delete the event
+    response = client.delete(f"/api/events/{event.id}", headers=auth_token)
+
+    # Check if the event was deleted successfully
+    assert response.status_code == 204
+
+    # Verify the event is no longer accessible
+    get_response = client.get(f"/api/events/{event.id}", headers=auth_token)
+    assert get_response.status_code == 404
+
+
+def test_delete_non_existent_event_returns_400(client, auth_token):
+    # Generate a random UUID for a non-existent event
+    non_existent_id = uuid.uuid4()
+
+    # Attempt to delete a non-existent event
+    response = client.delete(f"/api/events/{non_existent_id}", headers=auth_token)
+
+    # Should return a 400 error
+    assert response.status_code == 400

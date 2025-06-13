@@ -1096,6 +1096,13 @@ components:
           items:
             type: integer
             description: Integer ids of cars
+        max_participants:
+          type: integer
+          description: Total number of drivers that can sign up to event.
+        is_multi_class:
+          type: boolean
+          description: Is the event a multi-class event.
+
     UpdateEvent:
       type: object
       properties:

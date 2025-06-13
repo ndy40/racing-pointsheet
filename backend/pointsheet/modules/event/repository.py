@@ -36,9 +36,9 @@ class EventRepository(AbstractRepository[Event, EventModel]):
         return [self._map_to_model(item) for item in result]
 
     def delete(self, id: EntityId) -> None:
-        entity_to_delete = self._session.get(Event.id, id)
-        self._session.delete(entity_to_delete)
-        self._session.commit()
+        entity_to_delete = self._session.get(Event, id)
+        if entity_to_delete:
+            self._session.delete(entity_to_delete)
 
     def get_recent_event_by_user(self, query: Query):
         driver_search = {"id": str(query.driver_id)}

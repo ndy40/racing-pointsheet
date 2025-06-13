@@ -53,3 +53,7 @@ class EventScheduleRemoved(Event):
 class RaceResultUploaded(Event):
     event_id: EntityId
     schedule_id: int
+
+
+class EventDeleted(Event):
+    event_id: EntityId
