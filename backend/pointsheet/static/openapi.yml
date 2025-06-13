@@ -139,6 +139,46 @@ paths:
                   - error
                   - message
 
+  /api/account/drivers/{id}:
+    get:
+      operationId: getDriverById
+      description: Get a specific driver by ID
+      tags:
+        - Account
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The ID of the driver to retrieve
+      security:
+        - BearerAuth: [ ]
+      responses:
+        200:
+          description: Driver details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Driver"
+        404:
+          description: Driver not found
+        401:
+          description: Unauthorized - Invalid or expired token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+                required:
+                  - error
+                  - message
+
   /api/series:
     get:
       description: Fetch all series

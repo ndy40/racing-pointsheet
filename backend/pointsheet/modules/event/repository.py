@@ -113,7 +113,6 @@ class SeriesRepository(AbstractRepository[Series, SeriesModel]):
     def delete(self, id: EntityId) -> None:
         entity_to_delete = self._session.get(Series, id)
         self._session.delete(entity_to_delete)
-        self._session.commit()
 
 
 class TrackRepository(AbstractRepository[Track, TrackModel]):
@@ -278,7 +277,6 @@ class CarRepository(AbstractRepository[Car, CarModel]):
         entity_to_delete = self._session.get(Car, id)
         if entity_to_delete:
             self._session.delete(entity_to_delete)
-            self._session.commit()
 
     def exists(self, id: int) -> bool:
         stmt = select(Car).where(Car.id == id)
@@ -311,7 +309,6 @@ class GameRepository(AbstractRepository[Game, GameModel]):
         entity_to_delete = self._session.get(Game, id)
         if entity_to_delete:
             self._session.delete(entity_to_delete)
-            self._session.commit()
 
     def exists(self, id: int) -> bool:
         stmt = select(Game).where(Game.id == id)

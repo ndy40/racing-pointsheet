@@ -10,10 +10,9 @@ from modules.event.domain.value_objects import EventStatus
 
 def test_create_event(client, login, db_session):
     token = login["token"]
-
     user = UserFactory()
     track = TrackFactory()
-    db_session.commit()
+
 
     payload = {
         "title": "Test Event",
