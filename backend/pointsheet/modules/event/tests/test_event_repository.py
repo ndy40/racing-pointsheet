@@ -18,6 +18,7 @@ def test_saving_schedule_to_event(db_session):
 
     event_repo = EventRepository(db_session)
     event_repo.add(event)
+    db_session.commit()
     new_obj = event_repo.find_by_id(event.id)
 
     assert len(new_obj.schedule) > 0
@@ -42,6 +43,7 @@ def test_saving_event_with_three_schedules(db_session):
 
     event_repo = EventRepository(db_session)
     event_repo.add(event)
+    db_session.commit()
     new_obj = event_repo.find_by_id(event.id)
 
     assert len(new_obj.schedule) == 3
@@ -72,6 +74,7 @@ def test_removing_most_recent_schedule_with_four_schedules(db_session):
 
     event_repo = EventRepository(db_session)
     event_repo.add(event)
+    db_session.commit()
     new_obj = event_repo.find_by_id(event.id)
 
     assert len(new_obj.schedule) == 4

@@ -6,7 +6,7 @@ from typing import Callable
 from lagom import Container
 from lato import Application, TransactionContext
 
-from pointsheet.db import get_session
+from pointsheet.db import get_session, Session
 from pointsheet.domain.types import UserId
 from .account import account_module
 from .account.repository import DriverRepository, TeamRepository
@@ -45,7 +45,8 @@ def on_create_transaction_context():
     txn_container = Container()
     txn_container[CorrelationId] = uuid.uuid4()
 
-    session = next(get_session())
+    session = Session()
+    txn_container[Session] = session
 
     # repository
     txn_container[logging.Logger] = logger
@@ -82,6 +83,18 @@ def on_enter_transaction_context(ctx: TransactionContext):
 def on_exit_transaction_context(ctx: TransactionContext, exception=None):
     logger = ctx[logging.Logger]
     logger.debug(">>> End transaction")
+
+    # close transaciton
+    session = ctx[Session]
+
+    if exception is not None:
+        session.rollback()
+    else:
+        session.commit()
+
+    session.close()
+
+
 
 
 @application.transaction_middleware

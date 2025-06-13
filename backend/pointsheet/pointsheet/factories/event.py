@@ -17,6 +17,13 @@ class EventFactory(SQLAlchemyModelFactory):
         sqlalchemy_session = Session
         sqlalchemy_session_persistence = "commit"
 
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        session = kwargs.pop('session', None)
+        if session:
+            cls._meta.sqlalchemy_session = session
+        return super()._create(model_class, *args, **kwargs)
+
     id = factory.LazyFunction(uuid.uuid4)
     title = factory.Sequence(lambda n: "Event %d" % n)
     host = uuid.uuid4()
@@ -31,8 +38,15 @@ class EventFactory(SQLAlchemyModelFactory):
 class SeriesFactory(SQLAlchemyModelFactory):
     class Meta:
         model = Series
-        sqlalchemy_session_factory = Session
+        sqlalchemy_session = Session
         sqlalchemy_session_persistence = "commit"
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        session = kwargs.pop('session', None)
+        if session:
+            cls._meta.sqlalchemy_session = session
+        return super()._create(model_class, *args, **kwargs)
 
     id = factory.LazyFunction(uuid.uuid4)
     title = factory.Sequence(lambda n: "Home %d" % n)
@@ -45,8 +59,15 @@ class SeriesFactory(SQLAlchemyModelFactory):
 class EventDriverFactory(SQLAlchemyModelFactory):
     class Meta:
         model = Participants
-        sqlalchemy_session_factory = Session
+        sqlalchemy_session = Session
         sqlalchemy_session_persistence = "commit"
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        session = kwargs.pop('session', None)
+        if session:
+            cls._meta.sqlalchemy_session = session
+        return super()._create(model_class, *args, **kwargs)
 
     id = factory.LazyFunction(uuid.uuid4)
     name = factory.Sequence(lambda n: "EventDriver %d" % n)
@@ -56,7 +77,16 @@ class EventDriverFactory(SQLAlchemyModelFactory):
 class TrackFactory(SQLAlchemyModelFactory):
     class Meta:
         model = Track
-        sqlalchemy_session_factory = Session
+        sqlalchemy_session = Session
+        sqlalchemy_session_persistence = "commit"
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        session = kwargs.pop('session', None)
+        if session:
+            cls._meta.sqlalchemy_session = session
+        return super()._create(model_class, *args, **kwargs)
+
     id: int = factory.Sequence(lambda n: n)
     name: str = factory.Sequence(lambda n: "Track %d" % n)
     layout: str = 'full'

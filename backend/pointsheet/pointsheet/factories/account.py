@@ -13,5 +13,12 @@ class UserFactory(SQLAlchemyModelFactory):
         sqlalchemy_session = Session
         sqlalchemy_session_persistence = "commit"
 
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        session = kwargs.pop('session', None)
+        if session:
+            cls._meta.sqlalchemy_session = session
+        return super()._create(model_class, *args, **kwargs)
+
     id = LazyFunction(uuid.uuid4)
     name = Sequence(lambda n: "User %d" % n)

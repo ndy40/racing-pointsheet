@@ -51,7 +51,7 @@ def test_create_series_defaults_to_not_started_status(
 
 
 def test_fetch_series_by_id(client, db_session, auth_token):
-    series = SeriesFactory(status=None)
+    series = SeriesFactory(status=None, session=db_session)
 
     with nullcontext():
         resp = client.get(f"/api/series/{series.id}", headers=auth_token)
@@ -60,7 +60,7 @@ def test_fetch_series_by_id(client, db_session, auth_token):
 
 
 def test_add_event_to_series(client, db_session, auth_token):
-    series = SeriesFactory()
+    series = SeriesFactory(session=db_session)
     db_session.commit()
     event_payload = {
         "title": "Main race",
@@ -77,7 +77,7 @@ def test_add_event_to_series(client, db_session, auth_token):
 @pytest.mark.skip(reason="clean up required")
 def test_update_event_in_series(client, db_session, auth_token):
     event = Event(title='Event 1', host=uuid.uuid4(), status=EventStatus.open,)
-    series = SeriesFactory(status=SeriesStatus.started, events=[event])
+    series = SeriesFactory(status=SeriesStatus.started, events=[event], session=db_session)
     db_session.commit()
 
     series_repo = SeriesRepository(db_session)
@@ -99,7 +99,7 @@ def test_update_event_in_series(client, db_session, auth_token):
 def test_delete_event_from_series(client, db_session, auth_token):
     id = uuid.uuid4()
     event = Event(id=id, status=EventStatus.open, host=uuid.uuid4(), title="Event 1")
-    series = SeriesFactory(status=SeriesStatus.started, events=[event])
+    series = SeriesFactory(status=SeriesStatus.started, events=[event], session=db_session)
 
     resp = client.delete(f"/api/series/{series.id}/events/{id}/", headers=auth_token)
     assert resp.status_code == HTTPStatus.NO_CONTENT, resp.json
@@ -115,7 +115,7 @@ def test_fetch_events_for_series(client, db_session, auth_token):
     event2 = Event(id=event2_id, status=EventStatus.open, host=uuid.uuid4(), title="Event 2")
 
     # Create a series with the events
-    series = SeriesFactory(status=SeriesStatus.started, events=[event1, event2])
+    series = SeriesFactory(status=SeriesStatus.started, events=[event1, event2], session=db_session)
     db_session.commit()
 
     # Call the endpoint
@@ -132,7 +132,7 @@ def test_fetch_events_for_series(client, db_session, auth_token):
 
 
 def test_series_startus_cannot_be_started_after_close(client, db_session, auth_token):
-    series = SeriesFactory(status=SeriesStatus.closed)
+    series = SeriesFactory(status=SeriesStatus.closed, session=db_session)
     db_session.commit()
 
     resp = client.put(
@@ -187,11 +187,12 @@ def test_series_creation_with_cover_image_upload(
 
 def test_patch_series(client, db_session, auth_token):
     """Test updating a series using the PATCH endpoint."""
-    # Create a series using the factory
+    # Create a series using the factory with the test session
     series = SeriesFactory(
         title="Original Title",
         description="Original Description",
         status=SeriesStatus.not_started,
+        session=db_session
     )
     db_session.commit()
 

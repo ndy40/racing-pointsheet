@@ -7,7 +7,6 @@ from modules.event.repository import EventRepository
 from modules.event.use_case.extract_race_result import ExtractRaceResult
 from modules.event.use_case.save_race_result import SaveRaceResult
 from pointsheet.celery_worker import celery_task
-from pointsheet.db import get_session
 
 
 @celery_task.task(retry_backoff=True, retry_kwargs={"max_retries": 2})
@@ -18,8 +17,7 @@ def say_hello():
 @celery_task.task(
     autoretry_for=(Exception,), retry_backoff=True, retry_kwargs={"max_retries": 5}
 )
-def extract_race_result_from_file(event_id, schedule_id, file_path):
-    repo = EventRepository(get_session())
+def extract_race_result_from_file(event_id, schedule_id, file_path, repo: EventRepository):
     event: Event = repo.find_by_id(event_id)
 
     if not event:

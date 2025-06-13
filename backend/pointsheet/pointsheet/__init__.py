@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 import sentry_sdk
-from flask import Flask, render_template, Response, session, redirect, abort
+from flask import Flask, render_template, Response, session, redirect, abort, g
 from flask_wtf.csrf import CSRFProtect
 from flask_cors import CORS
 from pydantic import ValidationError
@@ -175,6 +175,15 @@ def create_app(test_config=None):
             status=resp["code"],
             response=json.dumps(resp),
         )
+
+    # In __init__.py (Flask app creation)
+    @app.teardown_appcontext
+    def close_db_session(exception=None):
+        """Close the database session at the end of the request."""
+        db_session = g.pop('db_session', None)
+        if db_session is not None:
+            db_session.close()
+
 
     from modules import application
 

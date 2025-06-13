@@ -39,4 +39,4 @@ def handle_save_uploaded_result(
     if not event:
         raise EventNotFoundException()
 
-    extract_race_result_from_file.delay(cmd.event_id, cmd.schedule_id, file_location)
+    extract_race_result_from_file.delay(cmd.event_id, cmd.schedule_id, file_location, repo)

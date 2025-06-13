@@ -15,6 +15,5 @@ class GetCars(Query):
 @event_module.handler(GetCars)
 def fetch_game_cars(query: GetCars, repo: CarRepository):
     # Use the existing CarRepository to fetch cars filtered by game_id with pagination
-    print(query)
     result = repo.all(query)
     return result

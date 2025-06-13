@@ -34,33 +34,22 @@ class AbstractRepository(Generic[DbModel, T], abc.ABC):
     def add(self, model: T) -> None:
         entity: DbModel = self._map_to_entity(model)
         session = self._session
-        try:
-            session.add(entity)
-            session.commit()
-        finally:
-            session.close()
+        session.add(entity)
 
     def update(self, model: T) -> None:
         entity: DbModel = self._map_to_entity(model)
         session = self._session
-        try:
-            session.merge(entity)
-            session.commit()
-        finally:
-            session.close()
+        session.merge(entity)
 
     @abstractmethod
     def delete(self, id: Any or EntityId) -> None: ...
 
     def all(self) -> List[T]:
         session = self._session
-        try:
-            stmt = select(DbModel).order_by(DbModel.id)
-            result = session.execute(stmt).scalars()
-            return [self._map_to_model(item) for item in result]
-        finally:
-            session.close()
-        return None
+        stmt = select(DbModel).order_by(DbModel.id)
+        result = session.execute(stmt).scalars()
+        return [self._map_to_model(item) for item in result] if result else None
+
 
     @property
     def mapper(self):

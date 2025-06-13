@@ -32,7 +32,7 @@ def test_one_off_event_without_series_association(db_session):
 
 
 def test_create_event_associated_with_series(db_session):
-    series = SeriesFactory(title="New series", status=SeriesStatus.started)
+    series = SeriesFactory(title="New series", status=SeriesStatus.started, session=db_session)
     event = Event(id=uuid4(), title="event 1", host=uuid4())
     series.events.append(event)
     db_session.merge(series)
@@ -65,7 +65,7 @@ def test_series_ends_at_cannot_be_in_past_if_starts_at_is_set(db_session):
 
 
 def test_add_multiple_race_schedules_to_event(db_session):
-    event = EventFactory()
+    event = EventFactory(session=db_session)
 
     driver1 = Participants(event_id=event.id, name="driver1", id=uuid4())
     driver2 = Participants(event_id=event.id, name="driver2", id=uuid4())
@@ -114,10 +114,12 @@ def test_add_multiple_race_schedules_to_event(db_session):
 
 
 def test_save_race_result_to_event(patch_session):
-    event = EventFactory()
+    session = next(patch_session)
+
+    event = EventFactory(session=session)
     schedule = EventSchedule(nbr_of_laps=10, duration="1 hour", type="race")
 
-    driver = UserFactory()
+    driver = UserFactory(session=session)
 
     driver_result = DriverResult(
         driver_id=driver.id,
@@ -132,8 +134,6 @@ def test_save_race_result_to_event(patch_session):
     race_result = RaceResult(result=[driver_result])
     schedule.result = race_result
     event.schedule.append(schedule)
-
-    session = next(patch_session)
 
     session.merge(event)
     session.commit()

@@ -13,7 +13,7 @@ def test_saving_of_event_using_repository(db_session):
 
 
 def test_fetching_of_model_using_repository(db_session):
-    event = EventFactory()
+    event = EventFactory(session=db_session)
 
     event_id = event.id
     inserted_model = EventRepository(db_session).find_by_id(event.id)
@@ -22,8 +22,8 @@ def test_fetching_of_model_using_repository(db_session):
 
 
 def test_fetching_all_event_using_repository(db_session):
-    EventFactory()
-    EventFactory()
+    EventFactory(session=db_session)
+    EventFactory(session=db_session)
     db_session.commit()
 
     result = EventRepository(db_session).all()

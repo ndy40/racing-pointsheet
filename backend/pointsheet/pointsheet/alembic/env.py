@@ -50,21 +50,21 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
-        include_object=include_object,
+        # include_object=include_object,
     )
 
     with context.begin_transaction():
         context.run_migrations()
 
 
-def include_object(object, name, type_, reflected, compare_to):
-    # Exclude the car_fts table and any related shadow tables
-    if type_ == "table" and (name == "car_fts" or name.startswith("car_fts_")):
-        return False
-    # Exclude any other FTS tables that might be present
-    if type_ == "table" and "fts" in name:
-        return False
-    return True
+# def include_object(object, name, type_, reflected, compare_to):
+#     # Exclude the car_fts table and any related shadow tables
+#     if type_ == "table" and (name == "car_fts" or name.startswith("car_fts_")):
+#         return False
+#     # Exclude any other FTS tables that might be present
+#     if type_ == "table" and "fts" in name:
+#         return False
+#     return True
 
 
 def render_item(type_, obj, autogen_context):
@@ -105,7 +105,6 @@ def run_migrations_online() -> None:
             target_metadata=target_metadata,
             render_item=render_item,
             render_as_batch=True,
-            include_object=include_object,
         )
 
         with context.begin_transaction():
