@@ -36,4 +36,4 @@ fi
 
 # Start the application using gunicorn
 echo "Starting application with gunicorn..."
-exec gunicorn --workers=1 --threads=2 --worker-class=gthread --bind=127.0.0.1:5000 --log-file=/var/logs/pointsheets/pointsheet.log --log-level=info "pointsheet:create_app()"
+exec gunicorn --workers=1 --threads=4 --worker-class=gthread --bind=127.0.0.1:5000 --log-file=/var/logs/pointsheets/pointsheet.log --log-level=info "pointsheet:create_app()"
