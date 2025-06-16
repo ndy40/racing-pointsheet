@@ -1062,7 +1062,7 @@ components:
           type: datetime
         host:
           description: The person running the event.
-          type: integer
+          type: string
         track:
           type: string
           default: TBD
