@@ -45,11 +45,16 @@ def db_session(setup_database):
 
 @pytest.fixture(scope="function", autouse=True)
 def patch_session(db_session):
-    with patch(
-        "pointsheet.db.get_session",
-        return_value=db_session,
-    ) as session:
-        yield session
+    # Patch get_session to return the test session
+    with patch("pointsheet.db.get_session", return_value=db_session) as session:
+        # Patch the Session object
+        with patch("pointsheet.db.Session") as mock_session:
+            # Configure the mock to return the test session when called
+            mock_session.return_value = db_session
+            # Also patch the remove method to prevent closing the session
+            mock_session.remove = lambda: None
+
+            yield session
 
 
 @pytest.fixture(scope="module")

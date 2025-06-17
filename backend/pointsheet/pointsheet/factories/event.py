@@ -11,7 +11,17 @@ from pointsheet.models import Event, Series
 from pointsheet.models.event import Participants, Track
 
 
-class EventFactory(SQLAlchemyModelFactory):
+class SessionMixin:
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        session = kwargs.pop('session', None)
+        if session:
+            cls._meta.sqlalchemy_session = session
+        return super()._create(model_class, *args, **kwargs)
+
+
+class EventFactory(SessionMixin, SQLAlchemyModelFactory):
     class Meta:
         model = Event
         sqlalchemy_session = Session
@@ -56,7 +66,7 @@ class SeriesFactory(SQLAlchemyModelFactory):
     events = []
 
 
-class EventDriverFactory(SQLAlchemyModelFactory):
+class EventDriverFactory(SessionMixin, SQLAlchemyModelFactory):
     class Meta:
         model = Participants
         sqlalchemy_session = Session
@@ -74,7 +84,7 @@ class EventDriverFactory(SQLAlchemyModelFactory):
     event_id = None
 
 
-class TrackFactory(SQLAlchemyModelFactory):
+class TrackFactory(SessionMixin, SQLAlchemyModelFactory):
     class Meta:
         model = Track
         sqlalchemy_session = Session

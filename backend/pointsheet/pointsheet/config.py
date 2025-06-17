@@ -21,7 +21,7 @@ class Config(BaseSettings):
     DATABASE: Optional[str]
     AUTH_TOKEN_MAX_AGE: Optional[int] = SEVEN_DAYS_IN_SECONDS
     UPLOAD_FOLDER: Optional[str] = "uploads/"
-    BROKER_URL: Optional[str]
+    BROKER_URL: Optional[str] = None
     RESULT_BACKEND: Optional[str] = "db+sqlite:///instance/task_result.db.sqlite"
     GOOGLE_API_KEY: Optional[str] = "AIzaSyCQ2glxUjVNTd3FzrpR0v79pIj8UXeNd3w"
     SENTRY_DSN: Optional[str] = None

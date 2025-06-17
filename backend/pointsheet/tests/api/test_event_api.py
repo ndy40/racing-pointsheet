@@ -10,9 +10,8 @@ from modules.event.domain.value_objects import EventStatus
 
 def test_create_event(client, login, db_session):
     token = login["token"]
-    user = UserFactory()
-    track = TrackFactory()
-
+    user = UserFactory(session=db_session)
+    track = TrackFactory(session=db_session)
 
     payload = {
         "title": "Test Event",
@@ -29,8 +28,8 @@ def test_create_event(client, login, db_session):
 
 
 def test_create_event_with_ends_at_past_of_starts_at(client, auth_token, db_session):
-    user = UserFactory()
-    track = TrackFactory()
+    user = UserFactory(session=db_session)
+    track = TrackFactory(session=db_session)
     db_session.commit()
 
     payload = {
@@ -67,8 +66,8 @@ def test_creating_event_without_host_fails(client, auth_token):
 
 
 def test_create_event_with_ends_at_exceeds_one_month_of_starts_at(client, auth_token, db_session):
-    user = UserFactory()
-    track = TrackFactory()
+    user = UserFactory(session=db_session)
+    track = TrackFactory(session=db_session)
     db_session.commit()
 
     payload = {
@@ -86,14 +85,15 @@ def test_create_event_with_ends_at_exceeds_one_month_of_starts_at(client, auth_t
 
 def test_driver_joining_event(client, auth_token, default_user, db_session):
     event = EventFactory(session=db_session)
-    UserFactory(id=default_user.id)
+    UserFactory(id=default_user.id, session=db_session)
     response = client.put(f"/api/events/{event.id}/join", headers=auth_token)
     assert response.status_code == 204, response.json
 
 
 def test_driver_joining_event_twice_fails(client, auth_token, default_user, db_session):
     event = EventFactory(session=db_session)
-    UserFactory(id=default_user.id)
+    UserFactory(id=default_user.id, session=db_session)
+    db_session.flush()
 
     client.put(f"/api/events/{event.id}/join", headers=auth_token)
     response = client.put(f"/api/events/{event.id}/join", headers=auth_token)
