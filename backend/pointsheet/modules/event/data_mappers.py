@@ -87,6 +87,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             track=instance.track,
             max_participants=instance.max_participants,
             is_multi_class=instance.is_multi_class,
+            game_id=instance.game,
             schedule=[
                 EventSchedule(
                     type=schedule.type,
@@ -129,6 +130,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             status=instance.status,
             max_participants=instance.max_participants,
             is_multi_class=instance.is_multi_class,
+            game=instance.game_id,
             drivers=[
                 DriverModel(id=driver.id, name=driver.name)
                 for driver in instance.drivers
@@ -214,6 +216,3 @@ class TrackModelMapper(DataMapper[Track, TrackModel]):
             country=instance.country,
             length=instance.length,
         )
-
-
-

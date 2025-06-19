@@ -3,7 +3,7 @@ import uuid
 from fastjsonschema import validate
 
 from pointsheet.factories.account import UserFactory
-from pointsheet.factories.event import EventFactory, EventDriverFactory, TrackFactory
+from pointsheet.factories.event import EventFactory, EventDriverFactory, TrackFactory, GameFactory
 from .schemas.common import resource_created
 from modules.event.domain.value_objects import EventStatus
 
@@ -12,12 +12,14 @@ def test_create_event(client, login, db_session):
     token = login["token"]
     user = UserFactory(session=db_session)
     track = TrackFactory(session=db_session)
+    game = GameFactory(session=db_session)
 
     payload = {
         "title": "Test Event",
         "host": str(user.id),
         "track": track.id,
         "status": EventStatus.open.value,
+        "game": game.id,
     }
 
     response = client.post(
@@ -30,6 +32,7 @@ def test_create_event(client, login, db_session):
 def test_create_event_with_ends_at_past_of_starts_at(client, auth_token, db_session):
     user = UserFactory(session=db_session)
     track = TrackFactory(session=db_session)
+    game = GameFactory(session=db_session)
     db_session.commit()
 
     payload = {
@@ -39,6 +42,7 @@ def test_create_event_with_ends_at_past_of_starts_at(client, auth_token, db_sess
         "status": EventStatus.open.value,
         "starts_at": "2023-11-10T15:00:00Z",
         "ends_at": "2023-11-10T14:00:00Z",
+        "game": game.id,
     }
 
     response = client.post("/api/events", json=payload, headers=auth_token)
@@ -54,11 +58,13 @@ def test_create_and_fetch_event_by_id(client, auth_token, db_session):
     # validate(event_schema, fetch_response.json)
 
 
-def test_creating_event_without_host_fails(client, auth_token):
+def test_creating_event_without_host_fails(client, auth_token, db_session):
+    game = GameFactory(session=db_session)
     payload = {
         "title": "Test Event",
         "track": "Test Track",
         "status": EventStatus.open.value,
+        "game": game.id,
     }
 
     response = client.post("/api/events", json=payload, headers=auth_token)
@@ -68,6 +74,7 @@ def test_creating_event_without_host_fails(client, auth_token):
 def test_create_event_with_ends_at_exceeds_one_month_of_starts_at(client, auth_token, db_session):
     user = UserFactory(session=db_session)
     track = TrackFactory(session=db_session)
+    game = GameFactory(session=db_session)
     db_session.commit()
 
     payload = {
@@ -77,6 +84,7 @@ def test_create_event_with_ends_at_exceeds_one_month_of_starts_at(client, auth_t
         "status": EventStatus.open,
         "starts_at": "2023-11-10T15:00:00Z",
         "ends_at": "2023-12-15T15:00:00Z",  # 35 days later
+        "game": game.id,
     }
 
     response = client.post("/api/events", json=payload, headers=auth_token)
