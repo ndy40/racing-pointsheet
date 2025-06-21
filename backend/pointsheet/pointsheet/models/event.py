@@ -152,6 +152,8 @@ class Event(BaseModel):
     )
     max_participants: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     is_multi_class: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
+    game_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("games.id", name='event_game'), nullable=True)
+    game: Mapped["Game"] = relationship("Game")
 
     def model_dump(self):
         cars_data = []
@@ -166,6 +168,13 @@ class Event(BaseModel):
                     "year": car.year
                 })
 
+        game_data = None
+        if self.game:
+            game_data = {
+                "id": self.game.id,
+                "name": self.game.name
+            }
+
         return {
             "id": str(self.id),
             "title": self.title,
@@ -174,7 +183,8 @@ class Event(BaseModel):
             "starts_at": self.starts_at.isoformat() if self.starts_at else None,
             "ends_at": self.ends_at.isoformat() if self.ends_at else None,
             "host": str(self.host) if self.host else None,
-            "cars": cars_data
+            "cars": cars_data,
+            "game": game_data
         }
 
     @validates("starts_at", "ends_at", include_removes=False)

@@ -113,13 +113,11 @@ def test_add_multiple_race_schedules_to_event(db_session):
     assert len(event.schedule) == 2
 
 
-def test_save_race_result_to_event(patch_session):
-    session = next(patch_session)
-
-    event = EventFactory(session=session)
+def test_save_race_result_to_event(db_session):
+    event = EventFactory(session=db_session)
     schedule = EventSchedule(nbr_of_laps=10, duration="1 hour", type="race")
 
-    driver = UserFactory(session=session)
+    driver = UserFactory(session=db_session)
 
     driver_result = DriverResult(
         driver_id=driver.id,
@@ -135,5 +133,5 @@ def test_save_race_result_to_event(patch_session):
     schedule.result = race_result
     event.schedule.append(schedule)
 
-    session.merge(event)
-    session.commit()
+    db_session.merge(event)
+    db_session.commit()

@@ -23,6 +23,7 @@ class UpdateEventModel(Command):
     cars: Optional[List[Car]] = None
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
+    game: Optional[int] = None
 
 
 @event_module.handler(UpdateEventModel)

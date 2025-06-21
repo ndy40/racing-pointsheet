@@ -18,6 +18,7 @@ class CreateEvent(Command):
     title: str
     host: EntityId
     track: int
+    game: int
     status: Optional[EventStatus] = None
     rules: Optional[str] = None
     starts_at: Optional[datetime] = None
@@ -67,8 +68,8 @@ class CreateEvent(Command):
             if not series:
                 raise SeriesNotFoundException("Series not found")
         return value
-    
-    
+
+
 
 @event_module.handler(CreateEvent)
 def create_event(cmd: CreateEvent, repo: EventRepository, car_repo: CarRepository, track_repo: TrackRepository):

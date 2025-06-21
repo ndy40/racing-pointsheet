@@ -7,7 +7,7 @@ from factory.alchemy import SQLAlchemyModelFactory
 
 from modules.event.domain.value_objects import SeriesStatus, EventStatus
 from pointsheet.db import Session
-from pointsheet.models import Event, Series
+from pointsheet.models import Event, Series, Game
 from pointsheet.models.event import Participants, Track
 
 
@@ -25,14 +25,14 @@ class EventFactory(SessionMixin, SQLAlchemyModelFactory):
     class Meta:
         model = Event
         sqlalchemy_session = Session
-        sqlalchemy_session_persistence = "commit"
+        sqlalchemy_session_persistence = "flush"
 
-    @classmethod
-    def _create(cls, model_class, *args, **kwargs):
-        session = kwargs.pop('session', None)
-        if session:
-            cls._meta.sqlalchemy_session = session
-        return super()._create(model_class, *args, **kwargs)
+    # @classmethod
+    # def _create(cls, model_class, *args, **kwargs):
+    #     session = kwargs.pop('session', None)
+    #     if session:
+    #         cls._meta.sqlalchemy_session = session
+    #     return super()._create(model_class, *args, **kwargs)
 
     id = factory.LazyFunction(uuid.uuid4)
     title = factory.Sequence(lambda n: "Event %d" % n)
@@ -43,13 +43,14 @@ class EventFactory(SessionMixin, SQLAlchemyModelFactory):
     ends_at = None
     track = None
     drivers = []
+    game_id = None
 
 
 class SeriesFactory(SQLAlchemyModelFactory):
     class Meta:
         model = Series
         sqlalchemy_session = Session
-        sqlalchemy_session_persistence = "commit"
+        sqlalchemy_session_persistence = "flush"
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
@@ -70,7 +71,7 @@ class EventDriverFactory(SessionMixin, SQLAlchemyModelFactory):
     class Meta:
         model = Participants
         sqlalchemy_session = Session
-        sqlalchemy_session_persistence = "commit"
+        sqlalchemy_session_persistence = "flush"
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
@@ -88,7 +89,7 @@ class TrackFactory(SessionMixin, SQLAlchemyModelFactory):
     class Meta:
         model = Track
         sqlalchemy_session = Session
-        sqlalchemy_session_persistence = "commit"
+        sqlalchemy_session_persistence = "flush"
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
@@ -102,3 +103,20 @@ class TrackFactory(SessionMixin, SQLAlchemyModelFactory):
     layout: str = 'full'
     country: str = 'spain'
     length: str = '100'
+
+
+class GameFactory(SessionMixin, SQLAlchemyModelFactory):
+    class Meta:
+        model = Game
+        sqlalchemy_session = Session
+        sqlalchemy_session_persistence = "flush"
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        session = kwargs.pop('session', None)
+        if session:
+            cls._meta.sqlalchemy_session = session
+        return super()._create(model_class, *args, **kwargs)
+
+    id: int = factory.Sequence(lambda n: n)
+    name: str = factory.Sequence(lambda n: "Game %d" % n)
