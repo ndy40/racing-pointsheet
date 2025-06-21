@@ -106,7 +106,7 @@ class Event(AggregateRoot):
     cars: Optional[List[Car]] = None
     max_participants: Optional[int] = None
     is_multi_class: Optional[bool] = None
-    game: int
+    game: Optional[int] = None
 
     @computed_field
     @property

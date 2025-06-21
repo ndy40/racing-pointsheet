@@ -130,7 +130,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             status=instance.status,
             max_participants=instance.max_participants,
             is_multi_class=instance.is_multi_class,
-            game=instance.game_id,
+            game=instance.game_id if instance.game_id else None,
             drivers=[
                 DriverModel(id=driver.id, name=driver.name)
                 for driver in instance.drivers

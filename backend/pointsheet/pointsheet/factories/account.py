@@ -11,7 +11,7 @@ class UserFactory(SQLAlchemyModelFactory):
     class Meta:
         model = Driver
         sqlalchemy_session = Session
-        sqlalchemy_session_persistence = "commit"
+        sqlalchemy_session_persistence = "flush"
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):

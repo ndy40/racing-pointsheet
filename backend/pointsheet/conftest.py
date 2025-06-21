@@ -45,8 +45,12 @@ def db_session(setup_database):
 
 @pytest.fixture(scope="function", autouse=True)
 def patch_session(db_session):
-    # Patch get_session to return the test session
-    with patch("pointsheet.db.get_session", return_value=db_session) as session:
+    # Create a generator function that yields the test session
+    def mock_get_session():
+        yield db_session
+
+    # Patch get_session to use our mock function
+    with patch("pointsheet.db.get_session", mock_get_session) as session:
         # Patch the Session object
         with patch("pointsheet.db.Session") as mock_session:
             # Configure the mock to return the test session when called

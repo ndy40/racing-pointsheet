@@ -152,7 +152,7 @@ class Event(BaseModel):
     )
     max_participants: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     is_multi_class: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
-    game_id: Mapped[int] = mapped_column(Integer, ForeignKey("games.id"))
+    game_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("games.id", name='event_game'), nullable=True)
     game: Mapped["Game"] = relationship("Game")
 
     def model_dump(self):
