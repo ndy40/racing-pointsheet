@@ -1077,6 +1077,17 @@ components:
         series:
           type: string
           description: UUID of series
+        max_participants:
+          description: The maximum number of allowed participants to this event.
+          type: integer
+        current_participants:
+          description: The number of drivers signed up to this race.
+          type: integer
+        is_multi_class:
+          description: Flag to mark this event as multi-class racing event.
+          type: boolean
+        game:
+          type: integer
         rules:
           type: string
           description: Can contain rules like number of pit stops, tire restrictions and others for this event.
@@ -1090,17 +1101,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Car"
-        max_participants:
-          description: The maximum number of allowed participants to this event.
-          type: integer
-        current_participants:
-          description: The number of drivers signed up to this race.
-          type: integer
-        is_multi_class:
-          description: Flag to mark this event as multi-class racing event.
-          type: boolean
-        game:
-          type: integer
     CreateEvent:
       type: object
       required:
@@ -1130,15 +1130,6 @@ components:
         series:
           type: string
           description: Series uuid
-        track:
-          type: int
-          description: Track Id
-        cars:
-          description: List of cars available for this event.
-          type: array
-          items:
-            type: integer
-            description: Integer ids of cars
         max_participants:
           type: integer
           description: Total number of drivers that can sign up to event.
@@ -1148,7 +1139,15 @@ components:
         game:
           type: integer
           description: The ID of the game associated with this event.
-
+        track:
+          type: int
+          description: Track Id
+        cars:
+          description: List of cars available for this event.
+          type: array
+          items:
+            type: integer
+            description: Integer ids of cars
     UpdateEvent:
       type: object
       properties:
