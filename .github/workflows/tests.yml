@@ -5,6 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_call:
 
 jobs:
   test:
@@ -18,19 +19,52 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Cache APT packages
+        uses: actions/cache@v3
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/apt-packages.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y libgl1 tesseract-ocr
+
+      - name: Cache Poetry installation
+        uses: actions/cache@v3
+        with:
+          path: ~/.local
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
 
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-deps-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-deps-
+
+      - name: Cache virtual environment
+        uses: actions/cache@v3
+        with:
+          path: ./backend/pointsheet/.venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-venv-
+
       - name: Install dependencies
         working-directory: ./backend/pointsheet
         run: |
+          poetry config virtualenvs.in-project true
           poetry install
 
       - name: Run tests

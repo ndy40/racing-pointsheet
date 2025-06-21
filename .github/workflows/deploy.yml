@@ -8,36 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgl1 tesseract-ocr
-
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies
-        working-directory: ./backend/pointsheet
-        run: |
-          poetry install
-
-      - name: Run tests
-        working-directory: ./backend/pointsheet
-        env:
-          BROKER_URL: "//broker.local"
-        run: |
-          poetry run pytest
+    uses: ./.github/workflows/tests.yml
 
   deploy:
     needs: test
