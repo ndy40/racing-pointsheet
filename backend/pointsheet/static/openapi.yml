@@ -1051,7 +1051,6 @@ components:
         - ends_at
         - hosts
         - status
-        - game
       properties:
         id:
           type: string
@@ -1101,16 +1100,7 @@ components:
           description: Flag to mark this event as multi-class racing event.
           type: boolean
         game:
-          description: The game associated with this event.
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-          required:
-            - id
-            - name
+          type: integer
     CreateEvent:
       type: object
       required:
