@@ -1188,7 +1188,6 @@ components:
       required:
         - id
         - type
-        - nbr_of_laps
         - duration
       properties:
         id:
