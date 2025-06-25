@@ -88,21 +88,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             max_participants=instance.max_participants,
             is_multi_class=instance.is_multi_class,
             game_id=instance.game,
-            schedule=[
-                EventSchedule(
-                    type=schedule.type,
-                    nbr_of_laps=schedule.nbr_of_laps,
-                    duration=schedule.duration,
-                    id=schedule.id,
-                    result=(
-                        schedule.result
-                        and self.result_mapper.to_db_entity(schedule.result)
-                    ),
-                )
-                for schedule in instance.schedule
-            ]
-            if instance.schedule
-            else [],
+            schedule=[],
             drivers=[
                 Participants(id=driver.id, name=driver.name, event_id=instance.id)
                 for driver in instance.drivers
@@ -111,12 +97,27 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             else [],
         )
 
+        if instance.schedule:
+            for schedule in instance.schedule:
+                _schedule = EventSchedule(
+                    type=schedule.type,
+                    nbr_of_laps=schedule.nbr_of_laps or None,
+                    duration=schedule.duration,
+                    event_id=instance.id,
+                    id=schedule.id or None,
+                    result=(
+                        schedule.result
+                        and self.result_mapper.to_db_entity(schedule.result)
+                    ),
+                )
+                event.schedule.append(_schedule)
+
         # Add cars to the event if they exist
         if instance.cars:
             for car in instance.cars:
                 # Only create a reference to the existing car by ID
                 db_car = Car(id=car.id)
-                db_car._sa_instance_state.key = (Car, car.id)
+                db_car._sa_instance_state.key = (Car, car.id, None)
                 event.cars.append(db_car)
         return event
 
