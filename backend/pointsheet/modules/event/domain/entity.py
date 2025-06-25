@@ -91,6 +91,14 @@ class Car(BaseModel):
     year: Optional[str] = None
     game_id: int
 
+    def __hash__(self):
+        return hash(self.id)
+
+    def __eq__(self, other):
+        if not isinstance(other, Car):
+            return False
+        return self.id == other.id
+
 
 class Event(AggregateRoot):
     title: str

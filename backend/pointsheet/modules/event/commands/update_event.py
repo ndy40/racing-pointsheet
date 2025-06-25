@@ -20,7 +20,7 @@ class UpdateEventModel(Command):
     series: Optional[EntityId] = None
     rules: Optional[str] = None
     max_participants: Optional[int] = None
-    cars: Optional[List[Car]] = None
+    cars: Optional[List[int]] = None
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
     game: Optional[int] = None

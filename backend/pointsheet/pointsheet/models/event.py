@@ -119,6 +119,14 @@ class Car(BaseModel):
         back_populates="cars"
     )
 
+    def __hash__(self):
+        return hash(self.id)
+
+    def __eq__(self, other):
+        if not isinstance(other, Car):
+            return False
+        return self.id == other.id
+
 
 class Event(BaseModel):
     __tablename__ = "events"
