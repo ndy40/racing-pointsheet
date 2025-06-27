@@ -148,7 +148,7 @@ def test_removing_schedule_from_event_succeeds(client, auth_token, db_session):
     # Add three schedules: practice, qualification, and race
     practice_schedule = {"type": "practice", "duration": "00:30:00"}
     qualification_schedule = {"type": "qualification", "duration": "00:20:00"}
-    race_schedule = {"type": "race", "nbr_of_laps": 50}
+    race_schedule = {"type": "race", "nbr_of_laps": 50, "duration": "01:00"}
 
     client.post(
         f"/api/events/{event.id}/schedule", json=practice_schedule, headers=auth_token

@@ -24,10 +24,10 @@ class AddEventSchedule(Command):
     def validate_nbr_of_laps(self) -> Self:
         if (
             self.type in [ScheduleType.race, ScheduleType.qualification]
-            and self.nbr_of_laps is None
+            and self.duration is None
         ):
             raise PointSheetValidationError(
-                message=f"When the schedule is {ScheduleType.race} or {ScheduleType.qualification}, number of laps must be set."
+                message=f"When the schedule is {ScheduleType.race} or {ScheduleType.qualification},duration must be set."
             )
 
         return self
