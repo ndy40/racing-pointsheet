@@ -116,8 +116,8 @@ class EventModelMapper(DataMapper[Event, EventModel]):
         if instance.cars:
             for car in instance.cars:
                 # Only create a reference to the existing car by ID
-                db_car = Car(id=car.id)
-                db_car._sa_instance_state.key = (Car, car.id, None)
+                db_car = Car(id=car)
+                db_car._sa_instance_state.key = (Car, car, None)
                 event.cars.append(db_car)
         return event
 
