@@ -114,11 +114,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
 
         # Add cars to the event if they exist
         if instance.cars:
-            for car in instance.cars:
-                # Only create a reference to the existing car by ID
-                db_car = Car(id=car)
-                db_car._sa_instance_state.key = (Car, car, None)
-                event.cars.append(db_car)
+            event.cars = [self.car_mapper.to_db_entity(car) for car in instance.cars]
         return event
 
     def to_domain_model(self, instance: Event) -> EventModel:
