@@ -40,9 +40,9 @@ def get_current_user():
 
     # Get the user by ID
     active_user = current_app.application.execute(GetUserById(user_id=user_id))
-
+    print("Active user ", active_user)
     # Create a response using the pydantic model
-    response = CurrentUserResponse(username=active_user.username, role=active_user.role)
+    response = CurrentUserResponse(id=active_user.id, username=active_user.username, role=active_user.role)
 
     # Return the response as a dictionary
     return response.model_dump()
