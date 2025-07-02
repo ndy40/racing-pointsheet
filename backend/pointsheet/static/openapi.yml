@@ -1074,6 +1074,10 @@ components:
             - closed
             - in_progress
           default: open
+        drivers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Driver'
         series:
           type: string
           description: UUID of series
