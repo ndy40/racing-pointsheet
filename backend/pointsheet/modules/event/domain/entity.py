@@ -257,6 +257,9 @@ class Event(AggregateRoot):
         if self.cars:
             self.cars = [car for car in self.cars if car.model != car_model]
 
+    def remove_all_cars(self) -> None:
+        self.cars = None
+
 
 class Series(AggregateRoot):
     title: str

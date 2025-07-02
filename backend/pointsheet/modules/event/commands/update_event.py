@@ -37,7 +37,10 @@ def handle_update_event(cmd: UpdateEventModel, repo: EventRepository, car_repo: 
         setattr(event, field, value)
 
     # Handle cars separately
-    if cmd.cars:
+    if event.cars and not cmd.cars:
+        # if car is set as null or []
+        event.remove_all_cars()
+    elif cmd.cars:
         # Clear existing cars
         event.cars = []
         # Fetch car objects and add them
