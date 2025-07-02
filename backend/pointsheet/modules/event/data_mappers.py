@@ -127,6 +127,7 @@ class EventModelMapper(DataMapper[Event, EventModel]):
             host=instance.host,
             starts_at=instance.starts_at,
             ends_at=instance.ends_at,
+            series=instance.series,
             track=instance.track,
             status=instance.status,
             max_participants=instance.max_participants,
