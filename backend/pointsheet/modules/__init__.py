@@ -16,6 +16,8 @@ from .dependency_provider import LagomDependencyProvider
 from .event import event_module
 from pointsheet.auth import get_user_id
 from .event.repository import EventRepository, SeriesRepository, TrackRepository, GameRepository, CarRepository
+from .notification.repository import WebhookRepository, WebhookSubscriptionRepository, WebhookLogRepository
+from .notification.notification_module import notification_module
 
 app_container = Container()
 dp = LagomDependencyProvider(app_container)
@@ -38,6 +40,7 @@ application = Application("pointsheet", dependency_provider=dp)
 application.include_submodule(account_module)
 application.include_submodule(event_module)
 application.include_submodule(auth_module)
+application.include_submodule(notification_module)
 
 
 @application.on_create_transaction_context
@@ -59,6 +62,9 @@ def on_create_transaction_context():
     txn_container[DriverRepository] = DriverRepository(session)
     txn_container[GameRepository] = GameRepository(session)
     txn_container[CarRepository] = CarRepository(session)
+    txn_container[WebhookRepository] = WebhookRepository(session)
+    txn_container[WebhookSubscriptionRepository] = WebhookSubscriptionRepository(session)
+    txn_container[WebhookLogRepository] = WebhookLogRepository(session)
     txn_container[UserId] = get_user_id()
 
     # Create the transaction context with the dependency provider

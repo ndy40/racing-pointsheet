@@ -4,8 +4,8 @@ from modules.event.domain.value_objects import SeriesStatus
 from pointsheet.domain.types import EntityId
 
 
-class SeriesCreated(Event): ...
-
+class SeriesCreated(Event):
+    series_id: EntityId
 
 class SeriesDeleted(Event):
     id: EntityId

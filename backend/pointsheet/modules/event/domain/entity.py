@@ -7,7 +7,7 @@ from pydantic import BaseModel, model_validator, computed_field
 from modules.event.exceptions import (
     InvalidEventDateForSeries,
     SeriesAlreadyClosed,
-    DriverAlreadySingedUp,
+    DriverAlreadySingedUp, SeriesStartException,
 )
 from modules.event.domain.value_objects import (
     EventStatus,
@@ -316,6 +316,9 @@ class Series(AggregateRoot):
     def start_series(self):
         if self.status == SeriesStatus.closed:
             raise SeriesAlreadyClosed()
+        
+        if self.starts_at and self.starts_at.replace(tzinfo=timezone.utc) > datetime.now(timezone.utc):
+            raise SeriesStartException("Cannot start series that begins in the future")
 
         self.status = SeriesStatus.started
 
