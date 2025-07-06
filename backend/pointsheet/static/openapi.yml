@@ -951,7 +951,7 @@ components:
         status:
           type: string
           enum:
-            - open
+            - not_started
             - started
             - closed
         cover_image:
