@@ -19,6 +19,8 @@ class WebhookEventType(str, Enum):
     SERIES_CREATED = "series.created"
     SERIES_UPDATED = "series.updated"
     SERIES_DELETED = "series.deleted"
+    SERIES_STARTED = "series.started"
+    SERIES_CLOSED = "series.closed"
 
     # Event model events
     EVENT_OPEN = "event.open"

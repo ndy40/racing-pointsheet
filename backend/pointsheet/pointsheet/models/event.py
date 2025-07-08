@@ -9,7 +9,7 @@ from sqlalchemy import (
     UniqueConstraint,
     Text,
     Table,
-    Column, Boolean,
+    Column, Boolean, inspect,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
@@ -253,15 +253,25 @@ class Series(BaseModel):
 
     @validates("starts_at")
     def validate_starts_at(self, key, value):
-        if value:
-            # Ensure value has timezone info
-            if value.tzinfo is None:
-                # If value is naive, assume it's in UTC
-                value = value.replace(tzinfo=timezone.utc)
+        if value is None:
+            return None
 
-            # Get current time in UTC
-            now = datetime.now(timezone.utc)
+        has_changes = inspect(self).attrs.starts_at.history.has_changes()
 
-            if value > now:
-                return value
-            raise ValueError("start date much be in the future. ")
+        if not has_changes:
+            return value
+
+        # Ensure value has timezone info
+        if value.tzinfo is None:
+            # If value is naive, assume it's in UTC
+            value = value.replace(tzinfo=timezone.utc)
+
+        # Get current time in UTC
+        now = datetime.now(timezone.utc)
+
+        # Get beginning of today in UTC
+        today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+        if value >= today:
+            return value
+        raise ValueError("start date must be from beginning of today or future.")
