@@ -10,9 +10,13 @@ class EventAlreadyExists(PointSheetException):
     message = "Event already exists"
 
 
+class SeriesStartException(PointSheetException):
+    message = "Series can't be started when start date is in the future"
+
+
 class SeriesAlreadyClosed(PointSheetException):
     code = 400
-    message = "Home can't be started after being closed"
+    message = "Series can't be started after being closed"
 
 
 class InvalidEventDateForSeries(PointSheetException):
