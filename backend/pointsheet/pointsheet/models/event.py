@@ -262,6 +262,10 @@ class Series(BaseModel):
             # Get current time in UTC
             now = datetime.now(timezone.utc)
 
-            if value > now:
+            # Get beginning of today in UTC
+            today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+            if value >= today:
                 return value
-            raise ValueError("start date much be in the future. ")
+            raise ValueError("start date must be from beginning of today or future.")
+

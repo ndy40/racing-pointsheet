@@ -322,6 +322,9 @@ class Series(AggregateRoot):
     def close_series(self):
         self.status = SeriesStatus.closed
 
+    def not_started(self):
+        self.status = SeriesStatus.not_started
+
     def _check_event_is_within_date(self, event: Event) -> None:
         is_valid = True
 

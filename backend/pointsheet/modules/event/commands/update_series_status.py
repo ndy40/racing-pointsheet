@@ -30,15 +30,21 @@ def update_series_status(
     if not series:
         raise SeriesNotFoundException()
 
+    published_event = None
+
     match cmd.status:
         case _SeriesStatus.started:
             series.start_series()
-            ctx.publish(SeriesStarted(series_id=cmd.series_id))
+            published_event = SeriesStarted(series_id=cmd.series_id)
         case _SeriesStatus.closed:
             series.close_series()
-            ctx.publish(SeriesClosed(series_id=cmd.series_id))
+            published_event =  SeriesClosed(series_id=cmd.series_id)
         case _SeriesStatus.not_started:
             series.not_started()
-            ctx.publish(SeriesStatusNotStarted(series_id=cmd.series_id))
         case _:
             raise ValueError("Invalid status")
+
+    repo.update(series)
+
+    if published_event:
+        ctx.publish(published_event)

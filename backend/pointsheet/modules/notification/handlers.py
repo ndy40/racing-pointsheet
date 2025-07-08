@@ -4,12 +4,14 @@ Event handlers for the notification module.
 This module contains handlers for various events that trigger webhook notifications.
 """
 from datetime import datetime
+from logging import Logger
 from typing import Dict, Any, Optional, List
 
+from flask import current_app
 from lato import TransactionContext, Event
 
 from modules.event.events import (
-    SeriesCreated, SeriesDeleted, SeriesUpdated, SeriesStatusUpdated,
+    SeriesCreated, SeriesDeleted, SeriesUpdated,
     SeriesStarted, SeriesClosed, DriverJoinedEvent, DriverLeftEvent,
     EventScheduleAdded, EventScheduleRemoved, RaceResultUploaded, EventDeleted
 )
@@ -17,6 +19,7 @@ from modules.notification.domain.value_objects import WebhookEventType
 from modules.notification.domain.entity import WebhookLog, WebhookSubscription
 from modules.notification.repository import WebhookRepository, WebhookSubscriptionRepository, WebhookLogRepository
 from modules.notification.notification_module import notification_module
+from modules.notification.formatters import WebhookFormatterFactory
 from pointsheet.domain.types import EntityId
 
 
@@ -58,14 +61,23 @@ def _create_delivery_logs(
     for subscription in subscriptions:
         webhook = webhook_repository.find_by_id(subscription.webhook_id)
         if webhook and webhook.enabled:
-            log = WebhookLog(
-                webhook_id=webhook.id,
-                subscription_id=subscription.id,
-                payload=payload,
-                succeeded=False,
-                timestamp=datetime.now()
-            )
-            log_repository.create(log)
+            try:
+                # Format the payload for the specific platform
+                formatter = WebhookFormatterFactory.create_formatter(webhook.platform)
+                formatted_payload = formatter.format_payload(webhook, payload)
+
+                # Create the webhook log with the formatted payload
+                log = WebhookLog(
+                    webhook_id=webhook.id,
+                    subscription_id=subscription.id,
+                    payload=formatted_payload,
+                    succeeded=False,
+                    timestamp=datetime.now()
+                )
+                log_repository.add(log)
+            except ValueError as e:
+                # Log error if platform is not supported
+                print(f"Error formatting webhook payload: {str(e)}")
 
 
 def _event_to_payload(event: Event) -> Dict[str, Any]:
@@ -91,11 +103,13 @@ def _event_to_payload(event: Event) -> Dict[str, Any]:
 def handle_series_created(
     event: SeriesCreated,
     ctx: TransactionContext,
+    logger: Logger,
     webhook_repository: WebhookRepository,
     webhook_subscription_repository: WebhookSubscriptionRepository,
     webhook_log_repository: WebhookLogRepository
 ) -> None:
     """Handle SeriesCreated event."""
+    logger.info(f"Notification: Received SeriesCreated event for {event.id}")
     payload = _event_to_payload(event)
     _create_delivery_logs(
         WebhookEventType.SERIES_CREATED,
@@ -105,6 +119,7 @@ def handle_series_created(
         subscription_repository=webhook_subscription_repository,
         log_repository=webhook_log_repository
     )
+    logger.info(f"Notification: Delivered SeriesCreated event for {event.id}")
 
 
 @notification_module.handler(SeriesDeleted)
@@ -160,7 +175,7 @@ def handle_series_started(
     """Handle SeriesStarted event."""
     payload = _event_to_payload(event)
     _create_delivery_logs(
-        WebhookEventType.EVENT_STARTED,
+        WebhookEventType.SERIES_STARTED,
         payload,
         resource_type="Series",
         resource_id=event.series_id,
@@ -181,7 +196,7 @@ def handle_series_closed(
     """Handle SeriesClosed event."""
     payload = _event_to_payload(event)
     _create_delivery_logs(
-        WebhookEventType.EVENT_CLOSED,
+        WebhookEventType.SERIES_CLOSED,
         payload,
         resource_type="Series",
         resource_id=event.series_id,

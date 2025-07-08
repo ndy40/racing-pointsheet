@@ -9,6 +9,7 @@ delivered webhooks with a WebhookLog.
 from modules.notification.domain.entity import Webhook, WebhookSubscription, WebhookLog
 from modules.notification.domain.value_objects import WebhookPlatform, WebhookEventType, WebhookDeliveryStatus
 from modules.notification.repository import WebhookRepository, WebhookSubscriptionRepository, WebhookLogRepository
+from modules.notification.formatters import WebhookFormatter, DiscordWebhookFormatter, WebhookFormatterFactory
 from modules.notification.notification_module import notification_module
 import modules.notification.handlers
 
@@ -23,5 +24,8 @@ __all__ = [
     "WebhookRepository",
     "WebhookSubscriptionRepository",
     "WebhookLogRepository",
+    "WebhookFormatter",
+    "DiscordWebhookFormatter",
+    "WebhookFormatterFactory",
     "notification_module",
 ]

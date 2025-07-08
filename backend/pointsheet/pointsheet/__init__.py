@@ -19,6 +19,7 @@ template_directory = os.path.join(root_dir, "templates")
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
 
 sentry_sdk.init(

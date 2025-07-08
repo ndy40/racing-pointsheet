@@ -1,10 +1,8 @@
-from typing import Dict, List, Any
-
 from modules.notification.domain.entity import Webhook as WebhookEntity
 from modules.notification.domain.entity import WebhookSubscription as WebhookSubscriptionEntity
 from modules.notification.domain.entity import WebhookLog as WebhookLogEntity
 from modules.notification.domain.value_objects import WebhookPlatform, WebhookEventType
-from modules.notification.models import Webhook, WebhookSubscription, WebhookLog
+from pointsheet.models.notification import Webhook, WebhookSubscription, WebhookLog
 from pointsheet.repository import DataMapper
 
 

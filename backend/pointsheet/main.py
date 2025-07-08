@@ -10,6 +10,7 @@ from sqlalchemy import text
 
 from pointsheet.db import get_session
 from pointsheet.models.event import Track, Car, Game
+from modules.notification.webhook_cli import webhook_cli
 
 debug = False
 
@@ -159,6 +160,8 @@ def create_car_full_text_search_index():
         """))
 
 
+
+app.add_command(webhook_cli)
 
 if __name__ == "__main__":
     app()

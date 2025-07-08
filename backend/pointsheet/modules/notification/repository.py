@@ -1,4 +1,4 @@
-from typing import List, Optional, Any, Tuple
+from typing import List, Optional
 
 from lato import Query
 from sqlalchemy import select, and_, or_
@@ -8,7 +8,7 @@ from modules.notification.domain.entity import Webhook as WebhookEntity
 from modules.notification.domain.entity import WebhookSubscription as WebhookSubscriptionEntity
 from modules.notification.domain.entity import WebhookLog as WebhookLogEntity
 from modules.notification.domain.value_objects import WebhookEventType
-from modules.notification.models import Webhook, WebhookSubscription, WebhookLog
+from pointsheet.models.notification import Webhook, WebhookSubscription, WebhookLog
 from pointsheet.domain.types import EntityId
 from pointsheet.repository import AbstractRepository
 

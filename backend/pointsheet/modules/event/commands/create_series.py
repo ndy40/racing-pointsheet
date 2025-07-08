@@ -1,11 +1,13 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from lato import Command
+from lato import Command, TransactionContext
 
 from modules.event import event_module
 from modules.event.domain.entity import Series
+from modules.event.events import SeriesCreated
 from modules.event.repository import SeriesRepository
+from pointsheet.db import Session
 
 
 class CreateSeries(Command):
@@ -16,7 +18,7 @@ class CreateSeries(Command):
 
 
 @event_module.handler(CreateSeries)
-def create_series(cmd: CreateSeries, repo: SeriesRepository):
+def create_series(cmd: CreateSeries, repo: SeriesRepository, ctx: TransactionContext):
     # Convert datetime objects to UTC timezone if they have no timezone info
     data = cmd.model_dump()
 
@@ -28,3 +30,4 @@ def create_series(cmd: CreateSeries, repo: SeriesRepository):
 
     model = Series(**data)
     repo.add(model)
+    ctx.publish(SeriesCreated(series_id=model.id))

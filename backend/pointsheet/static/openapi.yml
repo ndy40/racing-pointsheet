@@ -998,9 +998,22 @@ components:
       properties:
         title:
           type: string
+        starts_at:
+          type: datetime
+        ends_at:
+          type: datetime
+        status:
+          type: string
+          enum:
+            - open
+            - started
+            - closed
+        cover_image:
+          type: string
+          description: Optional cover image for the series
         description:
           type: string
-
+          description: Optional description of the series
     Driver:
       type: object
       required:
