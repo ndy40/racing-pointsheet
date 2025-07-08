@@ -28,7 +28,7 @@ class Config(BaseSettings):
     WTF_CSRF_CHECK_DEFAULT: bool = False
     WTF_CSRF_EXEMPT_ROUTES: List[str] = ["/api/*"]
     DEBUG: bool = True
-    SQLALCHEMY_ECHO: bool = True
+    SQLALCHEMY_ECHO: bool = False
     # AWS S3 configuration
     AWS_BUCKET_NAME: Optional[str] = None
     AWS_REGION: Optional[str] = None

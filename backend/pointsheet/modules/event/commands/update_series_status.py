@@ -47,4 +47,5 @@ def update_series_status(
     repo.update(series)
 
     if published_event:
+        print('event published')
         ctx.publish(published_event)

@@ -8,4 +8,5 @@ import importlib
 from lato import ApplicationModule
 
 notification_module = ApplicationModule("notification_module")
-importlib.import_module("modules.notification.handlers")
+importlib.import_module("modules.notification.handlers.events")
+importlib.import_module("modules.notification.handlers.series")

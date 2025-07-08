@@ -12,7 +12,7 @@ engine = create_engine(
     pool_recycle=1800,
     pool_pre_ping=True,
     # pool_timeout=30,
-    echo_pool=True,
+    echo_pool=False,
 )
 
 # Create a sessionmaker that can be used to create sessions
