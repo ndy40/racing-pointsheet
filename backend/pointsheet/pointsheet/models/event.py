@@ -259,7 +259,6 @@ class Series(BaseModel):
         has_changes = inspect(self).attrs.starts_at.history.has_changes()
 
         if has_changes and self.starts_at is not None:
-            print(f'I got here {key}: {value}: {has_changes}')
             return value
 
         # Ensure value has timezone info
