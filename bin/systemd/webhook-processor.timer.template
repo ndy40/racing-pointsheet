@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Webhook Processor every 2 minutes
+After=webhook-processor.service
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=2min
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

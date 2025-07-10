@@ -1,0 +1,16 @@
+[Unit]
+Description=Pointsheet Webhook Processor
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=__CURRENT_LINK__/backend/pointsheet
+Environment="PATH=__DEPLOY_DIR__/venv/bin"
+ExecStart=__DEPLOY_DIR__/venv/bin/python main.py webhook process
+Restart=on-failure
+RestartSec=30
+StandardOutput=append:/var/logs/pointsheets/webhook_process.log
+StandardError=append:/var/logs/pointsheets/webhook_process.log
+
+[Install]
+WantedBy=multi-user.target

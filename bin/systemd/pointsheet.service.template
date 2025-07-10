@@ -1,0 +1,13 @@
+[Unit]
+Description=Pointsheet Web Application
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=__CURRENT_LINK__/backend/pointsheet
+Environment="PATH=__DEPLOY_DIR__/venv/bin"
+ExecStart=__CURRENT_LINK__/bin/run_server.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

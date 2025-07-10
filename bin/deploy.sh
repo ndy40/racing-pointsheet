@@ -83,44 +83,51 @@ sudo mkdir -p /var/logs/pointsheets
 sudo chown www-data:www-data /var/logs/pointsheets
 sudo chmod 755 /var/logs/pointsheets
 
-# Create or update systemd service files
-cat > /tmp/pointsheet.service << EOF
-[Unit]
-Description=Pointsheet Web Application
-After=network.target
+# Function to process and install systemd service files
+process_systemd_template() {
+    local template_file="$1"
+    local output_file="$2"
 
-[Service]
-User=www-data
-WorkingDirectory=$CURRENT_LINK/backend/pointsheet
-Environment="PATH=$DEPLOY_DIR/venv/bin"
-ExecStart=$CURRENT_LINK/bin/run_server.sh
-Restart=always
+    # Process the template file, replacing placeholders with actual values
+    sed -e "s|__CURRENT_LINK__|$CURRENT_LINK|g" \
+        -e "s|__DEPLOY_DIR__|$DEPLOY_DIR|g" \
+        "$template_file" > "/tmp/$(basename "$output_file")"
 
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# Check if service files exist and compare hashes
-for service in pointsheet ; do
-    if [ -f "/etc/systemd/system/${service}.service" ]; then
+    # Check if the service file exists and compare hashes
+    if [ -f "$output_file" ]; then
         # Calculate hash of existing service file
-        existing_hash=$(md5sum "/etc/systemd/system/${service}.service" | awk '{print $1}')
+        existing_hash=$(md5sum "$output_file" | awk '{print $1}')
         # Calculate hash of new service file
-        new_hash=$(md5sum "/tmp/${service}.service" | awk '{print $1}')
+        new_hash=$(md5sum "/tmp/$(basename "$output_file")" | awk '{print $1}')
 
         # Compare hashes and only override if different
         if [ "$existing_hash" != "$new_hash" ]; then
-            echo "Updating ${service}.service (files are different)"
-            sudo mv "/tmp/${service}.service" "/etc/systemd/system/"
+            echo "Updating $(basename "$output_file") (files are different)"
+            sudo mv "/tmp/$(basename "$output_file")" "$output_file"
         else
-            echo "Skipping ${service}.service (no changes detected)"
-            rm "/tmp/${service}.service"
+            echo "Skipping $(basename "$output_file") (no changes detected)"
+            rm "/tmp/$(basename "$output_file")"
         fi
     else
-        echo "Installing new ${service}.service"
-        sudo mv "/tmp/${service}.service" "/etc/systemd/system/"
+        echo "Installing new $(basename "$output_file")"
+        sudo mv "/tmp/$(basename "$output_file")" "$output_file"
     fi
-done
+}
+
+# Process and install pointsheet service
+echo "Setting up pointsheet service..."
+process_systemd_template "$CURRENT_LINK/bin/systemd/pointsheet.service.template" "/etc/systemd/system/pointsheet.service"
+
+# Setup systemd service and timer for webhook processing
+echo "Setting up systemd service and timer for webhook processing..."
+
+# Process and install webhook processor service and timer
+process_systemd_template "$CURRENT_LINK/bin/systemd/webhook-processor.service.template" "/etc/systemd/system/webhook-processor.service"
+process_systemd_template "$CURRENT_LINK/bin/systemd/webhook-processor.timer.template" "/etc/systemd/system/webhook-processor.timer"
+
+# Enable and start the timer
+sudo systemctl enable webhook-processor.timer
+sudo systemctl start webhook-processor.timer
 
 # Reload systemd and start services
 sudo systemctl daemon-reload
