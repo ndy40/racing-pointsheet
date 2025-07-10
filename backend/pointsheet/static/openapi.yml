@@ -889,12 +889,235 @@ paths:
                   $ref: "#/components/schemas/Car"
         401:
           description: Forbidden
+
+  # Webhook API Paths
+  /api/webhooks:
+    get:
+      summary: List all webhooks
+      tags:
+        - Webhooks
+      responses:
+        '200':
+          description: A list of webhooks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WebhookResponse'
+    post:
+      summary: Create a new webhook
+      tags:
+        - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookCreate'
+      responses:
+        '201':
+          description: Webhook created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookResponse'
+
+  /api/webhooks/{webhookId}:
+    get:
+      summary: Get a specific webhook
+      tags:
+        - Webhooks
+      parameters:
+        - name: webhookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Webhook details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookResponse'
+        '404':
+          description: Webhook not found
+    patch:
+      summary: Update a webhook
+      tags:
+        - Webhooks
+      parameters:
+        - name: webhookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookUpdate'
+      responses:
+        '200':
+          description: Webhook updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookResponse'
+        '404':
+          description: Webhook not found
+    delete:
+      summary: Delete a webhook
+      tags:
+        - Webhooks
+      parameters:
+        - name: webhookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Webhook deleted successfully
+        '404':
+          description: Webhook not found
+
+  /api/webhooks/{webhookId}/toggle:
+    post:
+      summary: Enable or disable a webhook
+      tags:
+        - Webhooks
+      parameters:
+        - name: webhookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Webhook toggled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  enabled:
+                    type: boolean
+        '404':
+          description: Webhook not found
+
+  /api/webhooks/subscriptions:
+    post:
+      summary: Create a webhook subscription
+      tags:
+        - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookSubscriptionCreate'
+      responses:
+        '201':
+          description: Subscription created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionResponse'
+        '400':
+          description: Invalid event type
+        '404':
+          description: Webhook not found
+
+  /api/webhooks/{webhookId}/subscriptions:
+    get:
+      summary: Get subscriptions for a webhook
+      tags:
+        - Webhooks
+      parameters:
+        - name: webhookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: List of subscriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WebhookSubscriptionResponse'
+
+  /api/webhooks/subscriptions/{subscriptionId}:
+    delete:
+      summary: Delete a subscription
+      tags:
+        - Webhooks
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Subscription deleted successfully
+        '404':
+          description: Subscription not found
+
+  /api/webhooks/event-types:
+    get:
+      summary: Get available event types
+      tags:
+        - Webhooks
+      responses:
+        '200':
+          description: List of event types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookEventType'
+
+  /api/webhooks/platforms:
+    get:
+      summary: Get available webhook platforms
+      tags:
+        - Webhooks
+      responses:
+        '200':
+          description: List of platforms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
 components:
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: token
+
+  # Webhook API Schemas
   schemas:
     AuthUserRequest:
       type: object
@@ -1367,6 +1590,134 @@ components:
             $ref: "#/components/schemas/Car"
         pagination:
           $ref: "#/components/schemas/PaginationMetadata"
+
+    # Webhook Schemas
+    WebhookPlatform:
+      type: string
+      enum:
+        - discord
+      description: Supported webhook platforms (currently only Discord)
+
+    WebhookEventType:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+
+    WebhookCreate:
+      type: object
+      required:
+        - name
+        - target_url
+        - platform
+      properties:
+        name:
+          type: string
+          description: Name of the webhook
+        target_url:
+          type: string
+          format: uri
+          description: URL where webhook notifications will be sent
+        platform:
+          $ref: "#/components/schemas/WebhookPlatform"
+        secret:
+          type: string
+          description: Optional secret for webhook verification
+        config:
+          type: object
+          description: Optional configuration for the webhook
+
+    WebhookUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the webhook
+        target_url:
+          type: string
+          format: uri
+          description: URL where webhook notifications will be sent
+        platform:
+          $ref: "#/components/schemas/WebhookPlatform"
+        secret:
+          type: string
+          description: Secret for webhook verification
+        config:
+          type: object
+          description: Configuration for the webhook
+        enabled:
+          type: boolean
+          description: Whether the webhook is enabled
+
+    WebhookResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        target_url:
+          type: string
+          format: uri
+        platform:
+          type: string
+        enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    WebhookSubscriptionCreate:
+      type: object
+      required:
+        - webhook_id
+        - event_type
+      properties:
+        webhook_id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+        resource_type:
+          type: string
+          nullable: true
+        resource_id:
+          type: string
+          format: uuid
+          nullable: true
+
+    WebhookSubscriptionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        webhook_id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+        resource_type:
+          type: string
+          nullable: true
+        resource_id:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
 
     Track:
       type: object
