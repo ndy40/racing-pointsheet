@@ -93,14 +93,14 @@ def create_subscription(body: WebhookSubscriptionCreate):
 def get_webhook_subscriptions(webhook_id):
     query = GetWebhookSubscriptions(webhook_id=webhook_id)
     subscriptions = current_app.application.execute(query)
-    return jsonify([subscription.model_dump() for subscription in subscriptions])
+    return jsonify([subscription.model_dump() for subscription in subscriptions]) if subscriptions else [],200
 
 # Delete a subscription
 @webhook_bp.route("/subscriptions/<subscription_id>", methods=["DELETE"])
 def delete_subscription(subscription_id):
     cmd = DeleteWebhookSubscription(subscription_id=subscription_id)
     current_app.application.execute(cmd)
-    return None, 204
+    return '', 204
 
 # Get available event types
 @webhook_bp.route("/event-types", methods=["GET"])

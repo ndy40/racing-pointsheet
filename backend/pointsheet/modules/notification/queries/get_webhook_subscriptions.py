@@ -32,4 +32,5 @@ def get_webhook_subscriptions(
     Returns:
         A list of webhook subscriptions
     """
+
     return repo.all(query)
