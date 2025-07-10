@@ -27,6 +27,7 @@ class WebhookEventType(str, Enum):
     EVENT_COMPLETED = "event.completed"
     EVENT_CLOSED = "event.closed"
     EVENT_STARTED = "event.started"
+    EVENT_UPDATED = "event.updated"
     RACE_RESULT_UPLOADED = "event.result_uploaded"
 
     # Driver events
